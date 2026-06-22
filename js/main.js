@@ -9,8 +9,35 @@ document.addEventListener("DOMContentLoaded", () => {
   initGalleries();
   initContactForm();
   initBackToTop();
+  initSmoothAnchors();
+  initHashScroll();
   setYear();
 });
+
+/* ---------- Défilement doux pour les ancres internes (#services, #photo…) ---------- */
+function initSmoothAnchors() {
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => {
+      const id = a.getAttribute("href");
+      if (!id || id.length < 2) return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth" });
+      history.replaceState(null, "", id);
+    });
+  });
+}
+
+/* ---------- Arrivée depuis une autre page sur une ancre (ex: index.html#services) ---------- */
+function initHashScroll() {
+  if (!window.location.hash) return;
+  const target = document.querySelector(window.location.hash);
+  if (!target) return;
+  // Saut net (pas d'animation depuis le haut) + recalages quand les images finissent de charger
+  const jump = () => target.scrollIntoView({ behavior: "auto" });
+  window.addEventListener("load", () => { jump(); setTimeout(jump, 350); setTimeout(jump, 800); });
+}
 
 /* ---------- Bouton retour en haut ---------- */
 function initBackToTop() {

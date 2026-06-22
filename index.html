@@ -42,7 +42,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=16">
+  <link rel="stylesheet" href="css/style.css?v=25">
 </head>
 <body>
 
@@ -54,26 +54,29 @@
       <a href="index.html" class="active">Accueil</a>
       <a href="photo.html">Photo</a>
       <a href="video.html">Vidéo</a>
+      <a href="services.html">Services</a>
       <a href="about.html">À propos</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero__bg"></div>
+  <section class="hero hero--name">
     <div class="hero__smoke" aria-hidden="true"></div>
     <div class="container">
       <div class="hero__inner">
-        <span class="eyebrow">TRC Prod — Studio Audiovisuel</span>
-        <h1>L'image au service<br>de <em>l'exception</em>.</h1>
-        <p class="lead">Photographe et vidéaste basé à Grenoble, je réalise des images soignées en photo et en vidéo - pour les marques, les commerces comme les particuliers. De la publicité au mariage.</p>
+        <h1 class="hero__name">
+          <span class="hero__first">Ethan</span>
+          <span class="hero__last">Trincanato</span>
+        </h1>
+        <p class="hero__role">Photographe &amp; Vidéaste</p>
         <div class="hero__actions">
           <a href="photo.html" class="btn btn--solid">Voir le portfolio</a>
           <a href="contact.html" class="btn">Me contacter</a>
         </div>
       </div>
     </div>
+    <a href="#photo" class="hero__scroll">Défiler</a>
   </section>
 
   <!-- PHOTO -->
@@ -130,7 +133,7 @@
   </section>
 
   <!-- SERVICES -->
-  <section class="section section--tight" style="background:var(--c-bg-2);">
+  <section class="section section--tight" id="services" style="background:var(--c-bg-2);">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <span class="eyebrow">Services</span>
@@ -201,6 +204,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=16"></script>
+  <script src="js/main.js?v=24"></script>
 </body>
 </html>
