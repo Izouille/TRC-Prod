@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-videos.html
+
+Sitemap: https://trc-prod.vercel.app/sitemap.xml

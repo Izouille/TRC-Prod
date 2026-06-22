@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — TRC Prod | Ethan Trincanato</title>
+  <meta name="description" content="Contactez Ethan Trincanato / TRC Prod à Grenoble pour votre projet photo ou vidéo : marques, commerces, mariage et événements.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="assets/brand/logo-black.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="TRC Prod">
+  <meta property="og:title" content="Contact — TRC Prod | Ethan Trincanato">
+  <meta property="og:description" content="Parlez-moi de votre projet photo ou vidéo. Je vous réponds rapidement.">
+  <meta property="og:url" content="https://trc-prod.vercel.app/contact.html">
+  <meta property="og:image" content="https://trc-prod.vercel.app/assets/img/lamborghini-2.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=16">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="header__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></a>
+    <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="index.html">Accueil</a>
+      <a href="photo.html">Photo</a>
+      <a href="video.html">Vidéo</a>
+      <a href="about.html">À propos</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Contact</span>
+      <h1>Démarrons un projet</h1>
+      <p class="lead" style="margin:0 auto;">Une idée, une marque, une envie ? Écrivez-moi, je vous réponds rapidement.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Formulaire -->
+        <div class="reveal">
+          <!-- ⚙️ Formulaire branché sur Formspree (ID : mvzjoqpl) — envoi réel par email vers trcprod38@gmail.com. -->
+          <form id="contact-form" action="https://formspree.io/f/mvzjoqpl" method="POST">
+            <div class="field">
+              <label for="name">Nom</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="field">
+              <label for="type">Type de projet</label>
+              <select id="type" name="type">
+                <option>Photographie</option>
+                <option>Vidéo / Film</option>
+                <option>Photo &amp; Vidéo</option>
+                <option>Direction artistique</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Votre projet</label>
+              <textarea id="message" name="message" required></textarea>
+            </div>
+            <!-- Sujet de l'email reçu + anti-spam (champ piège invisible) -->
+            <input type="hidden" name="_subject" value="Nouveau message — site TRC Prod">
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+            <button type="submit" class="btn btn--solid">Envoyer le message</button>
+            <p class="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <!-- Infos -->
+        <div class="contact-info reveal">
+          <p>
+            <span class="label">Email</span>
+            <a class="value" href="mailto:trcprod38@gmail.com">trcprod38@gmail.com</a>
+          </p>
+          <p>
+            <span class="label">Instagram</span>
+            <a class="value" href="https://instagram.com/trc.prod" target="_blank" rel="noopener">@trc.prod</a>
+          </p>
+          <p>
+            <span class="label">LinkedIn</span>
+            <a class="value" href="https://www.linkedin.com/in/ethan-trincanato" target="_blank" rel="noopener">Ethan Trincanato</a>
+          </p>
+          <p>
+            <span class="label">Zone</span>
+            <span class="value">France · déplacements possibles</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></div>
+        <div class="footer__social">
+          <a href="https://instagram.com/trc.prod" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.linkedin.com/in/ethan-trincanato" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:trcprod38@gmail.com">Email</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year></span> TRC Prod — Ethan Trincanato. Tous droits réservés.</span>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=16"></script>
+</body>
+</html>

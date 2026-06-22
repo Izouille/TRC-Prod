@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Lamborghini",
+    "category": "Automobile",
+    "image": "assets/img/lamborghini-1.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Heels",
+    "category": "Portrait",
+    "image": "assets/img/lucie-mode.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Ferrari",
+    "category": "Automobile",
+    "image": "assets/img/ferrari-6.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Ferrari",
+    "category": "Automobile",
+    "image": "assets/img/ferrari-2.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Ferrari",
+    "category": "Automobile",
+    "image": "assets/img/ferrari-4.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Ferrari",
+    "category": "Automobile",
+    "image": "assets/img/ferrari-5.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "",
+    "category": "Portrait",
+    "image": "assets/img/lucie-portrait.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Lamborghini",
+    "category": "Automobile",
+    "image": "assets/img/lamborghini-2.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Ferrari",
+    "category": "Automobile",
+    "image": "assets/img/ferrari-1.jpg",
+    "year": "2025"
+  },
+  {
+    "title": "Packshot Wheels",
+    "category": "Produit",
+    "image": "assets/img/packshot-roues.jpg",
+    "year": "2025"
+  }
+]

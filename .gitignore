@@ -1,0 +1,23 @@
+# Originaux hi-res — NE PAS déployer (trop lourds)
+.originals/
+
+# Outils portables
+.tools/
+
+# Outils perso d'administration — ne pas publier en ligne
+admin.html
+admin-videos.html
+classer-photos.sh
+
+# Gros fichiers source à la racine (charte, portraits bruts, logos en double)
+TRC_Prod_charte graphique.png
+Photo Ethan 2-2.jpg
+Logo_B_TRC.png
+Logo_W_TRC.png.png
+
+# Système / éditeurs
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

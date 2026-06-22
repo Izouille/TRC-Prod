@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRC Prod — Ethan Trincanato | Photographe & Vidéaste à Grenoble</title>
+  <meta name="description" content="TRC Prod, studio audiovisuel d'Ethan Trincanato à Grenoble. Photo et vidéo pour marques, commerces et particuliers : publicité, packshot, mariage, événementiel.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="assets/brand/logo-black.png">
+  <!-- ⚙️ Aperçu de partage (réseaux). Remplace trc-prod.vercel.app par ton vrai domaine après le déploiement. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="TRC Prod">
+  <meta property="og:title" content="TRC Prod — Ethan Trincanato | Photographe & Vidéaste à Grenoble">
+  <meta property="og:description" content="Photo et vidéo pour marques, commerces et particuliers : publicité, packshot, mariage, événementiel.">
+  <meta property="og:url" content="https://trc-prod.vercel.app/">
+  <meta property="og:image" content="https://trc-prod.vercel.app/assets/img/lamborghini-2.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=16">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="index.html" class="header__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></a>
+    <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="index.html" class="active">Accueil</a>
+      <a href="photo.html">Photo</a>
+      <a href="video.html">Vidéo</a>
+      <a href="about.html">À propos</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__smoke" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero__inner">
+        <span class="eyebrow">TRC Prod — Studio Audiovisuel</span>
+        <h1>L'image au service<br>de <em>l'exception</em>.</h1>
+        <p class="lead">Photographe et vidéaste basé à Grenoble, je réalise des images soignées en photo et en vidéo - pour les marques, les commerces comme les particuliers. De la publicité au mariage.</p>
+        <div class="hero__actions">
+          <a href="photo.html" class="btn btn--solid">Voir le portfolio</a>
+          <a href="contact.html" class="btn">Me contacter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTO -->
+  <section class="section" id="photo">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Photographie</span>
+        <h2>Des instants, sublimés.</h2>
+        <p class="lead">Une sélection de mes travaux photographiques - portrait, mode, produit et univers du luxe.</p>
+      </div>
+      <div class="gallery gallery--masonry" data-gallery="photos" data-src="data/photos.json" data-limit="6"></div>
+      <div style="text-align:center; margin-top:3rem;" class="reveal">
+        <a href="photo.html" class="btn">Toutes les photos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="section section--tight" id="video" style="background:var(--c-bg-2);">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Vidéo</span>
+        <h2>La vidéo, sous tous les formats.</h2>
+        <p class="lead">Films de marque, publicités, contenus pour les réseaux et événements.</p>
+      </div>
+      <div class="gallery gallery--2" data-gallery="videos" data-src="data/videos.json" data-limit="2"></div>
+      <div style="text-align:center; margin-top:3rem;" class="reveal">
+        <a href="video.html" class="btn">Toutes les vidéos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- À PROPOS -->
+  <section class="section" id="apropos">
+    <div class="container">
+      <div class="about">
+        <div class="about__img reveal">
+          <img src="assets/img/ethan-portrait.jpg" alt="Ethan Trincanato">
+        </div>
+        <div class="reveal">
+          <span class="eyebrow">À propos</span>
+          <h2>Ethan Trincanato</h2>
+          <p class="lead">Derrière TRC Prod, une idée simple : créer des images qui vous ressemblent et donnent envie.</p>
+          <p>Photographe et vidéaste basé à Grenoble, je travaille la lumière, le cadrage et le détail pour que chaque projet - photo comme vidéo - soit net, vivant et bien fini. Que ce soit pour une marque, un commerce ou un particulier, je cherche toujours l'image juste : celle qui raconte quelque chose et donne envie d'en voir plus.</p>
+          <div class="stats">
+            <div><div class="stats__num">Photo</div><div class="stats__label">&amp; Vidéo</div></div>
+            <div><div class="stats__num">Luxe</div><div class="stats__label">Univers premium</div></div>
+            <div><div class="stats__num">TRC</div><div class="stats__label">Prod</div></div>
+          </div>
+          <p style="margin-top:2.5rem;"><a href="about.html" class="btn">En savoir plus</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section section--tight" style="background:var(--c-bg-2);">
+    <div class="container">
+      <div class="section-head section-head--center reveal">
+        <span class="eyebrow">Services</span>
+        <h2>Ce que je crée pour vous.</h2>
+      </div>
+      <div class="services">
+        <div class="service reveal">
+          <div class="service__num">01</div>
+          <h3>Photographie</h3>
+          <ul class="service__list">
+            <li>Packshot &amp; produit</li>
+            <li>Publicité &amp; campagne</li>
+            <li>Mariage &amp; événementiel</li>
+            <li>Automobile</li>
+            <li>Immobilier</li>
+          </ul>
+        </div>
+        <div class="service reveal">
+          <div class="service__num">02</div>
+          <h3>Vidéo &amp; Film</h3>
+          <ul class="service__list">
+            <li>Réseaux sociaux</li>
+            <li>Publicité &amp; spot</li>
+            <li>Film de marque</li>
+            <li>Aftermovie &amp; événementiel</li>
+            <li>Packshot vidéo</li>
+          </ul>
+        </div>
+        <div class="service reveal">
+          <div class="service__num">03</div>
+          <h3>Direction artistique</h3>
+          <ul class="service__list">
+            <li>Sites internet</li>
+            <li>Identité visuelle</li>
+            <li>Logo &amp; branding</li>
+            <li>Charte graphique</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta">
+    <div class="container reveal">
+      <span class="eyebrow">Un projet ?</span>
+      <h2>Donnons vie à votre <em>vision</em>.</h2>
+      <p class="lead" style="margin:0 auto 2.5rem;">Parlez-moi de votre projet - je vous réponds rapidement pour en discuter.</p>
+      <a href="contact.html" class="btn btn--solid">Démarrer un projet</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></div>
+        <div class="footer__social">
+          <a href="https://instagram.com/trc.prod" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.linkedin.com/in/ethan-trincanato" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:trcprod38@gmail.com">Email</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year></span> TRC Prod — Ethan Trincanato. Tous droits réservés.</span>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=16"></script>
+</body>
+</html>

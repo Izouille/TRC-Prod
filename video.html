@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vidéo — TRC Prod | Ethan Trincanato</title>
+  <meta name="description" content="Portfolio vidéo d'Ethan Trincanato à Grenoble : films de marque, publicités, contenus réseaux sociaux et événements.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="assets/brand/logo-black.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="TRC Prod">
+  <meta property="og:title" content="Vidéo — TRC Prod | Ethan Trincanato">
+  <meta property="og:description" content="Films de marque, publicités, contenus réseaux sociaux et événements.">
+  <meta property="og:url" content="https://trc-prod.vercel.app/video.html">
+  <meta property="og:image" content="https://trc-prod.vercel.app/assets/img/lamborghini-2.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=16">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="header__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></a>
+    <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="index.html">Accueil</a>
+      <a href="photo.html">Photo</a>
+      <a href="video.html" class="active">Vidéo</a>
+      <a href="about.html">À propos</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Portfolio</span>
+      <h1>Vidéo</h1>
+      <p class="lead" style="margin:0 auto;">Films de marque, publicités, contenus pour les réseaux et événements.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="gallery gallery--2" data-gallery="videos" data-src="data/videos.json"></div>
+    </div>
+  </section>
+
+  <section class="section cta">
+    <div class="container reveal">
+      <h2>Un film à réaliser ?</h2>
+      <p class="lead" style="margin:1rem auto 2.5rem;">Parlons de votre projet.</p>
+      <a href="contact.html" class="btn btn--solid">Me contacter</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></div>
+        <div class="footer__social">
+          <a href="https://instagram.com/trc.prod" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.linkedin.com/in/ethan-trincanato" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:trcprod38@gmail.com">Email</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year></span> TRC Prod — Ethan Trincanato. Tous droits réservés.</span>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=16"></script>
+</body>
+</html>
