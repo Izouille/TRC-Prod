@@ -194,7 +194,7 @@ function layoutMasonry(container) {
   const gap = parseFloat(getComputedStyle(container).rowGap) || 16;
 
   let cols = 3;
-  if (width < 560) cols = 1;
+  if (width < 560) cols = 2;
   else if (width < 900) cols = 2;
 
   const colWidth = (width - gap * (cols - 1)) / cols;
