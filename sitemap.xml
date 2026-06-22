@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ⚙️ Remplace trc-prod.vercel.app par ton vrai domaine après le déploiement. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://trc-prod.vercel.app/</loc><priority>1.0</priority></url>
   <url><loc>https://trc-prod.vercel.app/photo.html</loc><priority>0.9</priority></url>
