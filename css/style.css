@@ -106,6 +106,7 @@ h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
 }
 .header.scrolled {
   background: rgba(20, 21, 26, 0.85);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   padding-top: 1rem; padding-bottom: 1rem;
   border-bottom: 1px solid var(--c-line);
@@ -402,6 +403,13 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-gold); transform: trans
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
+  /* iPhone/Safari : un header fixed + backdrop-filter disparaît au scroll.
+     Sur mobile on utilise un fond plein opaque, sans flou. */
+  .header.scrolled {
+    background: rgba(20, 21, 26, 0.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
   .gallery, .services { grid-template-columns: repeat(2, 1fr); }
   .about { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
