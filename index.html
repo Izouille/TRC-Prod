@@ -35,7 +35,7 @@
     "founder": { "@type": "Person", "name": "Ethan Trincanato" },
     "address": { "@type": "PostalAddress", "addressLocality": "Grenoble", "addressCountry": "FR" },
     "areaServed": "Grenoble et alentours",
-    "knowsAbout": ["Photographie", "Vidéo", "Packshot", "Publicité", "Mariage", "Événementiel", "Direction artistique"],
+    "knowsAbout": ["Photographie", "Vidéo", "Packshot", "Publicité", "Mariage", "Événementiel", "Direction artistique", "Création de sites internet", "Web design"],
     "sameAs": [
       "https://instagram.com/trc.prod",
       "https://www.linkedin.com/in/ethan-trincanato"
@@ -45,7 +45,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=28">
+  <link rel="stylesheet" href="css/style.css?v=35">
 </head>
 <body>
 
@@ -108,6 +108,52 @@
       <div class="gallery gallery--2" data-gallery="videos" data-src="data/videos.json" data-limit="2"></div>
       <div style="text-align:center; margin-top:3rem;" class="reveal">
         <a href="video.html" class="btn">Toutes les vidéos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEB / SITES INTERNET -->
+  <section class="section section--smoke" id="web">
+    <div class="container">
+      <div class="section-head section-head--center reveal">
+        <span class="eyebrow">Web &amp; Sites internet</span>
+        <h2>Je crée aussi vos sites.</h2>
+        <p class="lead" style="margin:0 auto;">Au-delà de l'image, je conçois des sites sur-mesure - design, intégration et mise en ligne. Mes réalisations :</p>
+      </div>
+
+      <div class="webgrid">
+
+        <!-- Site 1 — Lucie Merlin -->
+        <article class="webproject reveal">
+          <div class="webcase__media">
+            <div class="mondrian">
+              <div class="mondrian__tile mondrian__tile--hero" data-frame="https://portefolio-lucie.vercel.app/">
+                <img class="mondrian__poster" src="assets/img/web-lucie.jpg" alt="Site portfolio de Lucie Merlin, designer graphique, conçu par TRC Prod">
+              </div>
+              <div class="mondrian__tile mondrian__tile--work" data-frame="https://portefolio-lucie.vercel.app/#work"></div>
+              <div class="mondrian__tile mondrian__tile--about" data-frame="https://portefolio-lucie.vercel.app/#about"></div>
+              <div class="mondrian__tile mondrian__tile--contact" data-frame="https://portefolio-lucie.vercel.app/#contact"></div>
+            </div>
+            <a class="mondrian__link" href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site de Lucie Merlin dans un nouvel onglet">
+              <span class="mondrian__hint">Voir le site en mouvement ↗</span>
+            </a>
+          </div>
+          <div class="webproject__info">
+            <span class="webproject__tag">Designer graphique</span>
+            <h3>Lucie Merlin</h3>
+            <p class="webproject__desc">Portfolio au style punk et graphique, conçu pour révéler son identité visuelle forte et mettre en valeur ses projets de direction artistique.</p>
+            <a href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
+          </div>
+        </article>
+
+        <!-- 🔁 NOUVEAU SITE : copier le bloc <article class="webproject"> ci-dessus.
+             À remplacer : l'URL (dans les 4 data-frame + les 2 liens), le titre,
+             le tag (métier du client) et la capture de secours (assets/img/...). -->
+
+      </div>
+
+      <div style="text-align:center; margin-top:clamp(2.5rem,6vw,4rem);" class="reveal">
+        <a href="contact.html" class="btn btn--solid">Discuter d'un projet</a>
       </div>
     </div>
   </section>
@@ -180,7 +226,7 @@
   </section>
 
   <!-- CTA -->
-  <section class="section cta">
+  <section class="section section--smoke cta">
     <div class="container reveal">
       <span class="eyebrow">Un projet ?</span>
       <h2>Donnons vie à votre <em>vision</em>.</h2>
@@ -207,6 +253,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=27"></script>
+  <script src="js/main.js?v=29"></script>
 </body>
 </html>

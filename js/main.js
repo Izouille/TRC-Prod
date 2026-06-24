@@ -11,8 +11,70 @@ document.addEventListener("DOMContentLoaded", () => {
   initBackToTop();
   initSmoothAnchors();
   initHashScroll();
+  initWebPreview();
   setYear();
 });
+
+/* ---------- Aperçu « site en direct » (mosaïque Mondrian) ----------
+   Injecte le site du client dans des iframes, mises à l'échelle façon
+   rendu bureau, uniquement quand la section approche (perf). Sur mobile
+   ou si l'animation est désactivée, on garde la capture statique. */
+function initWebPreview() {
+  const mosaics = [...document.querySelectorAll(".mondrian")];
+  if (!mosaics.length) return;
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const small = window.matchMedia("(max-width: 760px)").matches;
+  const RENDER_W = 1180; // largeur de rendu « bureau » avant mise à l'échelle
+  const allFrames = []; // {tile, f} de toutes les mosaïques (pour le resize)
+
+  const sizeFrame = (tile, f) => {
+    const w = tile.clientWidth, h = tile.clientHeight;
+    if (!w || !h) return;
+    const scale = w / RENDER_W;
+    f.style.width = RENDER_W + "px";
+    f.style.height = Math.ceil(h / scale) + "px";
+    f.style.transform = "scale(" + scale + ")";
+    f.style.transformOrigin = "top left";
+  };
+
+  const build = (mos, tiles) => {
+    tiles.forEach((tile) => {
+      const f = document.createElement("iframe");
+      f.className = "mondrian__frame";
+      f.src = tile.dataset.frame;
+      f.loading = "lazy";
+      f.tabIndex = -1;
+      f.setAttribute("aria-hidden", "true");
+      f.setAttribute("scrolling", "no");
+      sizeFrame(tile, f);
+      tile.appendChild(f);
+      allFrames.push({ tile, f });
+    });
+    mos.classList.add("mondrian--live");
+  };
+
+  mosaics.forEach((mos) => {
+    const tiles = [...mos.querySelectorAll("[data-frame]")];
+    // Mobile / animation désactivée : on garde la capture statique
+    if (reduce || small || !tiles.length) { mos.classList.add("mondrian--static"); return; }
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { build(mos, tiles); io.disconnect(); } });
+      }, { rootMargin: "250px" });
+      io.observe(mos);
+    } else {
+      build(mos, tiles);
+    }
+  });
+
+  // Un seul écouteur de redimensionnement pour tous les cadres
+  let t;
+  window.addEventListener("resize", () => {
+    clearTimeout(t);
+    t = setTimeout(() => allFrames.forEach(({ tile, f }) => sizeFrame(tile, f)), 150);
+  });
+}
 
 /* ---------- Défilement doux pour les ancres internes (#services, #photo…) ---------- */
 function initSmoothAnchors() {
