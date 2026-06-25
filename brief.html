@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief de votre site web — TRC Prod</title>
+<meta name="description" content="Questionnaire de brief pour votre projet de site internet — TRC Prod, Ethan Trincanato.">
+<!-- Aperçu de partage (réseaux sociaux / messageries) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TRC Prod">
+<meta property="og:title" content="Brief de votre site web — TRC Prod">
+<meta property="og:description" content="Quelques questions pour cerner votre projet de site internet. 5 à 8 minutes, sans inscription.">
+<meta property="og:url" content="https://qcm-trcprod.vercel.app/">
+<meta property="og:image" content="https://trc-prod.vercel.app/assets/img/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Brief de votre site web — TRC Prod">
+<meta name="twitter:description" content="Quelques questions pour cerner votre projet de site internet. 5 à 8 minutes.">
+<meta name="twitter:image" content="https://trc-prod.vercel.app/assets/img/og-cover.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%2314151a'/%3E%3Ctext x='32' y='43' font-family='Georgia, serif' font-size='25' font-weight='600' fill='%23c9b47c' text-anchor='middle'%3ETRC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14151a;          /* anthracite */
+    --panel:#1c1e26;       /* surface */
+    --panel-2:#23252f;     /* cartes / hover */
+    --gold:#c9b47c;        /* or champagne */
+    --gold-soft:#d9c89a;
+    --gold-faint:rgba(201,180,124,.13);
+    --lavender:#8c8fa3;
+    --text:#ece9e2;
+    --muted:#9a9a9f;
+    --line:rgba(201,180,124,.18);
+    --font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --font-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --radius:4px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(60% 50% at 15% -5%,rgba(201,180,124,.06),transparent 60%),
+      radial-gradient(55% 45% at 88% 12%,rgba(140,143,163,.05),transparent 60%),
+      radial-gradient(65% 55% at 50% 108%,rgba(201,180,124,.045),transparent 60%),
+      repeating-linear-gradient(120deg,transparent 0 33px,rgba(201,180,124,.018) 33px 34px);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;min-height:100vh;
+    cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%2316171c'%20stroke='%23c9b47c'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto;
+  }
+  /* grain fumée */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  a,button,.choice,label,select,summary,.swatch{
+    cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23c9b47c'%20stroke='%2316171c'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,pointer;
+  }
+  input,textarea{cursor:text}
+  img{display:block;max-width:100%;height:auto}
+
+  .wrap{max-width:760px;margin:0 auto;padding:40px 22px 90px}
+
+  /* ---------- Header ---------- */
+  .brand{display:flex;align-items:center;gap:16px;margin-bottom:30px}
+  .brand__home{display:inline-flex;line-height:0;border-radius:8px;transition:opacity .3s var(--ease)}
+  .brand__home:hover{opacity:.8}
+  .brand .logo{height:44px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+  .brand__txt .eyebrow{display:block;margin-bottom:4px}
+  .brand__txt small{color:var(--muted);font-size:13px;letter-spacing:.04em}
+
+  .eyebrow{
+    font-family:var(--font-body);font-size:.7rem;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--gold);
+  }
+  h1{font-family:var(--font-display);font-weight:500;line-height:1.05;letter-spacing:.01em;
+    font-size:clamp(2.4rem,6vw,3.8rem);margin:8px 0 14px}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:60ch;margin-bottom:26px}
+  .lead b{color:var(--text);font-weight:500}
+
+  /* ---------- Progress ---------- */
+  .progress{position:sticky;top:0;z-index:20;padding:16px 0 18px;
+    background:linear-gradient(var(--bg) 70%,rgba(20,21,26,.6));backdrop-filter:blur(8px)}
+  .bar{height:2px;background:var(--line);overflow:hidden}
+  .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+    transition:width .5s var(--ease)}
+  .steps-meta{display:flex;justify-content:space-between;margin-top:10px;
+    font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .steps-meta b{color:var(--gold);font-weight:500}
+
+  /* ---------- Card ---------- */
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    padding:38px clamp(22px,4vw,40px);
+    box-shadow:0 28px 60px -30px rgba(0,0,0,.75);
+    animation:rise .55s var(--ease);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .step-no{display:inline-block;margin-bottom:12px}
+  .card h2{font-family:var(--font-display);font-weight:500;font-size:clamp(1.9rem,4vw,2.7rem);
+    line-height:1.08;margin-bottom:8px}
+  .card h2 em{font-style:italic;color:var(--gold)}
+  .card .sub{color:var(--muted);margin-bottom:30px;font-size:1.02rem;max-width:54ch}
+
+  .field{margin-bottom:26px}
+  .field>label.q{display:block;font-family:var(--font-display);font-size:1.3rem;
+    font-weight:500;margin-bottom:4px;line-height:1.25}
+  .field .hint{color:var(--lavender);font-size:.72rem;letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:12px}
+
+  input[type=text],input[type=email],input[type=url],textarea,select{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+    border-radius:var(--radius);padding:13px 15px;font-family:var(--font-body);font-size:.97rem;
+    transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+  }
+  textarea{min-height:104px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-faint)}
+  select{appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);
+    background-position:calc(100% - 19px) 19px,calc(100% - 14px) 19px;background-size:5px 5px,5px 5px;
+    background-repeat:no-repeat;padding-right:40px}
+
+  /* ---------- Choices (QCM) ---------- */
+  .choices{display:grid;gap:10px}
+  .choices.cols-2{grid-template-columns:1fr 1fr}
+  @media(max-width:560px){.choices.cols-2{grid-template-columns:1fr}}
+  .choice{position:relative;display:flex;align-items:center;gap:14px;
+    border:1px solid var(--line);background:var(--panel-2);border-radius:var(--radius);
+    padding:14px 16px;user-select:none;
+    transition:border-color .3s var(--ease),background .3s var(--ease),transform .1s var(--ease)}
+  .choice:hover{border-color:rgba(201,180,124,.5)}
+  .choice:active{transform:scale(.99)}
+  .choice input{position:absolute;opacity:0;pointer-events:none}
+  .choice .box{width:20px;height:20px;flex:0 0 auto;border:1px solid var(--lavender);
+    display:grid;place-items:center;transition:all .25s var(--ease)}
+  .choice input[type=radio]~.box{border-radius:50%}
+  .choice .box svg{width:12px;height:12px;opacity:0;transform:scale(.4);transition:all .25s var(--ease)}
+  .choice .txt{font-size:.97rem;letter-spacing:.01em}
+  .choice.checked{border-color:var(--gold);background:var(--gold-faint)}
+  .choice.checked .box{background:var(--gold);border-color:var(--gold)}
+  .choice.checked .box svg{opacity:1;transform:none}
+
+  /* ---------- Palette couleurs ---------- */
+  .palette{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:14px}
+  .swatch{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);
+    position:relative;transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  .swatch:hover{transform:translateY(-3px)}
+  .swatch.checked{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold)}
+  .swatch.checked::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;
+    color:#fff;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .color-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .color-row input[type=color]{width:48px;height:42px;padding:3px;border-radius:var(--radius);
+    background:var(--panel-2);border:1px solid var(--line)}
+  .color-row .hint{margin:0;text-transform:none;letter-spacing:0;color:var(--gold);font-size:.85rem}
+
+  /* ---------- Boutons (TRC) ---------- */
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:34px}
+  .btn{display:inline-block;font-family:var(--font-body);font-size:.74rem;letter-spacing:.2em;
+    text-transform:uppercase;padding:14px 30px;border:1px solid var(--gold);color:var(--gold);
+    background:transparent;border-radius:var(--radius);transition:all .4s var(--ease)}
+  .btn:hover{background:var(--gold);color:var(--bg)}
+  .btn:active{transform:scale(.98)}
+  .btn[disabled]{opacity:.32;pointer-events:none}
+  .btn.primary{background:var(--gold);color:var(--bg)}
+  .btn.primary:hover{background:var(--gold-soft);border-color:var(--gold-soft)}
+  .btn.ghost{border-color:var(--line);color:var(--muted)}
+  .btn.ghost:hover{border-color:var(--gold);color:var(--gold);background:transparent}
+
+  /* ---------- Review ---------- */
+  pre.brief{background:#101117;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.7;
+    color:#cdc9c0;max-height:430px;overflow:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  pre.brief::-webkit-scrollbar{width:8px}
+  pre.brief::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .result-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+  .done-badge{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+  .done-badge .ic{width:52px;height:52px;border-radius:50%;border:1px solid var(--gold);
+    display:grid;place-items:center}
+  .done-badge .ic svg{width:24px;height:24px}
+
+  .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
+    background:var(--gold);color:var(--bg);font-weight:600;font-size:.78rem;letter-spacing:.12em;
+    text-transform:uppercase;padding:13px 24px;border-radius:var(--radius);
+    opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:50;
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.7)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{text-align:center;color:var(--muted);font-size:.72rem;letter-spacing:.18em;
+    text-transform:uppercase;margin-top:30px}
+  footer span{color:var(--gold)}
+  .req{color:var(--gold)}
+
+  /* ---------- Lien « Reprendre à zéro » ---------- */
+  .reset-link{display:inline-block;margin:-12px 0 22px;background:none;border:none;
+    color:var(--muted);font-family:var(--font-body);font-size:.72rem;letter-spacing:.14em;
+    text-transform:uppercase;transition:color .3s var(--ease)}
+  .reset-link:hover{color:var(--gold)}
+  .reset-link[hidden]{display:none}
+
+  /* ---------- Footer permanent ---------- */
+  .site-footer{
+    margin-top:48px;padding-top:26px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 24px;
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .site-footer a{color:var(--gold);transition:color .3s var(--ease)}
+  .site-footer a:hover{color:var(--gold-soft);text-decoration:underline}
+  .site-footer__credit{color:var(--lavender)}
+  @media(max-width:560px){.site-footer{justify-content:center;text-align:center;letter-spacing:.1em}}
+
+  /* ---- Robustesse : aucun débordement horizontal ni texte coupé ---- */
+  html,body{max-width:100%;overflow-x:hidden}
+  .wrap{width:100%}
+  h1,.lead,.card h2,.card .sub,.field>label.q,.choice .txt,.steps-meta span,.eyebrow{
+    overflow-wrap:break-word;word-break:break-word}
+  .brand{flex-wrap:wrap}
+  .brand .logo{height:42px}
+  .steps-meta{flex-wrap:wrap;gap:6px 14px}
+  .steps-meta>span{min-width:0}
+  .steps-meta>span:last-child{margin-left:auto;text-align:right}
+  .choice{align-items:flex-start}
+  .choice .box{margin-top:1px}
+  .nav{flex-wrap:wrap}
+  @media(max-width:560px){
+    .wrap{padding:30px 16px 78px}
+    .card{padding:26px 18px}
+    h1{font-size:clamp(2rem,8vw,2.6rem)}
+    .btn{padding:13px 16px;letter-spacing:.12em}
+    .nav .btn,.result-actions .btn{flex:1 1 auto;text-align:center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ====== HEADER ====== -->
+  <div class="brand">
+    <a class="brand__home" id="brandHome" href="https://trc-prod.vercel.app/" aria-label="Retour au site TRC Prod"><img class="logo" id="brandLogo" alt="TRC Prod"
+      src="data:image/png;base64,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"></a>
+    <div class="brand__txt">
+      <span class="eyebrow" id="brandName">TRC Prod</span>
+      <small>Questionnaire de brief — votre site internet</small>
+    </div>
+  </div>
+
+  <span class="eyebrow">Prenons votre projet en main</span>
+  <h1>Parlons de votre <em>futur site</em></h1>
+  <p class="lead">Quelques questions pour cerner votre projet avec précision. Comptez <b>5 à 8 minutes</b>. À la fin, vous m'envoyez votre brief en un clic.</p>
+  <button type="button" class="reset-link" id="resetBtn" hidden>↺ Reprendre à zéro</button>
+
+  <!-- ====== PROGRESS ====== -->
+  <div class="progress">
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="steps-meta">
+      <span>Étape <b id="curStep">1</b> / <b id="totStep">9</b></span>
+      <span id="stepTitle">Votre activité</span>
+    </div>
+  </div>
+
+  <!-- ====== FORM MOUNT ====== -->
+  <form id="form" autocomplete="on"></form>
+
+  <!-- Champ piège anti-spam : invisible pour un humain, rempli par les bots -->
+  <input type="text" id="hpField" name="botcheck_hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+         style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;opacity:0;pointer-events:none">
+
+  <!-- ====== FOOTER PERMANENT ====== -->
+  <footer class="site-footer">
+    <span class="site-footer__copy">© <span id="year"></span> TRC Prod — Ethan Trincanato. Tous droits réservés.</span>
+    <span class="site-footer__credit">Site créé par <a href="https://trc-prod.vercel.app/" target="_blank" rel="noopener">TRC Prod</a></span>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">Copié</div>
+
+<script>
+/* ============================================================
+   CONFIG — personnalise ces 3 lignes
+   ============================================================ */
+const CONFIG = {
+  brandName: "TRC Prod",
+  introTitle: "Parlons de votre <em>futur site</em>",
+  contactEmail: "trcprod38@gmail.com",   // boîte qui reçoit les briefs (+ secours mailto)
+  // ⚙️ ENVOI AUTOMATIQUE — colle ici ta clé GRATUITE Web3Forms :
+  //   1. va sur https://web3forms.com  2. entre trcprod38@gmail.com  3. reçois ta clé par mail  4. colle-la ci-dessous.
+  //   Tant que la clé reste vide, le bouton bascule sur l'ouverture de la messagerie du client (secours).
+  web3formsKey: "e5226cdd-d123-43fa-b767-7faa670dba64",
+  homeUrl: "https://trc-prod.vercel.app/"   // le logo ramène vers le portfolio TRC Prod
+};
+document.getElementById('brandName').textContent = CONFIG.brandName;
+(function(){ const bh=document.getElementById('brandHome'); if(bh&&CONFIG.homeUrl) bh.href=CONFIG.homeUrl; })();
+
+/* ============================================================
+   DÉFINITION DU QUESTIONNAIRE
+   types: text | textarea | email | url | select | radio | checkbox | color | colorset
+   ============================================================ */
+const SECTIONS = [
+  {
+    key:"activite", title:"Votre activité", icon:"01",
+    sub:"Pour commencer, présentez-vous en quelques mots.",
+    fields:[
+      {id:"nom", label:"Nom de l'activité / entreprise", type:"text", required:true, placeholder:"Ex : Boulangerie Au Bon Pain"},
+      {id:"secteur", label:"Secteur d'activité", type:"text", placeholder:"Ex : Restauration, Conseil, Artisanat…"},
+      {id:"description", label:"Décrivez votre activité", type:"textarea", placeholder:"Que faites-vous ? Pour qui ? Ce qui vous rend unique…"},
+      {id:"typeSite", label:"Quel type de site souhaitez-vous ?", type:"radio", cols:2, options:[
+        "Site vitrine","Boutique en ligne (e-commerce)","Portfolio","Blog / Magazine","Landing page","Application web","Je ne sais pas encore"]},
+    ]
+  },
+  {
+    key:"objectifs", title:"Vos objectifs", icon:"02",
+    sub:"À quoi doit servir ce site ?",
+    fields:[
+      {id:"objectifs", label:"Objectifs principaux", hint:"Plusieurs choix possibles", type:"checkbox", cols:2, options:[
+        "Vendre en ligne","Générer des contacts / devis","Présenter mon activité","Prendre des rendez-vous","Gagner en notoriété","Recruter","Informer / actualités"]},
+      {id:"cible", label:"Quelle est votre cible ?", type:"textarea", placeholder:"Particuliers, entreprises, âge, localisation…"},
+      {id:"clientIdeal", label:"Décrivez votre client idéal", type:"textarea", placeholder:"Qui aimeriez-vous attirer en priorité ?"},
+    ]
+  },
+  {
+    key:"structure", title:"Structure & pages", icon:"03",
+    sub:"De quelles pages et fonctionnalités avez-vous besoin ?",
+    fields:[
+      {id:"pages", label:"Pages souhaitées", hint:"Plusieurs choix possibles", type:"checkbox", cols:2, options:[
+        "Accueil","À propos","Services / Prestations","Réalisations / Portfolio","Tarifs","Blog / Actualités","FAQ","Contact"]},
+      {id:"pagesAutres", label:"Autres pages spécifiques ?", type:"text", placeholder:"Ex : Mentions légales, Recrutement, Espace pro…"},
+      {id:"fonctionnalites", label:"Fonctionnalités souhaitées", hint:"Plusieurs choix possibles", type:"checkbox", cols:2, options:[
+        "Formulaire de contact","Prise de rendez-vous","Paiement en ligne","Espace membre / connexion","Site multilingue","Newsletter","Galerie photos","Carte / Google Maps","Chat en ligne"]},
+    ]
+  },
+  {
+    key:"identite", title:"Identité visuelle", icon:"04",
+    sub:"L'ambiance et les couleurs de votre site.",
+    fields:[
+      {id:"charte", label:"Avez-vous déjà une identité graphique ?", type:"radio", options:[
+        "Oui, charte graphique complète","J'ai juste un logo","Rien pour l'instant, à créer"]},
+      {id:"couleurs", label:"Couleurs qui vous inspirent", hint:"Cliquez sur les couleurs, ou ajoutez les vôtres", type:"colorset"},
+      {id:"ambiance", label:"Ambiance recherchée", hint:"Plusieurs choix possibles", type:"checkbox", cols:2, options:[
+        "Moderne","Minimaliste","Élégant / Luxe","Chaleureux","Dynamique","Corporate / Pro","Créatif / Original","Naturel / Écologique"]},
+      {id:"inspiration", label:"Sites que vous aimez (inspiration)", type:"textarea", placeholder:"Collez 1 à 3 liens de sites dont vous aimez le style"},
+    ]
+  },
+  {
+    key:"contenu", title:"Contenu", icon:"05",
+    sub:"Textes, photos et messages clés.",
+    fields:[
+      {id:"textes", label:"Qui rédige les textes ?", type:"radio", options:[
+        "Je fournis tous les textes","J'ai besoin d'aide à la rédaction","À voir ensemble"]},
+      {id:"photos", label:"Et pour les photos / visuels ?", type:"radio", options:[
+        "Je fournis mes photos","Banques d'images suffisent","Un shooting est à prévoir"]},
+      {id:"slogan", label:"Avez-vous un slogan / accroche ?", type:"text", placeholder:"Ex : Le goût de l'authentique"},
+      {id:"arguments", label:"Vos 3 arguments forts", type:"textarea", placeholder:"Pourquoi vous choisir plutôt qu'un concurrent ?"},
+      {id:"cta", label:"Action principale du visiteur (CTA)", type:"radio", cols:2, options:[
+        "Me contacter","Demander un devis","Acheter","Prendre rendez-vous","S'inscrire / S'abonner"]},
+    ]
+  },
+  {
+    key:"technique", title:"Technique & SEO", icon:"06",
+    sub:"Quelques aspects pratiques. Pas d'inquiétude si vous ne savez pas tout.",
+    fields:[
+      {id:"hebergement", label:"Hébergement / nom de domaine", type:"radio", options:[
+        "J'ai déjà un domaine et un hébergeur","À prévoir / à acheter","Je ne sais pas"]},
+      {id:"domaine", label:"Nom de domaine souhaité (si connu)", type:"text", placeholder:"Ex : www.monentreprise.fr"},
+      {id:"outils", label:"Outils à intégrer", hint:"Plusieurs choix possibles", type:"checkbox", cols:2, options:[
+        "Google Analytics","Réseaux sociaux","Newsletter (Mailchimp…)","Calendrier (Calendly…)","Paiement (Stripe/PayPal)","Avis Google","Instagram / feed"]},
+      {id:"seo", label:"Mots-clés sur lesquels être trouvé", type:"text", placeholder:"Ex : plombier Lyon, dépannage urgence…"},
+    ]
+  },
+  {
+    key:"budget", title:"Délais & budget", icon:"07",
+    sub:"Pour vous proposer une offre adaptée.",
+    fields:[
+      {id:"delai", label:"Quel est votre délai idéal ?", type:"radio", cols:2, options:[
+        "Le plus vite possible","Sous 1 mois","1 à 3 mois","Pas de contrainte forte"]},
+      {id:"budget", label:"Budget envisagé", hint:"Indicatif, ça reste confidentiel", type:"radio", cols:2, options:[
+        "Moins de 1 000 €","1 000 – 3 000 €","3 000 – 5 000 €","Plus de 5 000 €","À définir ensemble"]},
+    ]
+  },
+  {
+    key:"infos", title:"Infos complémentaires", icon:"08",
+    sub:"Les derniers détails utiles.",
+    fields:[
+      {id:"refonte", label:"Nouveau site ou refonte ?", type:"radio", options:[
+        "C'est un tout nouveau site","C'est une refonte d'un site existant"]},
+      {id:"siteActuel", label:"Adresse du site actuel (si refonte)", type:"url", placeholder:"https://…"},
+      {id:"concurrents", label:"Vos concurrents / références du secteur", type:"textarea", placeholder:"Des sites concurrents que vous suivez"},
+      {id:"aEviter", label:"Ce que vous voulez absolument ÉVITER", type:"textarea", placeholder:"Couleurs, styles, fonctionnalités à proscrire…"},
+      {id:"autres", label:"Autre chose à me dire ?", type:"textarea", placeholder:"Tout ce qui peut m'aider à comprendre votre projet"},
+    ]
+  },
+  {
+    key:"contact", title:"Vos coordonnées", icon:"09",
+    sub:"Pour que je puisse revenir vers vous avec une proposition.",
+    fields:[
+      {id:"contactNom", label:"Votre nom", type:"text", required:true, placeholder:"Prénom Nom"},
+      {id:"contactEmail", label:"Votre email", type:"email", required:true, placeholder:"vous@email.com"},
+      {id:"contactTel", label:"Téléphone (facultatif)", type:"text", placeholder:"06 12 34 56 78"},
+    ]
+  },
+];
+
+const PALETTE = ["#14151a","#c9b47c","#8c8fa3","#ece9e2","#0ea5e9","#6366f1","#8b5cf6","#ec4899","#ef4444","#f97316","#f59e0b","#10b981","#ffffff","#000000"];
+
+/* ============================================================
+   ÉTAT
+   ============================================================ */
+const state = {};
+let current = 0;
+const form = document.getElementById('form');
+const totalSteps = SECTIONS.length + 1;
+document.getElementById('totStep').textContent = totalSteps;
+
+const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="#14151a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ============================================================
+   RENDU D'UNE ÉTAPE
+   ============================================================ */
+function renderStep(){
+  const isReview = current === SECTIONS.length;
+  document.getElementById('curStep').textContent = current+1;
+  document.getElementById('barFill').style.width = ((current)/(totalSteps-1)*100)+'%';
+  document.getElementById('stepTitle').textContent = isReview ? "Validation" : SECTIONS[current].title;
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if(isReview){ renderReview(); return; }
+
+  const sec = SECTIONS[current];
+  let html = `<div class="card"><div class="step-no eyebrow">${sec.icon} — Section ${current+1} / ${SECTIONS.length}</div>`;
+  html += `<h2>${sec.title}</h2><p class="sub">${sec.sub}</p>`;
+
+  sec.fields.forEach(f=>{
+    html += `<div class="field" data-fid="${f.id}">`;
+    html += `<label class="q">${f.label}${f.required?' <span class="req">*</span>':''}</label>`;
+    if(f.hint) html += `<div class="hint">${f.hint}</div>`;
+    html += renderField(f);
+    html += `</div>`;
+  });
+
+  html += `<div class="nav">
+     <button type="button" class="btn ghost" id="prevBtn" ${current===0?'disabled':''}>← Précédent</button>
+     <button type="button" class="btn primary" id="nextBtn">Continuer →</button>
+   </div></div>`;
+  form.innerHTML = html;
+  hydrate(sec);
+}
+
+function renderField(f){
+  const v = state[f.id];
+  switch(f.type){
+    case 'textarea':
+      return `<textarea id="i_${f.id}" placeholder="${f.placeholder||''}">${v||''}</textarea>`;
+    case 'select':
+      return `<select id="i_${f.id}"><option value="">— Choisir —</option>${f.options.map(o=>`<option ${v===o?'selected':''}>${o}</option>`).join('')}</select>`;
+    case 'radio':
+    case 'checkbox':{
+      const multi = f.type==='checkbox';
+      const arr = multi ? (Array.isArray(v)?v:[]) : v;
+      const cls = f.cols===2?'choices cols-2':'choices';
+      return `<div class="${cls}" data-group="${f.id}" data-multi="${multi}">${
+        f.options.map(o=>{
+          const on = multi ? arr.includes(o) : arr===o;
+          return `<label class="choice ${on?'checked':''}">
+            <input type="${multi?'checkbox':'radio'}" name="${f.id}" value="${o}" ${on?'checked':''}>
+            <span class="box">${CHECK_SVG}</span><span class="txt">${o}</span></label>`;
+        }).join('')
+      }</div>`;
+    }
+    case 'colorset':{
+      const arr = Array.isArray(v)?v:[];
+      const swatches = PALETTE.map(c=>`<div class="swatch ${arr.includes(c)?'checked':''}" data-color="${c}" style="background:${c}"></div>`).join('');
+      const custom = arr.filter(c=>!PALETTE.includes(c));
+      return `<div class="palette" data-palette="${f.id}">${swatches}</div>
+        <div class="color-row">
+          <input type="color" id="cp_${f.id}" value="#c9b47c">
+          <button type="button" class="btn ghost" id="addc_${f.id}">+ Ajouter cette couleur</button>
+          <span class="hint" id="custom_${f.id}">${custom.length?('Perso : '+custom.join('  ')):''}</span>
+        </div>`;
+    }
+    default:
+      return `<input type="${f.type}" id="i_${f.id}" placeholder="${f.placeholder||''}" value="${(v||'').replace(/"/g,'&quot;')}">`;
+  }
+}
+
+/* ============================================================
+   INTERACTIVITÉ D'UNE ÉTAPE
+   ============================================================ */
+function hydrate(sec){
+  sec.fields.forEach(f=>{
+    if(['text','email','url','textarea','select'].includes(f.type)){
+      const el = document.getElementById('i_'+f.id);
+      el.addEventListener('input',()=>{ state[f.id]=el.value; saveProgress(); });
+      if(f.type!=='textarea' && f.type!=='select'){
+        el.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); next(); } });
+      }
+    }
+    if(f.type==='radio'||f.type==='checkbox'){
+      const group = form.querySelector(`[data-group="${f.id}"]`);
+      group.querySelectorAll('.choice').forEach(ch=>{
+        const input = ch.querySelector('input');
+        ch.addEventListener('click',e=>{
+          e.preventDefault();
+          if(f.type==='radio'){
+            group.querySelectorAll('.choice').forEach(c=>c.classList.remove('checked'));
+            ch.classList.add('checked'); input.checked=true;
+            state[f.id]=input.value;
+          }else{
+            const on = !ch.classList.contains('checked');
+            ch.classList.toggle('checked',on); input.checked=on;
+            let arr = Array.isArray(state[f.id])?state[f.id].slice():[];
+            if(on){ if(!arr.includes(input.value)) arr.push(input.value); }
+            else arr = arr.filter(x=>x!==input.value);
+            state[f.id]=arr;
+          }
+          saveProgress();
+        });
+      });
+    }
+    if(f.type==='colorset'){
+      const pal = form.querySelector(`[data-palette="${f.id}"]`);
+      const sync = ()=>{ if(!Array.isArray(state[f.id])) state[f.id]=[]; };
+      pal.querySelectorAll('.swatch').forEach(sw=>{
+        sw.addEventListener('click',()=>{
+          sync(); const c=sw.dataset.color;
+          if(sw.classList.toggle('checked')){ if(!state[f.id].includes(c)) state[f.id].push(c); }
+          else state[f.id]=state[f.id].filter(x=>x!==c);
+          saveProgress();
+        });
+      });
+      document.getElementById('addc_'+f.id).addEventListener('click',()=>{
+        sync(); const c=document.getElementById('cp_'+f.id).value;
+        if(!state[f.id].includes(c)){ state[f.id].push(c);
+          const custom = state[f.id].filter(x=>!PALETTE.includes(x));
+          document.getElementById('custom_'+f.id).textContent = 'Perso : '+custom.join('  ');
+        }
+        saveProgress();
+      });
+    }
+  });
+  document.getElementById('nextBtn').addEventListener('click',next);
+  const p=document.getElementById('prevBtn'); if(p) p.addEventListener('click',prev);
+}
+
+/* ============================================================
+   NAVIGATION + VALIDATION
+   ============================================================ */
+function validateStep(){
+  const sec = SECTIONS[current];
+  for(const f of sec.fields){
+    if(f.required){
+      const v = state[f.id];
+      const empty = !v || (Array.isArray(v)&&!v.length) || (typeof v==='string'&&!v.trim());
+      if(empty){
+        const fieldEl = form.querySelector(`[data-fid="${f.id}"]`);
+        fieldEl.scrollIntoView({behavior:'smooth',block:'center'});
+        const inp = document.getElementById('i_'+f.id);
+        if(inp){ inp.style.borderColor='#e0867d'; inp.focus(); setTimeout(()=>inp.style.borderColor='',1500); }
+        showToast('Ce champ est obligatoire',true);
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function next(){ if(!validateStep())return; current++; saveProgress(); renderStep(); }
+function prev(){ current--; saveProgress(); renderStep(); }
+
+/* ============================================================
+   GÉNÉRATION DU BRIEF (format demandé)
+   ============================================================ */
+function val(id){ const v=state[id]; if(Array.isArray(v))return v.join(', '); return (v||'').trim(); }
+function buildBrief(){
+  const couleurs = (state['couleurs']||[]);
+  const custom = couleurs.filter(c=>!PALETTE.includes(c));
+  return `=== BRIEF CLIENT — SITE WEB ===
+
+## 1. ACTIVITÉ
+Nom : ${val('nom')}
+Secteur : ${val('secteur')}
+Description : ${val('description')}
+Type de site : ${val('typeSite')}
+
+## 2. OBJECTIFS
+Objectifs : ${val('objectifs')}
+Cible : ${val('cible')}
+Client idéal : ${val('clientIdeal')}
+
+## 3. STRUCTURE & PAGES
+Pages : ${val('pages')}
+Pages autres : ${val('pagesAutres')}
+Fonctionnalités : ${val('fonctionnalites')}
+
+## 4. IDENTITÉ VISUELLE
+Charte : ${val('charte')}
+Couleurs : ${couleurs.join(', ')} | HEX custom : ${custom.join(', ')}
+Ambiance : ${val('ambiance')}
+Inspiration : ${val('inspiration')}
+
+## 5. CONTENU
+Textes : ${val('textes')}
+Photos : ${val('photos')}
+Slogan : ${val('slogan')}
+Arguments : ${val('arguments')}
+CTA principal : ${val('cta')}
+
+## 6. TECHNIQUE
+Stack : (à définir par le prestataire)
+Hébergement : ${val('hebergement')}${val('domaine')?(' — Domaine : '+val('domaine')):''}
+Responsive : Oui (obligatoire)
+Outils à intégrer : ${val('outils')}
+Mots-clés SEO : ${val('seo')}
+
+## 7. DÉLAIS & BUDGET
+Délai : ${val('delai')}
+Budget : ${val('budget')}
+
+## 8. INFOS COMPLÉMENTAIRES
+Concurrents : ${val('concurrents')}
+À éviter : ${val('aEviter')}
+Refonte : ${val('refonte')}
+Site actuel : ${val('siteActuel')}
+Autres infos : ${val('autres')}
+
+--- CONTACT ---
+Nom : ${val('contactNom')}
+Email : ${val('contactEmail')}
+Téléphone : ${val('contactTel')}
+
+=== FIN DU BRIEF ===`;
+}
+
+/* ============================================================
+   ÉCRAN DE VALIDATION / ENVOI
+   ============================================================ */
+function renderReview(){
+  document.getElementById('barFill').style.width='100%';
+  const brief = buildBrief();                       // construit en interne, jamais affiché au client
+  const subject = `Brief site web — ${val('nom')||val('contactNom')||'Nouveau projet'}`;
+
+  form.innerHTML = `<div class="card">
+    <div class="done-badge">
+      <div class="ic">${CHECK_SVG.replace(/#14151a/g,'#c9b47c')}</div>
+      <div><div class="step-no eyebrow">Dernière étape</div><h2 style="margin:0">Prêt à <em>envoyer</em></h2></div>
+    </div>
+    <p class="sub" id="reviewSub">Merci d'avoir répondu à ces quelques questions. Cliquez ci-dessous pour m'envoyer votre demande — je reviens vers vous très vite.</p>
+    <div class="result-actions" id="reviewActions">
+      <button type="button" class="btn primary" id="sendBtn">Envoyer ma demande</button>
+    </div>
+    <div class="nav"><button type="button" class="btn ghost" id="prevBtn">← Modifier mes réponses</button><span></span></div>
+  </div>
+  <footer>Demande adressée à <span>${CONFIG.brandName}</span></footer>`;
+
+  document.getElementById('prevBtn').addEventListener('click',prev);
+  document.getElementById('sendBtn').addEventListener('click',()=>sendBrief(brief,subject));
+}
+
+/* Envoi direct vers la boîte TRC Prod (Web3Forms) — secours mailto si pas de clé */
+async function sendBrief(brief,subject){
+  const btn = document.getElementById('sendBtn');
+  const key = (CONFIG.web3formsKey||'').trim();
+
+  // Honeypot : si le champ piège est rempli, c'est un bot -> faux succès, aucun envoi
+  const hp = document.getElementById('hpField');
+  if(hp && hp.value){ showSent(); return; }
+
+  // Pas de clé configurée -> secours : on ouvre la messagerie du client
+  if(!key){
+    const mail=`mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief)}`;
+    window.location.href=mail;
+    showToast('Ouverture de votre messagerie…');
+    return;
+  }
+
+  btn.disabled=true; btn.textContent='Envoi en cours…';
+  try{
+    const res = await fetch('https://api.web3forms.com/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({
+        access_key: key,
+        subject: subject,
+        from_name: val('contactNom')||'Nouveau brief',
+        replyto: val('contactEmail'),       // permet à TRC de répondre au client directement
+        botcheck: false,                    // protection anti-spam Web3Forms
+        message: brief
+      })
+    });
+    const data = await res.json();
+    if(data.success){ showSent(); }
+    else throw new Error(data.message||'échec');
+  }catch(e){
+    // En cas d'erreur réseau : on ne perd rien, secours messagerie
+    btn.disabled=false; btn.textContent='Envoyer ma demande';
+    showToast("Envoi impossible, j'ouvre votre messagerie",true);
+    const mail=`mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief)}`;
+    setTimeout(()=>window.location.href=mail,900);
+  }
+}
+
+/* Écran de remerciement — aucun texte technique visible */
+function showSent(){
+  clearProgress();                          // les réponses ont été envoyées : on vide la sauvegarde
+  const rb=document.getElementById('resetBtn'); if(rb) rb.hidden=true;
+  form.innerHTML = `<div class="card" style="text-align:center">
+    <div class="ic" style="width:64px;height:64px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:6px auto 22px">
+      ${CHECK_SVG.replace(/#14151a/g,'#c9b47c').replace('<svg ','<svg width="28" height="28" ')}
+    </div>
+    <div class="step-no eyebrow" style="display:block">C'est envoyé</div>
+    <h2 style="margin:0 0 10px">Merci <em>infiniment</em></h2>
+    <p class="sub" style="margin:0 auto;max-width:44ch">Votre demande est bien arrivée. Je l'étudie et je reviens vers vous très vite avec une proposition. À très bientôt.</p>
+  </div>
+  <footer>${CONFIG.brandName}</footer>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   TOAST + INIT
+   ============================================================ */
+let toastT;
+function showToast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=err?'#e0867d':'';t.style.color=err?'#14151a':'';
+  t.classList.add('show'); clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2200);
+}
+/* ============================================================
+   SAUVEGARDE LOCALE (le client ne perd pas ses réponses)
+   ============================================================ */
+const LS_KEY='trc_qcm_v1';
+function saveProgress(){ try{ localStorage.setItem(LS_KEY,JSON.stringify({state,current})); }catch(e){} }
+function clearProgress(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+function loadProgress(){
+  try{
+    const d=JSON.parse(localStorage.getItem(LS_KEY)||'null');
+    if(d&&d.state&&typeof d.state==='object'){
+      Object.keys(d.state).forEach(k=>state[k]=d.state[k]);
+      if(typeof d.current==='number') current=Math.max(0,Math.min(d.current,SECTIONS.length));
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+/* Bouton « Reprendre à zéro » */
+const resetBtn=document.getElementById('resetBtn');
+resetBtn.addEventListener('click',()=>{
+  if(confirm('Effacer toutes vos réponses et recommencer ?')){
+    clearProgress();
+    for(const k in state) delete state[k];
+    current=0; resetBtn.hidden=true; renderStep();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+});
+
+/* ---- Init ---- */
+document.getElementById('year').textContent = new Date().getFullYear();
+const hadProgress = loadProgress();
+if(hadProgress && (current>0 || Object.keys(state).length)) resetBtn.hidden=false;
+renderStep();
+</script>
+<!-- Vercel Web Analytics (actif une fois en ligne + Analytics activé dans le projet) -->
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
