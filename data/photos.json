@@ -30,6 +30,12 @@
     "year": "2025"
   },
   {
+    "title": "Packshot Wheels",
+    "category": "Produit",
+    "image": "assets/img/packshot-roues.jpg",
+    "year": "2025"
+  },
+  {
     "title": "Ferrari",
     "category": "Automobile",
     "image": "assets/img/ferrari-5.jpg",
@@ -51,12 +57,6 @@
     "title": "Ferrari",
     "category": "Automobile",
     "image": "assets/img/ferrari-1.jpg",
-    "year": "2025"
-  },
-  {
-    "title": "Packshot Wheels",
-    "category": "Produit",
-    "image": "assets/img/packshot-roues.jpg",
     "year": "2025"
   }
 ]
