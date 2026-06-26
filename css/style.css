@@ -504,5 +504,8 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-gold); transform: trans
   /* Galeries photo/vidéo : 2 par ligne sur téléphone (au lieu d'une seule) */
   .gallery, .gallery--2 { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
   .services { grid-template-columns: 1fr; }
-  .stats { gap: 2rem; }
+  /* Stats : garder les 3 sur une seule ligne sur téléphone */
+  .stats { gap: 1.1rem; flex-wrap: nowrap; }
+  .stats__num { font-size: 1.7rem; }
+  .stats__label { font-size: 0.6rem; letter-spacing: 0.1em; }
 }
