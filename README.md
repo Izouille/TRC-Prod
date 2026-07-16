@@ -91,12 +91,17 @@ Pour recevoir les messages directement dans ta boîte (mieux) :
 ## 📝 Le questionnaire de brief (`brief.html`)
 
 Page conversationnelle (une question à la fois, façon Typeform) qu'un prospect remplit
-pour décrire son projet de site. En **3 à 5 minutes**, sans inscription. À la fin, un
-bouton **« Copier le brief »** génère un prompt structuré prêt à coller dans Claude Code
-pour générer le site du client. Un second bouton envoie le brief **+ les fichiers** par email
-(voir Formspree plus bas). Presque toutes les questions sont facultatives ; seules les
+pour décrire son projet de site. En **3 à 5 minutes**, sans inscription. À la dernière
+étape, il colle un **lien SwissTransfer** avec ses fichiers (logo, charte, photos, textes…),
+puis la page **compile toutes ses réponses en un prompt structuré et me l'envoie
+automatiquement par email** (via Formspree). Le client **ne voit jamais** le récapitulatif :
+juste un écran de remerciement. Presque toutes les questions sont facultatives ; seules les
 coordonnées (nom + email) sont obligatoires. Les réponses sont sauvegardées automatiquement
 dans le navigateur du client (il ne perd rien s'il recharge la page).
+
+> 💡 La question **« palette de couleurs »** (pastilles cliquables) ne s'affiche que si le
+> client n'a **pas** déjà fourni son identité visuelle à la question « identité » (fichier ou
+> lien). Pour éditer les palettes proposées : tableau **`PALETTES`** en haut de `js/brief.js`.
 
 ### ➕ / ✏️ Modifier les questions
 
@@ -112,29 +117,32 @@ copie un bloc existant et change les valeurs :
 ```
 
 - `type` : `text` (saisie courte) · `textarea` (longue) · `single` (un choix) ·
-  `multi` (plusieurs choix) · `link` (un ou plusieurs liens) · `upload` (fichiers + lien) ·
-  `contact` (nom/email/tél, obligatoire).
+  `multi` (plusieurs choix) · `palette` (pastilles de couleurs) · `link` (un ou plusieurs liens) ·
+  `upload` (fichiers + lien) · `swiss` (dépôt SwissTransfer) · `contact` (nom/email/tél, obligatoire).
 - `other:true` ajoute une option **« Autre »** avec champ libre.
 - `cols:2` affiche les choix sur deux colonnes.
 - `skippable:false` rend la question obligatoire (par défaut tout est « passable »).
+- `showIf:()=>...` n'affiche la question que si la condition est vraie (ex : la palette).
 
 > ⚠️ N'utilise **pas** `css/style.css` pour cette page : `brief.css` est volontairement
 > autonome (mêmes couleurs/typo que le site, mais noms de classes séparés pour éviter les
 > conflits avec `.card`, `.nav`, `.field` du site principal).
 
-### 📬 Recevoir les briefs + fichiers par email (Formspree — optionnel)
+### 📬 Recevoir les briefs par email (Formspree)
 
-Le bouton **« Copier »** marche toujours, sans rien configurer. Pour recevoir en plus le brief
-**avec les pièces jointes** (logo, moodboard, contenus) directement par email :
+L'envoi du brief se fait par **email automatique** via Formspree :
 
 1. Crée un formulaire gratuit sur **https://formspree.io** (avec `trcprod38@gmail.com`).
 2. Récupère l'identifiant du endpoint : `https://formspree.io/f/`**`XXXXXXXX`** → copie `XXXXXXXX`.
 3. Dans `js/brief.js`, en haut, renseigne `CONFIG.formspreeId: "XXXXXXXX"`.
+4. **Une fois en ligne, fais un envoi test** : Formspree envoie un mail *« Confirm your email »* —
+   clique le lien, sinon les briefs n'arrivent pas. Pense à créer un **filtre Gmail**
+   `from:formspree.io` → *« Ne jamais envoyer dans les spams »* (ils y tombent souvent au début).
 
-> Les **pièces jointes** nécessitent un plan Formspree payant. Sans clé (ou en cas d'échec),
-> le bouton bascule automatiquement sur l'ouverture de la messagerie du client (sans fichiers) —
-> jamais bloquant. Le client peut aussi toujours **coller un lien** (Drive, WeTransfer, Pinterest)
-> à la place d'un fichier : ces liens sont inclus directement dans le prompt copié.
+> **Fichiers** : le brief part en **texte** (livré de façon fiable sur tous les plans). Les
+> fichiers ne sont **pas** joints à l'email — le client les regroupe dans un **lien SwissTransfer**
+> (dernière étape du questionnaire) que tu reçois dans le brief, et tu télécharges tout d'un coup.
+> Si Formspree échoue, la messagerie du client s'ouvre en secours (jamais bloquant).
 
 Autres réglages dans `CONFIG` (haut de `js/brief.js`) : `brandName`, `homeUrl` (le logo
 ramène au portfolio), `contactEmail` (secours mailto).

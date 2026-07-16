@@ -36,6 +36,28 @@ const CONFIG = {
      contact  → nom / email / téléphone (seule étape obligatoire)
    skippable : true par défaut (bouton « Passer »). Mettre false pour bloquer.
    ============================================================ */
+
+/* Palettes de couleurs prédéfinies (question "palette"). Éditable librement :
+   name = libellé, colors = pastilles affichées (et reprises dans le brief). */
+const PALETTES = [
+  { id:"sombre-or",     name:"Sombre & or",           colors:["#14151a","#c9b47c","#8c8fa3","#ece9e2"] },
+  { id:"pastel",        name:"Pastel & douceur",      colors:["#f4d9d9","#f7e4c4","#d3e6d6","#d4dcf2","#efe3f4"] },
+  { id:"vive",          name:"Vive & contrastée",     colors:["#ef4444","#f59e0b","#10b981","#0ea5e9","#6366f1"] },
+  { id:"neutre",        name:"Neutre & naturelle",    colors:["#efe9dd","#cabfa6","#93a07f","#6f685b","#3c372f"] },
+  { id:"monochrome",    name:"Monochrome",            colors:["#0b0b0d","#3a3a3f","#7a7a80","#bcbcc2","#f2f2f4"] },
+  { id:"marine-cuivre", name:"Marine & cuivre",       colors:["#0f2436","#1e3a52","#b87333","#d9c3a3","#f2efe9"] },
+  { id:"terracotta",    name:"Terracotta & crème",    colors:["#c1583b","#e08e6d","#e8c9a0","#7a8b6f","#f5efe6"] },
+];
+
+/* Vrai si le client a déjà fourni une identité (fichier ou lien) à la question "identite".
+   Sert à ne PAS afficher la question palette dans ce cas. */
+function hasIdentity(){
+  const d = state.identite || {};
+  const files = d.files && d.files.length;
+  const links = d.links && d.links.filter(Boolean).length;
+  return !!(files || links);
+}
+
 const QUESTIONS = [
   /* ---- Section 1 — Votre activité & votre marque ---- */
   { id:"marque", section:"Votre activité & votre marque", type:"text",
@@ -102,6 +124,11 @@ const QUESTIONS = [
     help:"Plusieurs réponses possibles.",
     options:["Épuré / minimaliste","Sombre / premium","Coloré / vibrant","Chaleureux / naturel","Artistique / éditorial","Corporate / institutionnel","Rétro"] },
 
+  { id:"palette", section:"Style, références & contenus", type:"palette",
+    showIf:()=>!hasIdentity(),      // masquée si le client a déjà fourni son identité visuelle
+    title:"Quelle <em>palette de couleurs</em> vous parle&nbsp;?",
+    help:"Si vous n'avez pas encore de charte graphique, choisissez l'ambiance colorée qui vous ressemble." },
+
   { id:"references", section:"Style, références & contenus", type:"link",
     title:"Des <em>sites que vous aimez</em>&nbsp;?",
     help:"Concurrents ou non — collez les liens qui vous inspirent.",
@@ -136,7 +163,12 @@ const QUESTIONS = [
   /* ---- Coordonnées (seule étape obligatoire) ---- */
   { id:"contact", section:"Vos coordonnées", type:"contact", skippable:false,
     title:"Vos <em>coordonnées</em> pour vous recontacter",
-    help:"Nom et email suffisent — je reviens vers vous très vite." }
+    help:"Nom et email suffisent — je reviens vers vous très vite." },
+
+  /* ---- Dépôt des fichiers (SwissTransfer) — dernière page ---- */
+  { id:"swiss", section:"Vos fichiers", type:"swiss",
+    title:"Un dernier geste&nbsp;: <em>déposez vos fichiers</em>",
+    help:"Rassemblez tous vos fichiers dans un seul envoi <b>SwissTransfer</b> bien rangé&nbsp;: logo, charte graphique, images d'inspiration, photos et textes existants. Nommez-les clairement, puis collez le lien ci-dessous.<br>C'est facultatif — vous pouvez aussi le faire plus tard." }
 ];
 
 /* ============================================================
@@ -171,14 +203,17 @@ function render(){
 
   // Écran de question
   progressEl.hidden = false;
-  const qNo = idx;                       // intro = 0, donc question 1 = idx 1
   const q = byId[key];
-  curStepEl.textContent = qNo;
-  totStepEl.textContent = QUESTIONS.length;
-  barFill.style.width = (qNo/QUESTIONS.length*100)+"%";
+  const vis = visibleQuestions();
+  const pos = vis.indexOf(q) + 1;        // rang parmi les questions réellement affichées
+  const isLast = pos === vis.length;     // dernière étape → bouton d'envoi
+  curStepEl.textContent = pos;
+  totStepEl.textContent = vis.length;
+  barFill.style.width = (pos/vis.length*100)+"%";
   stepTitleEl.textContent = q.section;
 
-  const skippable = q.skippable !== false;
+  const skippable = q.skippable !== false && !isLast;
+  const nextLabel = isLast ? "Envoyer ma demande →" : "Suivant →";
   app.innerHTML = `
     <div class="screen" data-qid="${q.id}">
       <div class="q-section eyebrow">${q.section}</div>
@@ -189,13 +224,18 @@ function render(){
         <button type="button" class="btn ghost" data-act="prev">← Retour</button>
         ${skippable ? `<button type="button" class="skip" data-act="skip">Passer</button>` : ``}
         <span class="spacer"></span>
-        <button type="button" class="btn primary" data-act="next">Suivant →</button>
+        <button type="button" class="btn primary" data-act="next">${nextLabel}</button>
       </div>
     </div>`;
   bindField(q);
   bindNav();
   focusFirst(q);
 }
+
+/* Questions réellement affichées (celles dont showIf() est vrai) */
+function isQuestion(key){ return key!=="intro" && key!=="end"; }
+function isVisible(q){ return !q.showIf || q.showIf(state); }
+function visibleQuestions(){ return QUESTIONS.filter(isVisible); }
 
 /* ------------------------------------------------------------
    Champs (rendu HTML par type)
@@ -262,6 +302,31 @@ function renderField(q){
         <input type="tel"   id="c_tel"   placeholder="Téléphone (facultatif)" value="${esc(c.tel||"")}">
       </div>`;
     }
+
+    case "palette":{
+      const sel = state[q.id];
+      let cards = PALETTES.map(p=>`
+        <label class="choice palette-choice ${sel===p.id?"checked":""}" data-choice="${p.id}">
+          <input type="radio" name="${q.id}" value="${p.id}" ${sel===p.id?"checked":""}>
+          <span class="box">${CHECK}</span>
+          <span class="palette-choice__body">
+            <span class="txt">${esc(p.name)}</span>
+            <span class="swatches">${p.colors.map(c=>`<span class="swatch" style="background:${c}"></span>`).join("")}</span>
+          </span>
+        </label>`).join("");
+      // Échappatoire : le client a déjà sa charte
+      cards += choiceHTML(q.id, "J'ai déjà ma charte, on la verra dans mes fichiers", sel==="__charte__", false, "__charte__");
+      return `<div class="choices" data-group="${q.id}" data-multi="false">${cards}</div>`;
+    }
+
+    case "swiss":{
+      const link = state[q.id] || "";
+      return `
+        <a class="swiss__link" href="https://www.swisstransfer.com" target="_blank" rel="noopener">Vous ne connaissez pas ? Créez un envoi sur swisstransfer.com ↗</a>
+        <div class="linkrow" data-linkrow="${q.id}">
+          <input type="url" id="i_${q.id}" data-link="${q.id}" placeholder="Collez ici votre lien SwissTransfer" value="${esc(link)}">
+        </div>`;
+    }
   }
   return "";
 }
@@ -285,6 +350,7 @@ function bindField(q){
       if(q.type==="text") onEnter(el, next);
       break;
     }
+    case "palette":            // même mécanique qu'un choix unique
     case "single":
     case "multi":{
       const multi = q.type==="multi";
@@ -336,6 +402,12 @@ function bindField(q){
         });
         onEnter(el, next);
       });
+      break;
+    }
+    case "swiss":{
+      const el = document.getElementById("i_"+q.id);
+      el.addEventListener("input",()=>{ state[q.id]=el.value.trim(); save(); });
+      onEnter(el, next);
       break;
     }
   }
@@ -407,7 +479,7 @@ function onEnter(el, fn){
 }
 function focusFirst(q){
   const first = app.querySelector("input[type=text],input[type=email],input[type=url],input[type=tel],textarea");
-  if(first && ["text","textarea","link","contact"].includes(q.type)) first.focus({preventScroll:true});
+  if(first && ["text","textarea","link","contact","swiss"].includes(q.type)) first.focus({preventScroll:true});
 }
 
 /* ============================================================
@@ -426,14 +498,19 @@ function bindNav(){
 
 function next(skip){
   const key = FLOW[idx];
-  if(key!=="intro" && key!=="end"){
+  if(isQuestion(key)){
     const q = byId[key];
     if(!skip && q.skippable===false && !validate(q)) return;
   }
-  idx = Math.min(idx+1, FLOW.length-1);
+  do { idx = Math.min(idx+1, FLOW.length-1); }
+  while(idx < FLOW.length-1 && isQuestion(FLOW[idx]) && !isVisible(byId[FLOW[idx]]));
   save(); render();
 }
-function prev(){ idx = Math.max(idx-1,0); save(); render(); }
+function prev(){
+  do { idx = Math.max(idx-1, 0); }
+  while(idx > 0 && isQuestion(FLOW[idx]) && !isVisible(byId[FLOW[idx]]));
+  save(); render();
+}
 
 function validate(q){
   if(q.type==="contact"){
@@ -488,6 +565,11 @@ function val(id){
   }
   if(q && q.type==="link"){ const a=Array.isArray(v)?v:(v?[v]:[]); return a.filter(Boolean).join(", "); }
   if(q && q.type==="upload"){ return (v&&v.links?v.links.filter(Boolean):[]).join(", "); }
+  if(q && q.type==="palette"){
+    if(v==="__charte__") return "Le client a déjà sa charte (voir fichiers)";
+    const p = PALETTES.find(x=>x.id===v);
+    return p ? `${p.name} (${p.colors.join(" ")})` : "";
+  }
   return (v||"").toString().trim();
 }
 /* Résumé d'un dépôt de fichiers (noms + liens) */
@@ -536,6 +618,7 @@ function buildPrompt(){
     ]),
     block("Direction artistique",[
       L("Ambiance visuelle", val("ambiance")),
+      L("Palette de couleurs", val("palette")),
       L("Sites de référence", val("references")),
       L("Moodboard / inspiration", uploadSummary("moodboard")),
       L("Contenus disponibles", val("contenus")),
@@ -545,6 +628,9 @@ function buildPrompt(){
       L("Budget", val("budget")),
       L("Délai", val("delai")),
     ]),
+    block("Fichiers du client",[
+      L("Lien SwissTransfer (logo, charte, photos, textes…)", (state.swiss||"").trim()),
+    ]),
     block("Contact client",[ contactLine() ? `- ${contactLine()}` : null ]),
     "Livre un site responsive, moderne et soigné, cohérent avec le ton et l'ambiance ci-dessus."
   ];
@@ -552,72 +638,38 @@ function buildPrompt(){
 }
 
 /* ============================================================
-   ÉCRAN DE FIN — prompt copiable + envoi optionnel
+   ÉCRAN DE FIN — envoi automatique + remerciement sobre
+   Le client ne voit JAMAIS le récapitulatif ni le prompt : à l'arrivée sur
+   cet écran, le brief est compilé et envoyé automatiquement par email, puis
+   seul un message de remerciement s'affiche.
    ============================================================ */
+let submitted = false;
 function renderEnd(){
-  const prompt = buildPrompt();
+  if(!submitted){ submitted = true; submitBrief(); }   // envoi automatique, une seule fois
   app.innerHTML = `
-    <div class="screen end">
-      <div class="done-badge">
-        <div class="ic">${CHECK_GOLD}</div>
-        <div>
-          <div class="eyebrow">Dernière étape</div>
-          <h1 style="font-size:clamp(2rem,5.5vw,3rem);margin:6px 0 0">Merci <em>infiniment</em></h1>
-        </div>
-      </div>
-      <p class="lead">Votre brief est prêt. Copiez-le et envoyez-le moi&nbsp;— ou déclenchez l'envoi direct (avec vos fichiers).</p>
-      <pre class="brief" id="briefText">${esc(prompt)}</pre>
-      <div class="result-actions">
-        <button type="button" class="btn primary" id="copyBtn">${copySvg()} Copier le brief</button>
-        <button type="button" class="btn" id="sendBtn">M'envoyer le brief</button>
-      </div>
-      <div class="send-status" id="sendStatus"></div>
-      <div class="actions">
-        <button type="button" class="btn ghost" data-act="prev">← Modifier mes réponses</button>
-      </div>
+    <div class="screen end" style="text-align:center">
+      <div class="ic" style="width:66px;height:66px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:8px auto 24px">${CHECK_GOLD}</div>
+      <div class="eyebrow">C'est envoyé</div>
+      <h1 style="font-size:clamp(2rem,6vw,3.4rem);margin:12px 0 16px">Merci <em>infiniment</em></h1>
+      <p class="lead" style="margin:0 auto">Votre demande a bien été envoyée. Je reviens vers vous très vite avec une proposition. À très bientôt.</p>
     </div>`;
-
-  document.getElementById("copyBtn").addEventListener("click",()=>copyPrompt(prompt));
-  document.getElementById("sendBtn").addEventListener("click",()=>sendBrief(prompt));
-  app.querySelector("[data-act=prev]").addEventListener("click",prev);
+  clear();                    // les réponses sont parties : on nettoie la sauvegarde locale
+  resetBtn.hidden = true;
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function copySvg(){
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8" stroke-linecap="round"/></svg>';
-}
-
-async function copyPrompt(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    toast("Brief copié ✓");
-  }catch(e){
-    // Secours : sélection manuelle
-    const pre = document.getElementById("briefText");
-    const r = document.createRange(); r.selectNodeContents(pre);
-    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
-    try{ document.execCommand("copy"); toast("Brief copié ✓"); }
-    catch(_){ toast("Sélectionnez puis copiez le texte", true); }
-  }
-}
-
-/* Envoi optionnel via Formspree — jamais bloquant.
+/* Compile toutes les réponses (+ lien SwissTransfer) et envoie le brief par email.
+   Silencieux côté client. Repli messagerie en cas d'échec réseau.
    ⚠️ Envoi en TEXTE (JSON), livré de façon fiable sur tous les plans Formspree.
-   Les octets des fichiers ne sont PAS joints : sur le plan gratuit, une soumission
-   contenant une pièce jointe est acceptée mais l'email n'est pas délivré. Le brief
-   liste déjà les NOMS de fichiers + les LIENS collés — largement suffisant pour
-   recontacter le client. (Pour de vraies pièces jointes : plan Formspree payant.) */
-async function sendBrief(prompt){
-  const btn = document.getElementById("sendBtn");
-  const status = document.getElementById("sendStatus");
+   Le lien SwissTransfer figure dans le brief → Ethan télécharge tous les fichiers d'un coup. */
+async function submitBrief(){
+  const prompt = buildPrompt();
   const c = state.contact||{};
   const subject = `Brief site web — ${val("marque")||c.nom||"Nouveau projet"}`;
   const id = (CONFIG.formspreeId||"").trim();
 
-  // Pas de Formspree configuré → secours messagerie
-  if(!id){ mailtoFallback(subject, prompt, "Ouverture de votre messagerie…"); return; }
+  if(!id){ mailtoFallback(subject, prompt); return; }   // pas de Formspree → secours messagerie
 
-  btn.disabled = true; btn.textContent = "Envoi en cours…";
-  status.className = "send-status"; status.textContent = "";
   try{
     const res = await fetch(`https://formspree.io/f/${id}`,{
       method:"POST",
@@ -630,26 +682,15 @@ async function sendBrief(prompt){
         Brief: prompt
       })
     });
-    if(res.ok){
-      status.className = "send-status send-status--ok";
-      status.textContent = "✓ Brief envoyé — merci ! Je reviens vers vous très vite.";
-      btn.textContent = "Brief envoyé ✓"; clear();
-      resetBtn.hidden = true;
-    }else{
-      throw new Error("HTTP "+res.status);
-    }
+    if(!res.ok) throw new Error("HTTP "+res.status);
   }catch(e){
-    btn.disabled=false; btn.textContent="M'envoyer le brief";
-    status.className = "send-status send-status--err";
-    status.textContent = "Envoi automatique impossible — j'ouvre votre messagerie (ou utilisez « Copier »).";
-    setTimeout(()=>mailtoFallback(subject, prompt), 700);
+    mailtoFallback(subject, prompt);   // rien n'est perdu : on ouvre la messagerie du client
   }
 }
 /* Secours : ouvre la messagerie du client, pré-remplie */
-function mailtoFallback(subject, prompt, msg){
-  const body = prompt + "\n\n(Pensez à joindre vos fichiers si vous en avez : logo, moodboard, contenus.)";
+function mailtoFallback(subject, prompt){
+  const body = prompt + "\n\n(Pensez à joindre vos fichiers via SwissTransfer si ce n'est pas déjà fait.)";
   window.location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  if(msg) toast(msg);
 }
 
 /* ============================================================
