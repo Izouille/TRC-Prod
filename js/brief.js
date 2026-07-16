@@ -569,7 +569,7 @@ function renderEnd(){
       <pre class="brief" id="briefText">${esc(prompt)}</pre>
       <div class="result-actions">
         <button type="button" class="btn primary" id="copyBtn">${copySvg()} Copier le brief</button>
-        <button type="button" class="btn" id="sendBtn">M'envoyer le brief + fichiers</button>
+        <button type="button" class="btn" id="sendBtn">M'envoyer le brief</button>
       </div>
       <div class="send-status" id="sendStatus"></div>
       <div class="actions">
@@ -600,7 +600,12 @@ async function copyPrompt(text){
   }
 }
 
-/* Envoi optionnel via Formspree (brief + pièces jointes) — jamais bloquant */
+/* Envoi optionnel via Formspree — jamais bloquant.
+   ⚠️ Envoi en TEXTE (JSON), livré de façon fiable sur tous les plans Formspree.
+   Les octets des fichiers ne sont PAS joints : sur le plan gratuit, une soumission
+   contenant une pièce jointe est acceptée mais l'email n'est pas délivré. Le brief
+   liste déjà les NOMS de fichiers + les LIENS collés — largement suffisant pour
+   recontacter le client. (Pour de vraies pièces jointes : plan Formspree payant.) */
 async function sendBrief(prompt){
   const btn = document.getElementById("sendBtn");
   const status = document.getElementById("sendStatus");
@@ -608,44 +613,43 @@ async function sendBrief(prompt){
   const subject = `Brief site web — ${val("marque")||c.nom||"Nouveau projet"}`;
   const id = (CONFIG.formspreeId||"").trim();
 
-  // Pas de Formspree configuré → secours messagerie (sans pièces jointes)
-  if(!id){
-    const body = prompt + "\n\n(Pensez à joindre vos fichiers si vous en avez.)";
-    window.location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    toast("Ouverture de votre messagerie…");
-    return;
-  }
+  // Pas de Formspree configuré → secours messagerie
+  if(!id){ mailtoFallback(subject, prompt, "Ouverture de votre messagerie…"); return; }
 
   btn.disabled = true; btn.textContent = "Envoi en cours…";
   status.className = "send-status"; status.textContent = "";
   try{
-    const fd = new FormData();
-    fd.append("_subject", subject);
-    fd.append("email", c.email||"");        // permet à Formspree de définir le reply-to
-    fd.append("Nom", c.nom||"");
-    fd.append("Téléphone", c.tel||"");
-    fd.append("Brief", prompt);
-    // Pièces jointes de tous les dépôts
-    ["identite","moodboard","contenusFichiers"].forEach(qid=>{
-      const d = state[qid]; if(d&&d.files) d.files.forEach(f=>fd.append("Fichiers", f, f.name));
-    });
     const res = await fetch(`https://formspree.io/f/${id}`,{
-      method:"POST", headers:{Accept:"application/json"}, body:fd
+      method:"POST",
+      headers:{"Content-Type":"application/json", Accept:"application/json"},
+      body: JSON.stringify({
+        _subject: subject,
+        email: c.email||"",         // permet à Formspree de définir le reply-to
+        Nom: c.nom||"",
+        "Téléphone": c.tel||"",
+        Brief: prompt
+      })
     });
     if(res.ok){
       status.className = "send-status send-status--ok";
-      status.textContent = "✓ Envoyé — merci ! Je reviens vers vous très vite.";
+      status.textContent = "✓ Brief envoyé — merci ! Je reviens vers vous très vite.";
       btn.textContent = "Brief envoyé ✓"; clear();
       resetBtn.hidden = true;
     }else{
       throw new Error("HTTP "+res.status);
     }
   }catch(e){
-    btn.disabled=false; btn.textContent="M'envoyer le brief + fichiers";
+    btn.disabled=false; btn.textContent="M'envoyer le brief";
     status.className = "send-status send-status--err";
-    status.textContent = "Envoi impossible — copiez le brief ci-dessus et envoyez-le moi par email.";
-    toast("Envoi impossible", true);
+    status.textContent = "Envoi automatique impossible — j'ouvre votre messagerie (ou utilisez « Copier »).";
+    setTimeout(()=>mailtoFallback(subject, prompt), 700);
   }
+}
+/* Secours : ouvre la messagerie du client, pré-remplie */
+function mailtoFallback(subject, prompt, msg){
+  const body = prompt + "\n\n(Pensez à joindre vos fichiers si vous en avez : logo, moodboard, contenus.)";
+  window.location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if(msg) toast(msg);
 }
 
 /* ============================================================
