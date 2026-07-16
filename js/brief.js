@@ -21,7 +21,7 @@ const CONFIG = {
   //   2. Récupère l'identifiant du endpoint : https://formspree.io/f/XXXXXXXX  ->  "XXXXXXXX"
   //   3. Colle-le ci-dessous. (Les pièces jointes nécessitent un plan Formspree payant.)
   //   Tant que c'est vide, le bouton « copier » fonctionne toujours ; l'envoi bascule sur la messagerie du client (sans fichiers).
-  formspreeId: ""
+  formspreeId: "mvzjoqpl"
 };
 
 /* ============================================================
