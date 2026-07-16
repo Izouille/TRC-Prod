@@ -31,32 +31,12 @@ const CONFIG = {
      textarea → saisie longue
      single   → un seul choix (options[])           + other:true → ajoute « Autre »
      multi    → plusieurs choix (options[])         + other:true → ajoute « Autre »
-     link     → un ou plusieurs liens (URL)
-     upload   → dépôt de fichier(s) + champ lien (les deux facultatifs)
+     link     → un ou plusieurs liens (URL de sites : site actuel, références)
+     palette  → sélecteur de couleurs libre (roue) → pastilles ajoutables/retirables
      contact  → nom / email / téléphone (seule étape obligatoire)
+     swiss    → dépôt unique des fichiers via un lien SwissTransfer (dernière page)
    skippable : true par défaut (bouton « Passer »). Mettre false pour bloquer.
    ============================================================ */
-
-/* Palettes de couleurs prédéfinies (question "palette"). Éditable librement :
-   name = libellé, colors = pastilles affichées (et reprises dans le brief). */
-const PALETTES = [
-  { id:"sombre-or",     name:"Sombre & or",           colors:["#14151a","#c9b47c","#8c8fa3","#ece9e2"] },
-  { id:"pastel",        name:"Pastel & douceur",      colors:["#f4d9d9","#f7e4c4","#d3e6d6","#d4dcf2","#efe3f4"] },
-  { id:"vive",          name:"Vive & contrastée",     colors:["#ef4444","#f59e0b","#10b981","#0ea5e9","#6366f1"] },
-  { id:"neutre",        name:"Neutre & naturelle",    colors:["#efe9dd","#cabfa6","#93a07f","#6f685b","#3c372f"] },
-  { id:"monochrome",    name:"Monochrome",            colors:["#0b0b0d","#3a3a3f","#7a7a80","#bcbcc2","#f2f2f4"] },
-  { id:"marine-cuivre", name:"Marine & cuivre",       colors:["#0f2436","#1e3a52","#b87333","#d9c3a3","#f2efe9"] },
-  { id:"terracotta",    name:"Terracotta & crème",    colors:["#c1583b","#e08e6d","#e8c9a0","#7a8b6f","#f5efe6"] },
-];
-
-/* Vrai si le client a déjà fourni une identité (fichier ou lien) à la question "identite".
-   Sert à ne PAS afficher la question palette dans ce cas. */
-function hasIdentity(){
-  const d = state.identite || {};
-  const files = d.files && d.files.length;
-  const links = d.links && d.links.filter(Boolean).length;
-  return !!(files || links);
-}
 
 const QUESTIONS = [
   /* ---- Section 1 — Votre activité & votre marque ---- */
@@ -81,12 +61,6 @@ const QUESTIONS = [
     title:"Comment décririez-vous le <em>ton</em> de votre marque&nbsp;?",
     help:"Plusieurs réponses possibles.",
     options:["Élégant","Premium","Moderne","Chaleureux","Audacieux","Minimaliste","Créatif","Sérieux / institutionnel"] },
-
-  { id:"identite", section:"Votre activité & votre marque", type:"upload",
-    title:"Avez-vous déjà une <em>identité visuelle</em>&nbsp;?",
-    help:"Déposez votre logo et votre charte graphique si vous les avez — ou collez un lien (Drive, WeTransfer…).",
-    dropLabel:"Déposez logo / charte graphique",
-    linkLabel:"…ou collez un lien vers vos fichiers" },
 
   /* ---- Section 2 — Objectif & type de site ---- */
   { id:"objectifs", section:"Objectif & type de site", type:"multi", other:true, cols:2,
@@ -125,31 +99,18 @@ const QUESTIONS = [
     options:["Épuré / minimaliste","Sombre / premium","Coloré / vibrant","Chaleureux / naturel","Artistique / éditorial","Corporate / institutionnel","Rétro"] },
 
   { id:"palette", section:"Style, références & contenus", type:"palette",
-    showIf:()=>!hasIdentity(),      // masquée si le client a déjà fourni son identité visuelle
-    title:"Quelle <em>palette de couleurs</em> vous parle&nbsp;?",
-    help:"Si vous n'avez pas encore de charte graphique, choisissez l'ambiance colorée qui vous ressemble." },
+    title:"Quelles <em>couleurs</em> vous ressemblent&nbsp;?",
+    help:"Choisissez vos couleurs avec la roue chromatique — ajoutez-en autant que vous voulez, retirez-les d'un clic. Vous avez déjà une charte&nbsp;? Cochez l'option en bas, on la verra dans vos fichiers." },
 
   { id:"references", section:"Style, références & contenus", type:"link",
     title:"Des <em>sites que vous aimez</em>&nbsp;?",
     help:"Concurrents ou non — collez les liens qui vous inspirent.",
     placeholder:"https://un-site-que-jaime.com" },
 
-  { id:"moodboard", section:"Style, références & contenus", type:"upload",
-    title:"Un <em>moodboard</em> ou des images d'inspiration&nbsp;?",
-    help:"Déposez vos images — ou collez un lien (Pinterest, Drive…).",
-    dropLabel:"Déposez vos images d'inspiration",
-    linkLabel:"…ou collez un lien (Pinterest, Drive…)" },
-
   { id:"contenus", section:"Style, références & contenus", type:"multi", other:true, cols:2,
     title:"Où en êtes-vous de vos <em>contenus</em>&nbsp;?",
     help:"Plusieurs réponses possibles.",
     options:["J'ai déjà mes textes","J'ai déjà mes photos / vidéos","J'ai une partie","J'ai besoin d'aide pour la rédaction","J'ai besoin de photos / vidéos"] },
-
-  { id:"contenusFichiers", section:"Style, références & contenus", type:"upload",
-    title:"Déposez vos <em>contenus existants</em>",
-    help:"Photos, textes… si vous le souhaitez. Sinon, passez.",
-    dropLabel:"Déposez vos contenus (photos, textes…)",
-    linkLabel:"…ou collez un lien vers vos fichiers" },
 
   { id:"budget", section:"Style, références & contenus", type:"single", cols:2,
     title:"<em>Budget</em> indicatif&nbsp;?",
@@ -278,22 +239,6 @@ function renderField(q){
       return `<div class="linkrow" data-linkrow="${q.id}">${list}${addBtn}</div>`;
     }
 
-    case "upload":{
-      const data = state[q.id] || {files:[],links:[""]};
-      return `
-        <label class="drop" data-drop="${q.id}">
-          <svg class="drop__ic" viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5l5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" stroke-linecap="round"/></svg>
-          <div class="drop__t"><b>${q.dropLabel||"Déposez vos fichiers"}</b></div>
-          <div class="drop__s">Glissez-déposez ou cliquez — facultatif</div>
-          <input type="file" multiple data-file="${q.id}">
-        </label>
-        <div class="files" data-files="${q.id}"></div>
-        <div class="or-sep">ou</div>
-        <div class="linkrow" data-linkrow="${q.id}">
-          <input type="url" data-link="${q.id}" data-i="0" placeholder="${esc(q.linkLabel||"Collez un lien (Drive, WeTransfer…)")}" value="${esc((data.links&&data.links[0])||"")}">
-        </div>`;
-    }
-
     case "contact":{
       const c = state.contact || {};
       return `<div class="contact-grid">
@@ -304,19 +249,23 @@ function renderField(q){
     }
 
     case "palette":{
-      const sel = state[q.id];
-      let cards = PALETTES.map(p=>`
-        <label class="choice palette-choice ${sel===p.id?"checked":""}" data-choice="${p.id}">
-          <input type="radio" name="${q.id}" value="${p.id}" ${sel===p.id?"checked":""}>
+      const d = state[q.id] || {colors:[], charte:false};
+      const chips = (d.colors||[]).map((c,i)=>colorChipHTML(c,i)).join("");
+      return `
+        <div class="palette-picker ${d.charte?"is-off":""}" data-palette="${q.id}">
+          <div class="colorwheel">
+            <label class="colorwheel__field">
+              <input type="color" id="cw_${q.id}" value="#c9b47c" aria-label="Choisir une couleur">
+              <span class="colorwheel__hint">Cliquez sur la pastille pour ouvrir la roue chromatique</span>
+            </label>
+            <button type="button" class="btn ghost colorwheel__add" data-addcolor="${q.id}">+ Ajouter cette couleur</button>
+          </div>
+          <div class="colorchips" data-colorchips="${q.id}">${chips}</div>
+        </div>
+        <label class="choice palette-charte ${d.charte?"checked":""}" data-charte="${q.id}">
           <span class="box">${CHECK}</span>
-          <span class="palette-choice__body">
-            <span class="txt">${esc(p.name)}</span>
-            <span class="swatches">${p.colors.map(c=>`<span class="swatch" style="background:${c}"></span>`).join("")}</span>
-          </span>
-        </label>`).join("");
-      // Échappatoire : le client a déjà sa charte
-      cards += choiceHTML(q.id, "J'ai déjà ma charte, on la verra dans mes fichiers", sel==="__charte__", false, "__charte__");
-      return `<div class="choices" data-group="${q.id}" data-multi="false">${cards}</div>`;
+          <span class="txt">J'ai déjà ma charte, on la verra dans mes fichiers</span>
+        </label>`;
     }
 
     case "swiss":{
@@ -329,6 +278,15 @@ function renderField(q){
     }
   }
   return "";
+}
+
+/* Pastille de couleur (question "palette") */
+function colorChipHTML(color, i){
+  return `<span class="colorchip">
+    <span class="colorchip__dot" style="background:${esc(color)}"></span>
+    <span class="colorchip__hex">${esc(color)}</span>
+    <button type="button" class="colorchip__x" data-rmcolor="${i}" aria-label="Retirer cette couleur">×</button>
+  </span>`;
 }
 
 function choiceHTML(qid, label, on, multi, valueOverride){
@@ -350,7 +308,44 @@ function bindField(q){
       if(q.type==="text") onEnter(el, next);
       break;
     }
-    case "palette":            // même mécanique qu'un choix unique
+    case "palette":{
+      state[q.id] = state[q.id] || {colors:[], charte:false};
+      const picker   = app.querySelector(`[data-palette="${q.id}"]`);
+      const input    = document.getElementById("cw_"+q.id);
+      const addBtn   = app.querySelector(`[data-addcolor="${q.id}"]`);
+      const chipsBox = app.querySelector(`[data-colorchips="${q.id}"]`);
+      const charteEl = app.querySelector(`[data-charte="${q.id}"]`);
+
+      const renderChips = ()=>{
+        const d = state[q.id];
+        chipsBox.innerHTML = d.colors.map((c,i)=>colorChipHTML(c,i)).join("");
+        chipsBox.querySelectorAll("[data-rmcolor]").forEach(b=>{
+          b.addEventListener("click",()=>{
+            state[q.id].colors.splice(+b.dataset.rmcolor,1); save(); renderChips();
+          });
+        });
+      };
+      addBtn.addEventListener("click",()=>{
+        const c = (input.value||"").toLowerCase();
+        if(state[q.id].charte){          // ajouter une couleur annule « déjà ma charte »
+          state[q.id].charte = false;
+          charteEl.classList.remove("checked");
+          picker.classList.remove("is-off");
+        }
+        if(!state[q.id].colors.includes(c)) state[q.id].colors.push(c);
+        save(); renderChips();
+      });
+      charteEl.addEventListener("click",()=>{
+        const on = !charteEl.classList.contains("checked");
+        charteEl.classList.toggle("checked", on);
+        state[q.id].charte = on;
+        if(on) state[q.id].colors = [];     // exclusif avec les pastilles
+        picker.classList.toggle("is-off", on);
+        renderChips(); save();
+      });
+      renderChips();
+      break;
+    }
     case "single":
     case "multi":{
       const multi = q.type==="multi";
@@ -389,10 +384,6 @@ function bindField(q){
     case "link":
       bindLinkRow(q.id);
       break;
-    case "upload":
-      bindUpload(q);
-      bindLinkRow(q.id, true);
-      break;
     case "contact":{
       ["nom","email","tel"].forEach(k=>{
         const el = document.getElementById("c_"+k);
@@ -419,17 +410,11 @@ function toggleOther(wrap, open, input){
   if(open && input) setTimeout(()=>input.focus(), 60);
 }
 
-/* -- Liens (répétables) -- */
-function bindLinkRow(qid, isUpload){
+/* -- Liens de sites (répétables : site actuel, références) -- */
+function bindLinkRow(qid){
   const row = app.querySelector(`[data-linkrow="${qid}"]`);
   const readLinks = ()=>{
-    const links = [...row.querySelectorAll("[data-link]")].map(i=>i.value.trim()).filter(Boolean);
-    if(isUpload){
-      state[qid] = state[qid] || {files:[],links:[]};
-      state[qid].links = links;
-    }else{
-      state[qid] = links;
-    }
+    state[qid] = [...row.querySelectorAll("[data-link]")].map(i=>i.value.trim()).filter(Boolean);
     save();
   };
   row.addEventListener("input", readLinks);
@@ -444,33 +429,6 @@ function bindLinkRow(qid, isUpload){
       onEnter(inp, next); inp.focus();
     });
   }
-}
-
-/* -- Upload de fichiers (stockés en mémoire pour l'envoi Formspree) -- */
-function bindUpload(q){
-  const drop = app.querySelector(`[data-drop="${q.id}"]`);
-  const input = app.querySelector(`[data-file="${q.id}"]`);
-  const filesBox = app.querySelector(`[data-files="${q.id}"]`);
-  state[q.id] = state[q.id] || {files:[],links:[""]};
-
-  const renderChips = ()=>{
-    filesBox.innerHTML = state[q.id].files.map((f,i)=>
-      `<span class="filechip"><span>${esc(f.name)}</span><button type="button" class="filechip__x" data-rm="${i}" aria-label="Retirer">×</button></span>`
-    ).join("");
-    filesBox.querySelectorAll("[data-rm]").forEach(b=>{
-      b.addEventListener("click",()=>{ state[q.id].files.splice(+b.dataset.rm,1); renderChips(); });
-    });
-  };
-  const addFiles = list=>{
-    [...list].forEach(f=>state[q.id].files.push(f));
-    renderChips();
-    // NB : les fichiers ne sont pas sauvegardés en localStorage (non sérialisables)
-  };
-  input.addEventListener("change",e=>addFiles(e.target.files));
-  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("drag");}));
-  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("drag");}));
-  drop.addEventListener("drop",e=>{ if(e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
-  renderChips();
 }
 
 /* Entrée = valider (sur les champs sur une seule ligne) */
@@ -564,24 +522,13 @@ function val(id){
     return out.join(", ");
   }
   if(q && q.type==="link"){ const a=Array.isArray(v)?v:(v?[v]:[]); return a.filter(Boolean).join(", "); }
-  if(q && q.type==="upload"){ return (v&&v.links?v.links.filter(Boolean):[]).join(", "); }
   if(q && q.type==="palette"){
-    if(v==="__charte__") return "Le client a déjà sa charte (voir fichiers)";
-    const p = PALETTES.find(x=>x.id===v);
-    return p ? `${p.name} (${p.colors.join(" ")})` : "";
+    const d = v || {};
+    if(d.charte) return "Le client a déjà sa charte (voir fichiers)";
+    const cols = (d.colors||[]).filter(Boolean);
+    return cols.length ? cols.join(", ") : "";
   }
   return (v||"").toString().trim();
-}
-/* Résumé d'un dépôt de fichiers (noms + liens) */
-function uploadSummary(id){
-  const d = state[id]||{}; const parts=[];
-  if(d.files&&d.files.length) parts.push(d.files.map(f=>f.name).join(", "));
-  if(d.links) parts.push(...d.links.filter(Boolean));
-  return parts.join(" · ");
-}
-function identityLine(){
-  const s = uploadSummary("identite");
-  return s ? ("Oui — "+s) : "Non / à créer";
 }
 function contactLine(){
   const c = state.contact||{};
@@ -604,7 +551,6 @@ function buildPrompt(){
       L("Activité", val("activite")),
       L("Cible", val("cible")),
       L("Ton de marque", val("ton")),
-      L("Identité visuelle fournie", identityLine()),
     ]),
     block("Objectif du site",[
       L("Objectifs", val("objectifs")),
@@ -618,11 +564,9 @@ function buildPrompt(){
     ]),
     block("Direction artistique",[
       L("Ambiance visuelle", val("ambiance")),
-      L("Palette de couleurs", val("palette")),
+      L("Couleurs choisies", val("palette")),
       L("Sites de référence", val("references")),
-      L("Moodboard / inspiration", uploadSummary("moodboard")),
       L("Contenus disponibles", val("contenus")),
-      L("Contenus fournis", uploadSummary("contenusFichiers")),
     ]),
     block("Cadre",[
       L("Budget", val("budget")),
@@ -707,29 +651,19 @@ function toast(msg, err){
 /* ============================================================
    SAUVEGARDE LOCALE (les fichiers ne sont pas persistés)
    ============================================================ */
-const LS_KEY = "trc_brief_v2";
-function serialize(){
-  const clean = {};
-  for(const k in state){
-    const v = state[k];
-    if(v && typeof v==="object" && Array.isArray(v.files)){
-      clean[k] = {links: v.links||[]};      // on ne garde que les liens
-    }else clean[k]=v;
-  }
-  return {state:clean, idx};
-}
-function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(serialize())); }catch(e){} }
+const LS_KEY = "trc_brief_v3";   // v3 : plus d'upload, palette = {colors,charte}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({state, idx})); }catch(e){} }
 function clear(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
 function load(){
   try{
     const d = JSON.parse(localStorage.getItem(LS_KEY)||"null");
     if(d && d.state){
       Object.assign(state, d.state);
-      // Réhydrate la structure des uploads (fichiers repartent vides)
-      QUESTIONS.filter(q=>q.type==="upload").forEach(q=>{
-        const cur = state[q.id];
-        state[q.id] = {files:[], links:(cur&&cur.links)?cur.links:[""]};
-      });
+      // Sécurise la forme de la palette (couleurs libres)
+      const p = state.palette;
+      if(!p || typeof p!=="object" || Array.isArray(p) || !Array.isArray(p.colors)){
+        state.palette = {colors:[], charte:false};
+      }
       if(typeof d.idx==="number") idx = Math.max(0, Math.min(d.idx, FLOW.length-1));
       return true;
     }
