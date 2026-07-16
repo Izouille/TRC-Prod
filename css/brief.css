@@ -1,0 +1,261 @@
+/* =========================================================
+   TRC PROD — Questionnaire de brief (brief.html)
+   Format conversationnel (une question par écran).
+   DA reprise de css/style.css (tokens, fumée, or champagne,
+   serif italique) mais AUTO-SUFFISANTE : aucun nom de classe
+   du site n'est réutilisé pour éviter toute collision
+   (.card, .nav, .field du site ont d'autres rôles).
+   ========================================================= */
+
+/* ---------- Tokens (miroir de css/style.css) ---------- */
+:root{
+  --bg:#14151a;            /* anthracite / fond principal */
+  --panel:#1c1e26;         /* surface */
+  --panel-2:#23252f;       /* cartes / hover */
+  --gold:#c9b47c;          /* or champagne (accent) */
+  --gold-soft:#d9c89a;
+  --gold-faint:rgba(201,180,124,.13);
+  --lavender:#8c8fa3;      /* gris-lavande */
+  --text:#ece9e2;
+  --muted:#9a9a9f;
+  --line:rgba(201,180,124,.18);
+  --err:#e0867d;
+  --font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --font-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --radius:4px;
+}
+
+/* ---------- Reset ---------- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html,body{max-width:100%;overflow-x:hidden}
+
+body{
+  background-color:var(--bg);
+  /* Brume douce + fines lignes diagonales (identique au site) */
+  background-image:
+    radial-gradient(60% 50% at 15% -5%,rgba(201,180,124,.06),transparent 60%),
+    radial-gradient(55% 45% at 88% 12%,rgba(140,143,163,.05),transparent 60%),
+    radial-gradient(65% 55% at 50% 108%,rgba(201,180,124,.045),transparent 60%),
+    repeating-linear-gradient(120deg,transparent 0 33px,rgba(201,180,124,.018) 33px 34px);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  /* Curseur « flèche dessinée » du site */
+  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%2316171c'%20stroke='%23c9b47c'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto;
+}
+/* Grain fumée (couche fixe, derrière le contenu) */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a,button,.choice,label,summary,.linkrow__add,.filechip__x,.skip{
+  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23c9b47c'%20stroke='%2316171c'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,pointer;
+}
+input,textarea{cursor:text}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+
+/* Accessibilité : focus toujours visible malgré le thème sombre */
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ---------- Layout ---------- */
+.wrap{max-width:720px;margin:0 auto;padding:34px 22px 90px}
+
+/* ---------- En-tête de marque ---------- */
+.brand{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.brand__home{display:inline-flex;line-height:0;border-radius:8px;transition:opacity .3s var(--ease)}
+.brand__home:hover{opacity:.8}
+.brand .logo{height:42px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+.brand__txt .eyebrow{display:block;margin-bottom:4px}
+.brand__txt small{color:var(--muted);font-size:13px;letter-spacing:.04em}
+
+.eyebrow{
+  font-family:var(--font-body);font-size:.7rem;letter-spacing:.32em;
+  text-transform:uppercase;color:var(--gold);display:inline-block;
+}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:500;line-height:1.08;letter-spacing:.01em}
+em{font-style:italic;color:var(--gold)}
+
+/* ---------- Barre de progression ---------- */
+.progress{position:sticky;top:0;z-index:20;padding:14px 0 16px;
+  background:linear-gradient(var(--bg) 68%,rgba(20,21,26,.55));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.progress[hidden]{display:none}
+.bar{height:2px;background:var(--line);overflow:hidden;border-radius:2px}
+.bar>i{display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+  transition:width .5s var(--ease)}
+.steps-meta{display:flex;justify-content:space-between;gap:6px 14px;margin-top:10px;
+  flex-wrap:wrap;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.steps-meta b{color:var(--gold);font-weight:500}
+.steps-meta>span:last-child{margin-left:auto;text-align:right;min-width:0}
+
+/* ---------- Scène : une question à l'écran ---------- */
+.stage{min-height:52vh;display:flex;flex-direction:column;justify-content:center}
+
+/* Apparition en fondu + montée (transition entre questions) */
+.screen{animation:rise .5s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+/* ---------- Écrans d'intro / de fin ---------- */
+.hero-eyebrow{margin-bottom:14px}
+.intro h1,.end h1{font-size:clamp(2.4rem,7vw,4rem);margin:0 0 16px}
+.intro .lead,.end .lead{color:var(--muted);font-size:1.1rem;max-width:52ch;margin-bottom:30px}
+.intro .lead b,.end .lead b{color:var(--text);font-weight:500}
+.intro__meta{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:32px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--lavender)}
+.intro__meta span{display:inline-flex;align-items:center;gap:8px}
+.intro__meta svg{width:15px;height:15px;stroke:var(--gold);fill:none}
+
+/* ---------- Question ---------- */
+.q-section{margin-bottom:14px}
+.q-title{font-family:var(--font-display);font-weight:500;
+  font-size:clamp(1.7rem,4.4vw,2.6rem);line-height:1.12;margin-bottom:10px;
+  overflow-wrap:break-word;word-break:break-word}
+.q-help{color:var(--muted);font-size:1.02rem;max-width:52ch;margin-bottom:8px}
+.q-hint{color:var(--lavender);font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:22px}
+.q-body{margin-top:8px}
+.req{color:var(--gold)}
+
+/* ---------- Champs texte ---------- */
+input[type=text],input[type=email],input[type=url],input[type=tel],textarea{
+  width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+  border-radius:var(--radius);padding:14px 16px;font-family:var(--font-body);font-size:1rem;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+}
+textarea{min-height:120px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-faint)}
+input.invalid,textarea.invalid{border-color:var(--err)}
+.contact-grid{display:grid;gap:14px}
+
+/* ---------- Choix (single / multi) ---------- */
+.choices{display:grid;gap:10px}
+.choices.cols-2{grid-template-columns:1fr 1fr}
+@media(max-width:560px){.choices.cols-2{grid-template-columns:1fr}}
+.choice{position:relative;display:flex;align-items:flex-start;gap:14px;
+  border:1px solid var(--line);background:var(--panel-2);border-radius:var(--radius);
+  padding:15px 16px;user-select:none;
+  transition:border-color .3s var(--ease),background .3s var(--ease),transform .1s var(--ease)}
+.choice:hover{border-color:rgba(201,180,124,.5)}
+.choice:active{transform:scale(.99)}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice .box{width:20px;height:20px;margin-top:1px;flex:0 0 auto;border:1px solid var(--lavender);
+  border-radius:var(--radius);display:grid;place-items:center;transition:all .25s var(--ease)}
+.choice input[type=radio]~.box{border-radius:50%}
+.choice .box svg{width:12px;height:12px;opacity:0;transform:scale(.4);transition:all .25s var(--ease)}
+.choice .txt{font-size:1rem;letter-spacing:.01em;overflow-wrap:break-word;word-break:break-word}
+.choice.checked{border-color:var(--gold);background:var(--gold-faint)}
+.choice.checked .box{background:var(--gold);border-color:var(--gold)}
+.choice.checked .box svg{opacity:1;transform:none}
+
+/* Champ « Autre » qui se déplie */
+.other-wrap{margin-top:2px;max-height:0;overflow:hidden;
+  transition:max-height .35s var(--ease),opacity .3s var(--ease);opacity:0}
+.other-wrap.open{max-height:120px;opacity:1;margin-top:10px}
+
+/* ---------- Champs lien (répétable) ---------- */
+.linkrow{display:grid;gap:10px}
+.linkrow__add{display:inline-flex;align-items:center;gap:8px;background:none;border:0;
+  color:var(--gold);font-family:var(--font-body);font-size:.8rem;letter-spacing:.06em;
+  padding:4px 0;transition:color .3s var(--ease);justify-self:start}
+.linkrow__add:hover{color:var(--gold-soft)}
+
+/* ---------- Upload (dépôt de fichiers) ---------- */
+.drop{border:1px dashed var(--line);border-radius:var(--radius);background:var(--panel-2);
+  padding:26px 18px;text-align:center;transition:border-color .3s var(--ease),background .3s var(--ease)}
+.drop:hover,.drop.drag{border-color:var(--gold);background:var(--gold-faint)}
+.drop input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.drop__ic{width:34px;height:34px;margin:0 auto 10px;stroke:var(--gold);fill:none;stroke-width:1.4}
+.drop__t{font-size:.98rem;color:var(--text)}
+.drop__t b{color:var(--gold);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.drop__s{font-size:.76rem;color:var(--muted);margin-top:5px}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.filechip{display:inline-flex;align-items:center;gap:9px;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--radius);padding:7px 10px 7px 12px;
+  font-size:.82rem;color:var(--text);max-width:100%}
+.filechip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+.filechip__x{background:none;border:0;color:var(--muted);font-size:1.1rem;line-height:1;
+  padding:0 2px;transition:color .3s var(--ease)}
+.filechip__x:hover{color:var(--err)}
+.or-sep{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--lavender);
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase}
+.or-sep::before,.or-sep::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---------- Boutons ---------- */
+.actions{display:flex;align-items:center;gap:14px;margin-top:36px;flex-wrap:wrap}
+.actions .spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--font-body);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:14px 30px;border:1px solid var(--gold);color:var(--gold);background:transparent;
+  border-radius:var(--radius);transition:all .35s var(--ease)}
+.btn:hover{background:var(--gold);color:var(--bg)}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.32;pointer-events:none}
+.btn.primary{background:var(--gold);color:var(--bg)}
+.btn.primary:hover{background:var(--gold-soft);border-color:var(--gold-soft)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold);background:transparent}
+.btn svg{width:16px;height:16px}
+/* Lien « Passer » discret */
+.skip{background:none;border:0;color:var(--muted);font-family:var(--font-body);
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;padding:6px 4px;
+  transition:color .3s var(--ease)}
+.skip:hover{color:var(--gold)}
+.skip[hidden]{display:none}
+
+/* Lien « Reprendre à zéro » */
+.reset-link{display:inline-block;margin:-6px 0 20px;background:none;border:0;
+  color:var(--muted);font-family:var(--font-body);font-size:.72rem;letter-spacing:.14em;
+  text-transform:uppercase;transition:color .3s var(--ease)}
+.reset-link:hover{color:var(--gold)}
+.reset-link[hidden]{display:none}
+
+/* ---------- Écran de fin / prompt ---------- */
+.done-badge{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.done-badge .ic{width:56px;height:56px;flex:0 0 auto;border-radius:50%;border:1px solid var(--gold);
+  display:grid;place-items:center}
+.done-badge .ic svg{width:26px;height:26px}
+pre.brief{background:#101117;border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.7;
+  color:#cdc9c0;max-height:340px;overflow:auto;margin-top:8px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre.brief::-webkit-scrollbar{width:8px}
+pre.brief::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.result-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.send-status{margin-top:14px;font-size:.9rem;min-height:1.2em}
+.send-status--ok{color:var(--gold)}
+.send-status--err{color:var(--err)}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
+  background:var(--gold);color:var(--bg);font-weight:600;font-size:.78rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:13px 24px;border-radius:var(--radius);
+  opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:50;
+  box-shadow:0 18px 40px -16px rgba(0,0,0,.7)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--err)}
+
+/* ---------- Footer permanent ---------- */
+.site-footer{margin-top:48px;padding-top:26px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 24px;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.site-footer a{color:var(--gold);transition:color .3s var(--ease)}
+.site-footer a:hover{color:var(--gold-soft);text-decoration:underline}
+.site-footer__credit{color:var(--lavender)}
+@media(max-width:560px){.site-footer{justify-content:center;text-align:center;letter-spacing:.1em}}
+
+/* ---------- Responsive ---------- */
+@media(max-width:560px){
+  .wrap{padding:26px 16px 78px}
+  .btn{padding:13px 18px;letter-spacing:.12em}
+  .actions .btn,.result-actions .btn{flex:1 1 auto}
+  .actions .spacer{flex-basis:100%;order:-1;display:none}
+}
