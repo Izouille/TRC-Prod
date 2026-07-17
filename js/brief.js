@@ -603,33 +603,43 @@ function renderEnd(){
 }
 
 /* Compile toutes les réponses (+ lien SwissTransfer) et envoie le brief par email.
-   Silencieux côté client. Repli messagerie en cas d'échec réseau.
-   ⚠️ Envoi en TEXTE (JSON), livré de façon fiable sur tous les plans Formspree.
+   Silencieux côté client. Envoi en TEXTE (JSON).
+   Ordre des tentatives (de la plus fiable à la moins fiable) :
+     1. /api/brief  → même origine : jamais bloqué par Brave/uBlock (relais serveur → Formspree)
+     2. formspree.io direct → au cas où la fonction serverless serait indispo
+     3. mailto → dernier secours : ouvre la messagerie du client, pré-remplie
    Le lien SwissTransfer figure dans le brief → Ethan télécharge tous les fichiers d'un coup. */
 async function submitBrief(){
   const prompt = buildPrompt();
   const c = state.contact||{};
   const subject = `Brief site web — ${val("marque")||c.nom||"Nouveau projet"}`;
   const id = (CONFIG.formspreeId||"").trim();
+  const payload = {
+    _subject: subject,
+    email: c.email||"",             // permet à Formspree de définir le reply-to
+    Nom: c.nom||"",
+    "Téléphone": c.tel||"",
+    Brief: prompt
+  };
+  const body = JSON.stringify(payload);
+  const opts = { method:"POST", headers:{"Content-Type":"application/json", Accept:"application/json"}, body };
 
-  if(!id){ mailtoFallback(subject, prompt); return; }   // pas de Formspree → secours messagerie
-
+  // 1) Même origine → non bloqué par les bloqueurs de pub / boucliers navigateur.
   try{
-    const res = await fetch(`https://formspree.io/f/${id}`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json", Accept:"application/json"},
-      body: JSON.stringify({
-        _subject: subject,
-        email: c.email||"",         // permet à Formspree de définir le reply-to
-        Nom: c.nom||"",
-        "Téléphone": c.tel||"",
-        Brief: prompt
-      })
-    });
-    if(!res.ok) throw new Error("HTTP "+res.status);
-  }catch(e){
-    mailtoFallback(subject, prompt);   // rien n'est perdu : on ouvre la messagerie du client
+    const res = await fetch("/api/brief", opts);
+    if(res.ok) return;
+  }catch(e){ /* on tente le repli suivant */ }
+
+  // 2) Formspree en direct (peut être bloqué par certains navigateurs).
+  if(id){
+    try{
+      const res = await fetch(`https://formspree.io/f/${id}`, opts);
+      if(res.ok) return;
+    }catch(e){ /* on tente le repli suivant */ }
   }
+
+  // 3) Dernier secours : messagerie du client.
+  mailtoFallback(subject, prompt);
 }
 /* Secours : ouvre la messagerie du client, pré-remplie */
 function mailtoFallback(subject, prompt){
