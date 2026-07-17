@@ -603,48 +603,61 @@ function renderEnd(){
 }
 
 /* Compile toutes les réponses (+ lien SwissTransfer) et envoie le brief par email.
-   Silencieux côté client. Envoi en TEXTE (JSON).
-   Ordre des tentatives (de la plus fiable à la moins fiable) :
-     1. /api/brief  → même origine : jamais bloqué par Brave/uBlock (relais serveur → Formspree)
-     2. formspree.io direct → au cas où la fonction serverless serait indispo
-     3. mailto → dernier secours : ouvre la messagerie du client, pré-remplie
-   Le lien SwissTransfer figure dans le brief → Ethan télécharge tous les fichiers d'un coup. */
+   L'ENVOI EST TOUJOURS FAIT CÔTÉ SERVEUR (/api/envoi) → l'email part de manière
+   fiable via Resend (ou Formspree en repli), sans quota et sans spam.
+   Deux canaux, du plus discret au plus robuste :
+     1. fetch("/api/envoi")  → envoi silencieux en arrière-plan (cas normal).
+     2. Si le fetch est coupé (bloqueur Brave/uBlock/Opera GX) → soumission d'un
+        <form> classique vers /api/envoi : une NAVIGATION n'est JAMAIS bloquée par
+        les bloqueurs. Le serveur renvoie alors sa propre page de remerciement.
+   Le lien SwissTransfer figure dans le brief → Ethan récupère tous les fichiers d'un coup. */
+const ENDPOINT = "/api/envoi";
 async function submitBrief(){
   const prompt = buildPrompt();
   const c = state.contact||{};
   const subject = `Brief site web — ${val("marque")||c.nom||"Nouveau projet"}`;
-  const id = (CONFIG.formspreeId||"").trim();
   const payload = {
     _subject: subject,
-    email: c.email||"",             // permet à Formspree de définir le reply-to
+    email: c.email||"",             // définit le reply-to (répondre = écrire au client)
     Nom: c.nom||"",
     "Téléphone": c.tel||"",
     Brief: prompt
   };
-  const body = JSON.stringify(payload);
-  const opts = { method:"POST", headers:{"Content-Type":"application/json", Accept:"application/json"}, body };
 
-  // 1) Même origine → non bloqué par les bloqueurs de pub / boucliers navigateur.
+  // 1) fetch silencieux (avec délai de garde : un bloqueur peut faire traîner la requête).
   try{
-    const res = await fetch("/api/brief", opts);
-    if(res.ok) return;
-  }catch(e){ /* on tente le repli suivant */ }
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 8000);
+    const res = await fetch(ENDPOINT, {
+      method:"POST",
+      headers:{"Content-Type":"application/json", Accept:"application/json"},
+      body: JSON.stringify(payload),
+      keepalive:true,
+      signal: ctrl.signal
+    });
+    clearTimeout(t);
+    if(res.ok) return;               // envoyé : on garde l'écran « Merci » de l'app
+  }catch(e){ /* fetch coupé/bloqué → on bascule sur la navigation */ }
 
-  // 2) Formspree en direct (peut être bloqué par certains navigateurs).
-  if(id){
-    try{
-      const res = await fetch(`https://formspree.io/f/${id}`, opts);
-      if(res.ok) return;
-    }catch(e){ /* on tente le repli suivant */ }
-  }
-
-  // 3) Dernier secours : messagerie du client.
-  mailtoFallback(subject, prompt);
+  // 2) Repli imblocable : soumission d'un vrai formulaire (navigation de page).
+  navSubmit(payload);
 }
-/* Secours : ouvre la messagerie du client, pré-remplie */
-function mailtoFallback(subject, prompt){
-  const body = prompt + "\n\n(Pensez à joindre vos fichiers via SwissTransfer si ce n'est pas déjà fait.)";
-  window.location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+/* Secours imblocable : construit un <form> et le soumet → navigation vers /api/envoi,
+   que le serveur conclut par sa page de remerciement. */
+function navSubmit(payload){
+  const f = document.createElement("form");
+  f.method = "POST";
+  f.action = ENDPOINT;
+  f.style.display = "none";
+  const add = (name, value)=>{
+    const i = document.createElement("input");
+    i.type = "hidden"; i.name = name; i.value = value==null ? "" : String(value);
+    f.appendChild(i);
+  };
+  Object.keys(payload).forEach(k=>add(k, payload[k]));
+  add("_nav", "1");                  // signale au serveur de répondre en HTML
+  document.body.appendChild(f);
+  f.submit();
 }
 
 /* ============================================================
