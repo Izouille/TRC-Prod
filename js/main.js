@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothAnchors();
   initHashScroll();
   initWebPreview();
+  initWebRail();
   setYear();
 });
 
@@ -73,6 +74,65 @@ function initWebPreview() {
   window.addEventListener("resize", () => {
     clearTimeout(t);
     t = setTimeout(() => allFrames.forEach(({ tile, f }) => sizeFrame(tile, f)), 150);
+  });
+}
+
+/* ---------- Rail horizontal des sites réalisés ----------
+   Une seule ligne de cartes : flèches, molette de souris (vertical -> horizontal)
+   et glisser au doigt. La molette ne reprend la page qu'une fois le rail au bout. */
+function initWebRail() {
+  // Largeur de la barre de défilement, pour que la ligne pleine largeur ne déborde pas
+  const setScrollbarWidth = () => {
+    const w = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.style.setProperty("--sbw", Math.max(0, w) + "px");
+  };
+  setScrollbarWidth();
+  window.addEventListener("resize", setScrollbarWidth);
+
+  document.querySelectorAll(".webrail").forEach((rail) => {
+    const track = rail.querySelector(".webgrid");
+    const prev = rail.querySelector(".webrail__nav--prev");
+    const next = rail.querySelector(".webrail__nav--next");
+    if (!track) return;
+
+    const maxScroll = () => track.scrollWidth - track.clientWidth;
+    // Un « pas » = une carte + l'espace qui la sépare de la suivante
+    const step = () => {
+      const card = track.querySelector(".webproject");
+      if (!card) return track.clientWidth * 0.8;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return card.getBoundingClientRect().width + gap;
+    };
+
+    const sync = () => {
+      const max = maxScroll();
+      rail.classList.toggle("webrail--full", max <= 1);
+      const x = track.scrollLeft;
+      if (prev) prev.disabled = x <= 1;
+      if (next) next.disabled = x >= max - 1;
+    };
+
+    if (prev) prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+    if (next) next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+
+    // Molette verticale = défilement horizontal, tant qu'il reste du rail à parcourir
+    track.addEventListener("wheel", (e) => {
+      if (e.ctrlKey) return; // zoom navigateur
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // pavé tactile déjà horizontal
+      const max = maxScroll();
+      if (max <= 1) return;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const atEnd = (dir > 0 && track.scrollLeft >= max - 1) || (dir < 0 && track.scrollLeft <= 1);
+      if (atEnd) return; // au bout : on rend la main à la page
+      e.preventDefault();
+      track.scrollLeft += e.deltaY;
+    }, { passive: false });
+
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+    // Les images arrivent après coup : on recalcule quand la page a fini de charger
+    window.addEventListener("load", sync);
   });
 }
 

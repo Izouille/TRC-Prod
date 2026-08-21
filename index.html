@@ -45,7 +45,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=35">
+  <link rel="stylesheet" href="css/style.css?v=37">
 </head>
 <body>
 
@@ -129,58 +129,85 @@
 
       <p class="lead reveal" style="text-align:center;margin:clamp(2.5rem,6vw,4rem) auto 2.5rem;opacity:.85;">Mes réalisations&nbsp;:</p>
 
-      <div class="webgrid">
+      <div class="webrail reveal">
+        <button class="webrail__nav webrail__nav--prev" type="button" aria-label="Faire défiler vers les sites précédents">&#8592;</button>
+        <div class="webgrid" tabindex="0" role="group" aria-label="Sites internet réalisés, liste défilante">
 
-        <!-- Site 1 — Lucie Merlin -->
-        <article class="webproject reveal">
-          <div class="webcase__media">
-            <div class="mondrian">
-              <div class="mondrian__tile mondrian__tile--hero" data-frame="https://portefolio-lucie.vercel.app/">
-                <img class="mondrian__poster" src="assets/img/web-lucie.jpg" alt="Site portfolio de Lucie Merlin, designer graphique, conçu par TRC Prod">
+          <!-- Site 1 — Lucie Merlin -->
+          <article class="webproject">
+            <div class="webcase__media">
+              <div class="mondrian">
+                <div class="mondrian__tile mondrian__tile--hero" data-frame="https://portefolio-lucie.vercel.app/">
+                  <img class="mondrian__poster" src="assets/img/web-lucie.jpg" alt="Site portfolio de Lucie Merlin, designer graphique, conçu par TRC Prod">
+                </div>
+                <div class="mondrian__tile mondrian__tile--work" data-frame="https://portefolio-lucie.vercel.app/#work"></div>
+                <div class="mondrian__tile mondrian__tile--about" data-frame="https://portefolio-lucie.vercel.app/#about"></div>
+                <div class="mondrian__tile mondrian__tile--contact" data-frame="https://portefolio-lucie.vercel.app/#contact"></div>
               </div>
-              <div class="mondrian__tile mondrian__tile--work" data-frame="https://portefolio-lucie.vercel.app/#work"></div>
-              <div class="mondrian__tile mondrian__tile--about" data-frame="https://portefolio-lucie.vercel.app/#about"></div>
-              <div class="mondrian__tile mondrian__tile--contact" data-frame="https://portefolio-lucie.vercel.app/#contact"></div>
+              <a class="mondrian__link" href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site de Lucie Merlin dans un nouvel onglet">
+                <span class="mondrian__hint">Voir le site en mouvement ↗</span>
+              </a>
             </div>
-            <a class="mondrian__link" href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site de Lucie Merlin dans un nouvel onglet">
-              <span class="mondrian__hint">Voir le site en mouvement ↗</span>
-            </a>
-          </div>
-          <div class="webproject__info">
-            <span class="webproject__tag">Designer graphique</span>
-            <h3>Lucie Merlin</h3>
-            <p class="webproject__desc">Portfolio au style punk et graphique, conçu pour révéler son identité visuelle forte et mettre en valeur ses projets de direction artistique.</p>
-            <a href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
-          </div>
-        </article>
+            <div class="webproject__info">
+              <span class="webproject__tag">Designer graphique</span>
+              <h3>Lucie Merlin</h3>
+              <p class="webproject__desc">Portfolio au style punk et graphique, conçu pour révéler son identité visuelle forte et mettre en valeur ses projets de direction artistique.</p>
+              <a href="https://portefolio-lucie.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
+            </div>
+          </article>
 
-        <!-- Site 2 — Arbomike -->
-        <article class="webproject reveal">
-          <div class="webcase__media">
-            <div class="mondrian">
-              <div class="mondrian__tile mondrian__tile--hero" data-frame="https://arbomike.vercel.app/">
-                <img class="mondrian__poster" src="assets/img/web-mike.jpg" alt="Site vitrine d'Arbomike, élagage et entretien de jardin, conçu par TRC Prod">
+          <!-- Site 2 — Arbomike -->
+          <article class="webproject">
+            <div class="webcase__media">
+              <div class="mondrian">
+                <div class="mondrian__tile mondrian__tile--hero" data-frame="https://arbomike.vercel.app/">
+                  <img class="mondrian__poster" src="assets/img/web-mike.jpg" alt="Site vitrine d'Arbomike, élagage et entretien de jardin, conçu par TRC Prod">
+                </div>
+                <div class="mondrian__tile mondrian__tile--work" data-frame="https://arbomike.vercel.app/realisations"></div>
+                <div class="mondrian__tile mondrian__tile--about" data-frame="https://arbomike.vercel.app/services"></div>
+                <div class="mondrian__tile mondrian__tile--contact" data-frame="https://arbomike.vercel.app/contact"></div>
               </div>
-              <div class="mondrian__tile mondrian__tile--work" data-frame="https://arbomike.vercel.app/realisations"></div>
-              <div class="mondrian__tile mondrian__tile--about" data-frame="https://arbomike.vercel.app/services"></div>
-              <div class="mondrian__tile mondrian__tile--contact" data-frame="https://arbomike.vercel.app/contact"></div>
+              <a class="mondrian__link" href="https://arbomike.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site d'Arbomike dans un nouvel onglet">
+                <span class="mondrian__hint">Voir le site en mouvement ↗</span>
+              </a>
             </div>
-            <a class="mondrian__link" href="https://arbomike.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site d'Arbomike dans un nouvel onglet">
-              <span class="mondrian__hint">Voir le site en mouvement ↗</span>
-            </a>
-          </div>
-          <div class="webproject__info">
-            <span class="webproject__tag">Élagage &amp; entretien de jardin</span>
-            <h3>Arbomike</h3>
-            <p class="webproject__desc">Site vitrine d'un élagueur en Isère : présentation des prestations, tarifs indicatifs, galerie de chantiers et demande de devis en ligne.</p>
-            <a href="https://arbomike.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
-          </div>
-        </article>
+            <div class="webproject__info">
+              <span class="webproject__tag">Élagage &amp; entretien de jardin</span>
+              <h3>Arbomike</h3>
+              <p class="webproject__desc">Site vitrine d'un élagueur en Isère : présentation des prestations, tarifs indicatifs, galerie de chantiers et demande de devis en ligne.</p>
+              <a href="https://arbomike.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
+            </div>
+          </article>
 
-        <!-- 🔁 NOUVEAU SITE : copier le bloc <article class="webproject"> ci-dessus.
-             À remplacer : l'URL (dans les 4 data-frame + les 2 liens), le titre,
-             le tag (métier du client) et la capture de secours (assets/img/...). -->
+          <!-- Site 3 — MicroSimu -->
+          <article class="webproject">
+            <div class="webcase__media">
+              <div class="mondrian">
+                <div class="mondrian__tile mondrian__tile--hero" data-frame="https://microsimu.vercel.app/">
+                  <img class="mondrian__poster" src="assets/img/web-microsimu.png" alt="MicroSimu, outils gratuits pour micro-entrepreneurs, conçu par TRC Prod">
+                </div>
+                <div class="mondrian__tile mondrian__tile--work" data-frame="https://microsimu.vercel.app/simulateur"></div>
+                <div class="mondrian__tile mondrian__tile--about" data-frame="https://microsimu.vercel.app/facture"></div>
+                <div class="mondrian__tile mondrian__tile--contact" data-frame="https://microsimu.vercel.app/guide"></div>
+              </div>
+              <a class="mondrian__link" href="https://microsimu.vercel.app/" target="_blank" rel="noopener" aria-label="Ouvrir le site de MicroSimu dans un nouvel onglet">
+                <span class="mondrian__hint">Voir le site en mouvement ↗</span>
+              </a>
+            </div>
+            <div class="webproject__info">
+              <span class="webproject__tag">Outils pour micro-entrepreneurs</span>
+              <h3>MicroSimu</h3>
+              <p class="webproject__desc">Suite d'outils gratuits et sans compte : simulateur de revenu net, création de factures, guide de la micro-entreprise et calcul du partage à plusieurs.</p>
+              <a href="https://microsimu.vercel.app/" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
+            </div>
+          </article>
 
+          <!-- 🔁 NOUVEAU SITE : copier le bloc <article class="webproject"> ci-dessus.
+               À remplacer : l'URL (dans les 4 data-frame + les 2 liens), le titre,
+               le tag (métier du client) et la capture de secours (assets/img/...). -->
+
+        </div>
+        <button class="webrail__nav webrail__nav--next" type="button" aria-label="Faire défiler vers les sites suivants">&#8594;</button>
       </div>
     </div>
   </section>
@@ -280,6 +307,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=29"></script>
+  <script src="js/main.js?v=31"></script>
 </body>
 </html>

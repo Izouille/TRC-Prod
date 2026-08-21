@@ -317,22 +317,68 @@ h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
 
 /* ---------- Web / Sites internet ---------- */
 /* Galerie de sites réalisés (extensible : un .webproject par site) */
-.webgrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 480px));
-  justify-content: center;
-  gap: clamp(1.6rem, 4vw, 2.6rem);
+/* Rail horizontal : une seule ligne, défilement à la molette, aux flèches ou au doigt.
+   Il sort du bloc de texte pour prendre toute la largeur utile de l'écran, et les
+   cartes se dimensionnent pour qu'il en tienne trois sans coupure. */
+.webrail {
+  position: relative;
+  --pad-x: clamp(1.2rem, 5vw, 4rem);
+  --card-gap: clamp(1.6rem, 4vw, 2.6rem);
+  --rail-w: min(1720px, calc(100vw - var(--sbw, 0px) - 2 * var(--pad-x)));
+  --card-w: max(290px, min(540px, calc((var(--rail-w) - 2 * var(--card-gap)) / 3)));
+  width: var(--rail-w);
+  margin-inline: calc((100% - var(--rail-w)) / 2);
 }
-.webproject { display: flex; flex-direction: column; }
+.webgrid {
+  display: flex;
+  align-items: stretch;
+  justify-content: safe center;
+  gap: var(--card-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  padding-bottom: 1.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-gold) rgba(255, 255, 255, 0.08);
+}
+.webgrid:focus-visible { outline: 1px solid var(--c-gold); outline-offset: 8px; }
+.webgrid::-webkit-scrollbar { height: 5px; }
+.webgrid::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
+.webgrid::-webkit-scrollbar-thumb { background: var(--c-gold); }
+
+/* Flèches de défilement, posées au centre des mosaïques (ratio 4/3) */
+.webrail__nav {
+  position: absolute; top: calc(var(--card-w) * 0.375); z-index: 5;
+  transform: translateY(-50%);
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid var(--c-line); background: var(--c-bg-2); color: var(--c-gold);
+  font-size: 1.1rem; line-height: 1; cursor: pointer;
+  transition: opacity 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.webrail__nav--prev { left: calc(var(--card-gap) * -0.5 - 23px); }
+.webrail__nav--next { right: calc(var(--card-gap) * -0.5 - 23px); }
+.webrail__nav:hover { background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold); }
+.webrail__nav[disabled] { opacity: 0.25; cursor: default; }
+.webrail__nav[disabled]:hover { background: var(--c-bg-2); color: var(--c-gold); border-color: var(--c-line); }
+/* Pas de flèches quand tout tient à l'écran, ni au doigt (on glisse) */
+.webrail--full .webrail__nav { display: none; }
+@media (max-width: 1100px) { .webrail__nav { display: none; } }
+
+.webproject {
+  flex: 0 0 var(--card-w); width: var(--card-w);
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+}
 .webcase__media { position: relative; display: block; }
 .webproject__info {
   display: flex; flex-direction: column; align-items: flex-start;
+  flex: 1;
   padding: 1.2rem 0.2rem 0;
 }
 .webproject__tag { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-gold); }
 .webproject__info h3 { margin: 0.3rem 0 0; }
-.webproject__desc { color: var(--c-text-dim); font-size: 0.95rem; line-height: 1.6; margin: 0.7rem 0 0; }
-.webproject__info .btn { margin-top: 1.3rem; padding: 0.8rem 1.5rem; }
+.webproject__desc { color: var(--c-text-dim); font-size: 0.95rem; line-height: 1.6; margin: 0.7rem 0 1.3rem; }
+.webproject__info .btn { margin-top: auto; padding: 0.8rem 1.5rem; }
 
 /* Mosaïque façon Mondrian (« Composition en rouge, jaune, bleu et noir ») */
 .mondrian {
