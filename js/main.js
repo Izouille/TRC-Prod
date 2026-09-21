@@ -34,13 +34,21 @@ function webProjectHTML(site) {
   const tiles = ["work", "about", "contact"]
     .map((n, i) => frames[i] ? `<div class="mondrian__tile mondrian__tile--${n}" data-frame="${e(frames[i])}"></div>` : "")
     .join("");
+  // Un site peut fournir une vidéo (ex : une animation 3D filmée) : elle remplace
+  // alors l'aperçu en direct sur la grande tuile, qui n'est qu'une image figée.
+  const grandeTuile = site.video
+    ? `<div class="mondrian__tile mondrian__tile--hero">
+            <video class="mondrian__video" src="${e(site.video)}" poster="${e(site.videoPoster || site.poster)}"
+                   muted loop playsinline preload="none" aria-hidden="true"></video>
+          </div>`
+    : `<div class="mondrian__tile mondrian__tile--hero" data-frame="${e(site.url)}">
+            <img class="mondrian__poster" src="${e(site.poster)}" alt="${e(site.alt || site.title)}">
+          </div>`;
   return `
     <article class="webproject">
       <div class="webcase__media">
         <div class="mondrian">
-          <div class="mondrian__tile mondrian__tile--hero" data-frame="${e(site.url)}">
-            <img class="mondrian__poster" src="${e(site.poster)}" alt="${e(site.alt || site.title)}">
-          </div>
+          ${grandeTuile}
           ${tiles}
         </div>
         <a class="mondrian__link" href="${e(site.url)}" target="_blank" rel="noopener" aria-label="Ouvrir le site ${e(site.title)} dans un nouvel onglet">
@@ -92,7 +100,18 @@ function initWebPreview() {
       tile.appendChild(f);
       allFrames.push({ tile, f });
     });
+    lancerVideos(mos);
     mos.classList.add("mondrian--live");
+  };
+
+  // Les vidéos de tuile ne se chargent qu'au moment où la mosaïque s'anime
+  const lancerVideos = (mos) => {
+    mos.querySelectorAll("video").forEach((v) => {
+      v.preload = "auto";
+      const jouer = () => v.play().catch(() => {});
+      v.readyState >= 2 ? jouer() : v.addEventListener("canplay", jouer, { once: true });
+      v.load();
+    });
   };
 
   mosaics.forEach((mos) => {

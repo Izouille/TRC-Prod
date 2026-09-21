@@ -10,7 +10,9 @@
       "https://az-concept.vercel.app/fr/realisations",
       "https://az-concept.vercel.app/fr/services",
       "https://az-concept.vercel.app/fr/contact"
-    ]
+    ],
+    "video": "assets/video/az-concept-3d.mp4?v=5",
+    "videoPoster": "assets/img/web-az-concept-3d.jpg"
   },
   {
     "title": "Arbomike",
