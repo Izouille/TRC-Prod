@@ -137,8 +137,8 @@ function initWebPreview() {
 }
 
 /* ---------- Rail horizontal des sites réalisés ----------
-   Une seule ligne de cartes : flèches, molette de souris (vertical -> horizontal)
-   et glisser au doigt. La molette ne reprend la page qu'une fois le rail au bout. */
+   Une seule ligne de cartes : flèches, glisser à la souris ou au doigt.
+   La molette verticale n'est jamais détournée : la page défile normalement. */
 function initWebRail() {
   // Largeur de la barre de défilement, pour que la ligne pleine largeur ne déborde pas
   const setScrollbarWidth = () => {
@@ -174,18 +174,45 @@ function initWebRail() {
     if (prev) prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
     if (next) next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
 
-    // Molette verticale = défilement horizontal, tant qu'il reste du rail à parcourir
-    track.addEventListener("wheel", (e) => {
-      if (e.ctrlKey) return; // zoom navigateur
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // pavé tactile déjà horizontal
-      const max = maxScroll();
-      if (max <= 1) return;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const atEnd = (dir > 0 && track.scrollLeft >= max - 1) || (dir < 0 && track.scrollLeft <= 1);
-      if (atEnd) return; // au bout : on rend la main à la page
+    // La molette verticale reste à la page (sinon le scroll accroche en passant
+    // sur le rail) : on déplace la ligne aux flèches, au doigt ou en glissant.
+    let drag = null;
+    track.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return; // le tactile glisse déjà tout seul
+      if (maxScroll() <= 1) return;
+      drag = { x: e.clientX, left: track.scrollLeft, actif: false, id: e.pointerId };
+    });
+    track.addEventListener("pointermove", (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      // On n'attrape la ligne qu'après quelques pixels, pour ne pas gêner les clics
+      if (!drag.actif) {
+        if (Math.abs(dx) < 6) return;
+        drag.actif = true;
+        track.setPointerCapture(drag.id);
+        track.classList.add("webgrid--drag");
+      }
       e.preventDefault();
-      track.scrollLeft += e.deltaY;
-    }, { passive: false });
+      track.scrollLeft = drag.left - dx;
+    });
+    const finDrag = (e) => {
+      if (!drag || (e && e.pointerId !== drag.id)) return;
+      if (drag.actif) {
+        track.classList.remove("webgrid--drag");
+        glisse = true;
+        setTimeout(() => { glisse = false; }, 0); // le temps que le clic passe
+      }
+      drag = null;
+    };
+    // Le clic qui termine un glissement ne doit pas ouvrir la carte
+    let glisse = false;
+    track.addEventListener("click", (e) => {
+      if (!glisse) return;
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+    track.addEventListener("pointerup", finDrag);
+    track.addEventListener("pointercancel", finDrag);
 
     track.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);

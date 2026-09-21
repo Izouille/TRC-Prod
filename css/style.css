@@ -317,7 +317,7 @@ h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
 
 /* ---------- Web / Sites internet ---------- */
 /* Galerie de sites réalisés (extensible : un .webproject par site) */
-/* Rail horizontal : une seule ligne, défilement à la molette, aux flèches ou au doigt.
+/* Rail horizontal : une seule ligne, défilement aux flèches, en glissant ou au doigt.
    Il sort du bloc de texte pour prendre toute la largeur utile de l'écran, et les
    cartes se dimensionnent pour qu'il en tienne trois sans coupure. */
 .webrail {
@@ -342,6 +342,10 @@ h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
   scrollbar-color: var(--c-gold) rgba(255, 255, 255, 0.08);
 }
 .webgrid:focus-visible { outline: 1px solid var(--c-gold); outline-offset: 8px; }
+/* Glisser à la souris : pas d'aimantation ni de sélection de texte pendant le mouvement */
+.webrail:not(.webrail--full) .webgrid { cursor: grab; }
+.webgrid--drag { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.webgrid--drag * { cursor: grabbing; }
 .webgrid::-webkit-scrollbar { height: 5px; }
 .webgrid::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
 .webgrid::-webkit-scrollbar-thumb { background: var(--c-gold); }
