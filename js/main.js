@@ -2,7 +2,7 @@
    TRC PROD — JavaScript principal
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initHeader();
   initMobileNav();
   initReveal();
@@ -11,10 +11,50 @@ document.addEventListener("DOMContentLoaded", () => {
   initBackToTop();
   initSmoothAnchors();
   initHashScroll();
+  await initWebProjects(); // les cartes doivent exister avant les deux appels suivants
   initWebPreview();
   initWebRail();
   setYear();
 });
+
+/* ---------- Sites réalisés (cartes construites depuis data/sites.json) ----------
+   L'ordre du fichier = l'ordre d'affichage. Se modifie avec admin-sites.html. */
+async function initWebProjects() {
+  const tracks = [...document.querySelectorAll("[data-sites]")];
+  if (!tracks.length) return;
+  const items = await loadJSON(tracks[0].dataset.sites);
+  if (!items || !items.length) return;
+  tracks.forEach((track) => { track.innerHTML = items.map(webProjectHTML).join(""); });
+}
+
+function webProjectHTML(site) {
+  const e = (s) => String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const frames = site.frames || [];
+  const tiles = ["work", "about", "contact"]
+    .map((n, i) => frames[i] ? `<div class="mondrian__tile mondrian__tile--${n}" data-frame="${e(frames[i])}"></div>` : "")
+    .join("");
+  return `
+    <article class="webproject">
+      <div class="webcase__media">
+        <div class="mondrian">
+          <div class="mondrian__tile mondrian__tile--hero" data-frame="${e(site.url)}">
+            <img class="mondrian__poster" src="${e(site.poster)}" alt="${e(site.alt || site.title)}">
+          </div>
+          ${tiles}
+        </div>
+        <a class="mondrian__link" href="${e(site.url)}" target="_blank" rel="noopener" aria-label="Ouvrir le site ${e(site.title)} dans un nouvel onglet">
+          <span class="mondrian__hint">Voir le site en mouvement ↗</span>
+        </a>
+      </div>
+      <div class="webproject__info">
+        <span class="webproject__tag">${e(site.tag)}</span>
+        <h3>${e(site.title)}</h3>
+        <p class="webproject__desc">${e(site.desc)}</p>
+        <a href="${e(site.url)}" target="_blank" rel="noopener" class="btn">Voir le site ↗</a>
+      </div>
+    </article>`;
+}
 
 /* ---------- Aperçu « site en direct » (mosaïque Mondrian) ----------
    Injecte le site du client dans des iframes, mises à l'échelle façon
