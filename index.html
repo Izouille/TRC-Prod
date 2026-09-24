@@ -55,6 +55,7 @@
     <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="nav">
       <a href="index.html" class="active">Accueil</a>
+      <a href="#web">Sites web</a>
       <a href="photo.html">Photo</a>
       <a href="video.html">Vidéo</a>
       <a href="services.html">Services</a>
@@ -72,15 +73,42 @@
           <span class="hero__first">Ethan</span>
           <span class="hero__last">Trincanato</span>
         </h1>
-        <p class="hero__role">Photographe &amp; Vidéaste</p>
+        <p class="hero__role">Webdesign, photo &amp; vidéo</p>
         <div class="hero__actions">
+          <a href="#web" class="btn btn--solid">Créer mon site</a>
           <a href="photo.html" class="btn">Voir le portfolio</a>
           <a href="contact.html" class="btn">Me contacter</a>
-          <a href="#web" class="btn btn--solid">Besoin d'un site ?</a>
         </div>
       </div>
     </div>
-    <a href="#photo" class="hero__scroll">Défiler</a>
+    <a href="#web" class="hero__scroll">Défiler</a>
+  </section>
+
+  <!-- WEB / SITES INTERNET -->
+  <section class="section section--smoke" id="web">
+    <div class="container">
+      <div class="section-head section-head--center reveal">
+        <span class="eyebrow">Sites internet</span>
+        <h2>Votre site, pensé comme une image.</h2>
+        <p class="lead" style="margin:0 auto;">Je conçois votre site de A à Z : design, textes, photos, mise en ligne et référencement. Avec un œil de photographe pour que chaque page donne envie.</p>
+      </div>
+
+      <!-- CTA brief : juste le bouton, au-dessus des réalisations -->
+      <div style="text-align:center;margin:clamp(2rem,5vw,3rem) auto 0;" class="reveal">
+        <a href="brief.html" class="btn btn--solid">Démarrer mon brief →</a>
+      </div>
+
+      <p class="lead reveal" style="text-align:center;margin:clamp(2.5rem,6vw,4rem) auto 2.5rem;opacity:.85;">Mes réalisations&nbsp;:</p>
+
+      <div class="webrail reveal">
+        <button class="webrail__nav webrail__nav--prev" type="button" aria-label="Faire défiler vers les sites précédents">&#8592;</button>
+        <div class="webgrid" data-sites="data/sites.json" tabindex="0" role="group" aria-label="Sites internet réalisés, liste défilante">
+          <!-- Les cartes sont construites depuis data/sites.json.
+               Pour ajouter un site ou changer l'ordre : ouvre admin-sites.html. -->
+        </div>
+        <button class="webrail__nav webrail__nav--next" type="button" aria-label="Faire défiler vers les sites suivants">&#8594;</button>
+      </div>
+    </div>
   </section>
 
   <!-- PHOTO -->
@@ -113,33 +141,6 @@
     </div>
   </section>
 
-  <!-- WEB / SITES INTERNET -->
-  <section class="section section--smoke" id="web">
-    <div class="container">
-      <div class="section-head section-head--center reveal">
-        <span class="eyebrow">Web &amp; Sites internet</span>
-        <h2>Je crée aussi vos sites.</h2>
-        <p class="lead" style="margin:0 auto;">Au-delà de l'image, je conçois des sites sur-mesure - design, intégration et mise en ligne.</p>
-      </div>
-
-      <!-- CTA brief : juste le bouton, au-dessus des réalisations -->
-      <div style="text-align:center;margin:clamp(2rem,5vw,3rem) auto 0;" class="reveal">
-        <a href="brief.html" class="btn btn--solid">Démarrer mon brief →</a>
-      </div>
-
-      <p class="lead reveal" style="text-align:center;margin:clamp(2.5rem,6vw,4rem) auto 2.5rem;opacity:.85;">Mes réalisations&nbsp;:</p>
-
-      <div class="webrail reveal">
-        <button class="webrail__nav webrail__nav--prev" type="button" aria-label="Faire défiler vers les sites précédents">&#8592;</button>
-        <div class="webgrid" data-sites="data/sites.json" tabindex="0" role="group" aria-label="Sites internet réalisés, liste défilante">
-          <!-- Les cartes sont construites depuis data/sites.json.
-               Pour ajouter un site ou changer l'ordre : ouvre admin-sites.html. -->
-        </div>
-        <button class="webrail__nav webrail__nav--next" type="button" aria-label="Faire défiler vers les sites suivants">&#8594;</button>
-      </div>
-    </div>
-  </section>
-
   <!-- À PROPOS -->
   <section class="section" id="apropos">
     <div class="container">
@@ -151,9 +152,9 @@
           <span class="eyebrow">À propos</span>
           <h2>Ethan Trincanato</h2>
           <p class="lead">Derrière TRC Prod, une idée simple : créer des images qui vous ressemblent et donnent envie.</p>
-          <p>Photographe et vidéaste basé à Grenoble, je travaille la lumière, le cadrage et le détail pour que chaque projet - photo comme vidéo - soit net, vivant et bien fini. Que ce soit pour une marque, un commerce ou un particulier, je cherche toujours l'image juste : celle qui raconte quelque chose et donne envie d'en voir plus.</p>
+          <p>Webdesigner, photographe et vidéaste basé à Grenoble, je travaille la lumière, le cadrage et le détail pour que chaque projet (site, photo ou vidéo) soit net, vivant et bien fini. Que ce soit pour une marque, un commerce ou un particulier, je cherche toujours l'image juste : celle qui raconte quelque chose et donne envie d'en voir plus.</p>
           <div class="stats">
-            <div><div class="stats__num">Photo</div><div class="stats__label">&amp; Vidéo</div></div>
+            <div><div class="stats__num">Web</div><div class="stats__label">Photo &amp; vidéo</div></div>
             <div><div class="stats__num">Marques</div><div class="stats__label">Commerces &amp; particuliers</div></div>
             <div><div class="stats__num">TRC</div><div class="stats__label">Prod</div></div>
           </div>
@@ -173,6 +174,16 @@
       <div class="services">
         <div class="service reveal">
           <div class="service__num">01</div>
+          <h3>Sites &amp; identité</h3>
+          <ul class="service__list">
+            <li>Sites internet</li>
+            <li>Identité visuelle</li>
+            <li>Logo &amp; branding</li>
+            <li>Charte graphique</li>
+          </ul>
+        </div>
+        <div class="service reveal">
+          <div class="service__num">02</div>
           <h3>Photographie</h3>
           <ul class="service__list">
             <li>Packshot &amp; produit</li>
@@ -183,7 +194,7 @@
           </ul>
         </div>
         <div class="service reveal">
-          <div class="service__num">02</div>
+          <div class="service__num">03</div>
           <h3>Vidéo &amp; Film</h3>
           <ul class="service__list">
             <li>Réseaux sociaux</li>
@@ -191,16 +202,6 @@
             <li>Film de marque</li>
             <li>Aftermovie &amp; événementiel</li>
             <li>Packshot vidéo</li>
-          </ul>
-        </div>
-        <div class="service reveal">
-          <div class="service__num">03</div>
-          <h3>Direction artistique</h3>
-          <ul class="service__list">
-            <li>Sites internet</li>
-            <li>Identité visuelle</li>
-            <li>Logo &amp; branding</li>
-            <li>Charte graphique</li>
           </ul>
         </div>
       </div>
