@@ -869,24 +869,45 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .page-head--contact  { --t1: rgba(80, 70, 230, 0.42);  --t2: rgba(242, 167, 220, 0.22); }
 
 .emblem {
+  /* Direction « à l'opposé de la lumière » (lx, ly) et point éclairé (px, py), pilotés en JS */
+  --lx: 0.707; --ly: 0.707; --px: 20%; --py: 15%;
   position: absolute; z-index: -1; pointer-events: none;
   right: clamp(1rem, 8vw, 10rem); top: clamp(7rem, 12vw, 9.5rem);
   width: clamp(220px, 24vw, 360px); aspect-ratio: 858 / 900;
-  opacity: 0.85;
+  opacity: 0.9;
+}
+/* Le fond s'éclaire doucement là où passe la lumière */
+.grave-halo {
+  position: absolute; inset: -35%;
+  background: radial-gradient(circle clamp(140px, 16vw, 240px) at calc(var(--px) * 0.59 + 20.5%) calc(var(--py) * 0.59 + 20.5%), rgba(201, 184, 255, 0.13), transparent);
+}
+.grave-set { position: absolute; inset: 0; }
+/* Profond en haut à gauche, puis la gravure s'efface vers le bas à droite */
+.grave-set--profond {
+  --d: 7;
+  -webkit-mask-image: linear-gradient(150deg, #000 20%, transparent 70%);
+          mask-image: linear-gradient(150deg, #000 20%, transparent 70%);
+}
+.grave-set--leger {
+  --d: 1.6;
+  -webkit-mask-image: linear-gradient(150deg, transparent 20%, #000 60%, rgba(0, 0, 0, 0.35) 100%);
+          mask-image: linear-gradient(150deg, transparent 20%, #000 60%, rgba(0, 0, 0, 0.35) 100%);
 }
 .grave {
   position: absolute; inset: 0; display: block;
   -webkit-mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
           mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
 }
-/* Bord inférieur droit du creux qui accroche la lumière */
-.grave--lumiere { translate: 1.5px 1.5px; background: rgba(201, 184, 255, 0.16); }
-/* Le creux : ombre portée par le bord supérieur gauche */
-.grave--creux { background: rgba(3, 2, 8, 0.62); }
-/* Fond du creux, décalé : l'ombre ne reste visible qu'en haut à gauche */
+/* Bord du creux qui accroche la lumière (côté opposé à la source) */
+.grave--lumiere {
+  translate: calc(var(--lx) * 1.6px) calc(var(--ly) * 1.6px);
+  background: rgba(214, 200, 255, calc(0.10 + var(--d) * 0.03));
+}
+/* Le creux, et son fond décalé : l'ombre reste côté lumière, plus large si c'est profond */
+.grave--creux { background: rgba(3, 2, 8, calc(0.45 + var(--d) * 0.06)); }
 .grave--fond {
-  translate: 2.5px 2.5px;
-  background: linear-gradient(150deg, rgba(22, 14, 44, 0.9), rgba(12, 8, 26, 0.9));
+  translate: calc(var(--lx) * var(--d) * 0.7px) calc(var(--ly) * var(--d) * 0.7px);
+  background: linear-gradient(150deg, rgba(24, 15, 48, 0.92), rgba(12, 8, 26, 0.92));
 }
 /* Titres longs (services, à propos, contact) : un cran plus discret */
 .page-head--services .emblem, .page-head--about .emblem, .page-head--contact .emblem { opacity: 0.55; top: clamp(9rem, 15vw, 12rem); }

@@ -577,15 +577,52 @@ function initTilt() {
   });
 }
 
-/* ---------- Monogramme TRC gravé (en-tête des pages) ----------
-   <div class="emblem"></div> : le logo creusé dans le fond, sans relief sortant.
-   Trois couches découpées au logo : un liseré de lumière décalé en bas à droite
-   (le bord du creux qui accroche la lumière), le creux sombre, et le fond du creux
-   légèrement décalé, qui laisse une ombre intérieure en haut à gauche. */
+/* ---------- Monogramme TRC gravé, éclairé par une lumière rasante ----------
+   <div class="emblem"></div> : le logo creusé dans le fond. La gravure est profonde
+   en haut à gauche et s'efface vers le bas à droite (deux jeux de couches, fondus
+   l'un dans l'autre). Une lumière rasante suit la souris : l'ombre dans le creux et
+   le liseré clair se déplacent avec elle, et le fond s'éclaire là où elle passe.
+   Sans souris, la lumière tourne lentement autour du logo. */
 function initEmbleme() {
+  const jeu = (n) => `<div class="grave-set grave-set--${n}"><span class="grave grave--lumiere"></span>` +
+    '<span class="grave grave--creux"><span class="grave grave--fond"></span></span></div>';
   document.querySelectorAll(".emblem").forEach((em) => {
-    em.innerHTML = '<span class="grave grave--lumiere"></span>' +
-      '<span class="grave grave--creux"><span class="grave grave--fond"></span></span>';
+    em.innerHTML = '<span class="grave-halo"></span>' + jeu("profond") + jeu("leger");
+    const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (calme) return; // lumière fixe venue du haut à gauche (valeurs par défaut du CSS)
+
+    const souris = window.matchMedia("(pointer: fine)").matches;
+    let cible = { x: -0.7, y: -0.7, px: 20, py: 15 }, cur = { ...cible }, visible = true, t0 = performance.now();
+    if (souris) {
+      window.addEventListener("mousemove", (ev) => {
+        const r = em.getBoundingClientRect();
+        const dx = ev.clientX - (r.left + r.width / 2), dy = ev.clientY - (r.top + r.height / 2);
+        const n = Math.hypot(dx, dy) || 1;
+        cible = {
+          x: dx / n, y: dy / n, // direction de la lumière, vue depuis le logo
+          px: Math.max(-20, Math.min(120, ((ev.clientX - r.left) / r.width) * 100)),
+          py: Math.max(-20, Math.min(120, ((ev.clientY - r.top) / r.height) * 100)),
+        };
+      }, { passive: true });
+    }
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(em);
+    const tick = (t) => {
+      if (visible) {
+        if (!souris) { // ronde lente de la lumière (un tour en 14 s)
+          const a = ((t - t0) / 14000) * Math.PI * 2 - 2.4;
+          cible = { x: Math.cos(a), y: Math.sin(a), px: 50 + Math.cos(a) * 55, py: 50 + Math.sin(a) * 55 };
+        }
+        for (const k in cur) cur[k] += (cible[k] - cur[k]) * 0.08;
+        const n = Math.hypot(cur.x, cur.y) || 1;
+        // L'ombre part à l'opposé de la lumière
+        em.style.setProperty("--lx", (-cur.x / n).toFixed(3));
+        em.style.setProperty("--ly", (-cur.y / n).toFixed(3));
+        em.style.setProperty("--px", cur.px.toFixed(1) + "%");
+        em.style.setProperty("--py", cur.py.toFixed(1) + "%");
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   });
 }
 
