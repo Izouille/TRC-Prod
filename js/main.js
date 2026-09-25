@@ -4,6 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   initHeader();
+  initHeroPause();
   initMobileNav();
   initReveal();
   initGalleries();
@@ -17,6 +18,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   setYear();
 });
 
+/* ---------- Hero : animations en pause quand il est hors écran ----------
+   La fumée et le zoom lent n'ont pas à tourner pendant qu'on regarde les sites. */
+function initHeroPause() {
+  const hero = document.querySelector(".hero");
+  if (!hero || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([e]) => hero.classList.toggle("hero--pause", !e.isIntersecting)).observe(hero);
+}
+
 /* ---------- Sites réalisés (cartes construites depuis data/sites.json) ----------
    L'ordre du fichier = l'ordre d'affichage. Se modifie avec admin-sites.html. */
 async function initWebProjects() {
@@ -27,12 +36,20 @@ async function initWebProjects() {
   tracks.forEach((track) => { track.innerHTML = items.map(webProjectHTML).join(""); });
 }
 
+// Capture fixe d'une page de site (générée par « node captures-apercus.mjs »)
+function apercuFixe(url) {
+  return "assets/img/apercus/" +
+    url.replace(/^https?:\/\//, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() + ".jpg";
+}
+
 function webProjectHTML(site) {
   const e = (s) => String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const frames = site.frames || [];
   const tiles = ["work", "about", "contact"]
-    .map((n, i) => frames[i] ? `<div class="mondrian__tile mondrian__tile--${n}" data-frame="${e(frames[i])}"></div>` : "")
+    .map((n, i) => frames[i] ? `<div class="mondrian__tile mondrian__tile--${n}" data-frame="${e(frames[i])}">
+            <img class="mondrian__poster" src="${e(apercuFixe(frames[i]))}" alt="" loading="lazy" onerror="this.remove()">
+          </div>` : "")
     .join("");
   // Un site peut fournir une vidéo (ex : une animation 3D filmée) : elle remplace
   // alors l'aperçu en direct sur la grande tuile, qui n'est qu'une image figée.
@@ -65,9 +82,10 @@ function webProjectHTML(site) {
 }
 
 /* ---------- Aperçu « site en direct » (mosaïque Mondrian) ----------
-   Injecte le site du client dans des iframes, mises à l'échelle façon
-   rendu bureau, uniquement quand la section approche (perf). Sur mobile
-   ou si l'animation est désactivée, on garde la capture statique. */
+   Au repos : captures fixes. Au survol d'une carte, le site du client se
+   charge dans des iframes mises à l'échelle façon rendu bureau (une seule
+   carte vivante à la fois). Sur mobile ou si l'animation est désactivée,
+   on garde la capture statique. */
 function initWebPreview() {
   const mosaics = [...document.querySelectorAll(".mondrian")];
   if (!mosaics.length) return;
@@ -87,12 +105,34 @@ function initWebPreview() {
     f.style.transformOrigin = "top left";
   };
 
+  // File d'attente : les sites se chargent UN PAR UN (jamais 15 d'un coup,
+  // sinon le navigateur sature et toute la page rame)
+  const file = [];
+  let enCours = false;
+  const chargerSuivant = () => {
+    if (enCours || !file.length) return;
+    const f = file.shift();
+    enCours = true;
+    let fini = false;
+    const suite = () => {
+      if (fini) return;
+      fini = true; enCours = false;
+      setTimeout(chargerSuivant, 250); // petite respiration entre deux sites
+    };
+    f.addEventListener("load", () => { if (f.src !== "about:blank") f.parentNode.classList.add("is-pret"); suite(); }, { once: true });
+    setTimeout(suite, 2500); // un site lent ne bloque pas les suivants
+    f.src = f.dataset.src;
+  };
+  const mettreEnFile = (mos) => {
+    mos.querySelectorAll(".mondrian__frame").forEach((f) => { if (!file.includes(f)) file.push(f); });
+    chargerSuivant();
+  };
+
   const build = (mos, tiles) => {
     tiles.forEach((tile) => {
       const f = document.createElement("iframe");
       f.className = "mondrian__frame";
-      f.src = tile.dataset.frame;
-      f.loading = "lazy";
+      f.dataset.src = tile.dataset.frame;
       f.tabIndex = -1;
       f.setAttribute("aria-hidden", "true");
       f.setAttribute("scrolling", "no");
@@ -100,33 +140,59 @@ function initWebPreview() {
       tile.appendChild(f);
       allFrames.push({ tile, f });
     });
-    lancerVideos(mos);
     mos.classList.add("mondrian--live");
-  };
-
-  // Les vidéos de tuile ne se chargent qu'au moment où la mosaïque s'anime
-  const lancerVideos = (mos) => {
-    mos.querySelectorAll("video").forEach((v) => {
-      v.preload = "auto";
-      const jouer = () => v.play().catch(() => {});
-      v.readyState >= 2 ? jouer() : v.addEventListener("canplay", jouer, { once: true });
-      v.load();
-    });
   };
 
   mosaics.forEach((mos) => {
     const tiles = [...mos.querySelectorAll("[data-frame]")];
     // Mobile / animation désactivée : on garde la capture statique
-    if (reduce || small || !tiles.length) { mos.classList.add("mondrian--static"); return; }
-    if ("IntersectionObserver" in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { build(mos, tiles); io.disconnect(); } });
-      }, { rootMargin: "250px" });
-      io.observe(mos);
-    } else {
-      build(mos, tiles);
+    if (reduce || small) { mos.classList.add("mondrian--static"); return; }
+
+    // La vidéo de tuile (légère) tourne seulement quand la carte est à l'écran
+    const videos = [...mos.querySelectorAll("video")];
+    if (videos.length && "IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => entries.forEach((e) => videos.forEach((v) => {
+        if (e.isIntersecting) {
+          if (v.preload !== "auto") { v.preload = "auto"; v.load(); }
+          v.play().catch(() => {});
+        } else v.pause();
+      })), { threshold: 0.25 }).observe(mos);
     }
+
+    // Les sites en direct (lourds) : uniquement au survol de la carte.
+    // Au repos, les captures fixes suffisent : zéro site qui tourne en fond.
+    if (!tiles.length) return;
+    const carte = mos.closest(".webcase__media") || mos;
+    let entree, sortie;
+    carte.addEventListener("mouseenter", () => {
+      clearTimeout(sortie);
+      entree = setTimeout(() => {
+        if (!mos.classList.contains("mondrian--live")) build(mos, tiles);
+        reprendre(mos);
+      }, 200); // un simple passage de souris ne déclenche rien
+    });
+    carte.addEventListener("mouseleave", () => {
+      clearTimeout(entree);
+      sortie = setTimeout(() => suspendre(mos), 1200);
+    });
   });
+
+  // Fin du survol : on vide les cadres, les captures fixes réapparaissent
+  function suspendre(mos) {
+    if (!mos.classList.contains("mondrian--on")) return;
+    mos.classList.remove("mondrian--on");
+    mos.querySelectorAll(".mondrian__frame").forEach((f) => {
+      const i = file.indexOf(f);
+      if (i > -1) file.splice(i, 1);
+      f.parentNode.classList.remove("is-pret");
+      f.src = "about:blank";
+    });
+  }
+  function reprendre(mos) {
+    if (mos.classList.contains("mondrian--on")) return;
+    mos.classList.add("mondrian--on");
+    mettreEnFile(mos);
+  }
 
   // Un seul écouteur de redimensionnement pour tous les cadres
   let t;
