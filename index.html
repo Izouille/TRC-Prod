@@ -45,7 +45,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=40">
+  <link rel="stylesheet" href="css/style.css?v=42">
 </head>
 <body>
 
@@ -66,6 +66,7 @@
 
   <!-- HERO : titre + anneau 3D des sites (construit depuis data/sites.json) -->
   <section class="hero">
+    <div class="hero__aurora" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="container hero__copy">
       <h1 class="hero__title">Votre site,<br>en <em>mieux.</em></h1>
       <div class="hero__side">
@@ -78,6 +79,44 @@
     </div>
     <div class="ring3d" data-ring="data/sites.json" aria-label="Sites réalisés, en rotation"></div>
     <p class="hero__hint">Glissez pour faire tourner, cliquez pour ouvrir</p>
+  </section>
+
+  <!-- BANDEAU : tout ce que je fais, en continu -->
+  <div class="marquee" aria-label="Sites vitrines, identité visuelle, photo, vidéo, référencement">
+    <div class="marquee__track" aria-hidden="true"><span><b>Sites <em>vitrines</em></b><i>✦</i><b>Identité <em>visuelle</em></b><i>✦</i><b>Photo <em>produit</em></b><i>✦</i><b>Films de <em>marque</em></b><i>✦</i><b>Référencement <em>Google</em></b><i>✦</i><b>Mariage &amp; <em>événement</em></b><i>✦</i><b>Automobile</b><i>✦</i><b>Réseaux <em>sociaux</em></b><i>✦</i></span><span><b>Sites <em>vitrines</em></b><i>✦</i><b>Identité <em>visuelle</em></b><i>✦</i><b>Photo <em>produit</em></b><i>✦</i><b>Films de <em>marque</em></b><i>✦</i><b>Référencement <em>Google</em></b><i>✦</i><b>Mariage &amp; <em>événement</em></b><i>✦</i><b>Automobile</b><i>✦</i><b>Réseaux <em>sociaux</em></b><i>✦</i></span></div>
+  </div>
+
+  <!-- TOUT MON TRAVAIL : accès direct aux trois univers -->
+  <section class="section section--glow-top">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Tout mon travail</span>
+        <h2>Trois métiers, <em>un seul regard.</em></h2>
+      </div>
+      <div class="workhub reveal">
+        <a href="web.html" class="worktile">
+          <img src="assets/img/web-az-concept.jpg" alt="" loading="lazy">
+          <span class="worktile__go" aria-hidden="true">→</span>
+          <span class="worktile__count" data-compte="data/sites.json">4</span>
+          <h3>Sites web</h3>
+          <p>Sites vitrines conçus de A à Z, en ligne et référencés.</p>
+        </a>
+        <a href="photo.html" class="worktile">
+          <img src="assets/img/ferrari-2.jpg" alt="" loading="lazy">
+          <span class="worktile__go" aria-hidden="true">→</span>
+          <span class="worktile__count" data-compte="data/photos.json">10</span>
+          <h3>Photo</h3>
+          <p>Automobile, portrait, mode et produit.</p>
+        </a>
+        <a href="video.html" class="worktile">
+          <img src="https://img.youtube.com/vi/EOymOgk8Qnw/maxresdefault.jpg" alt="" loading="lazy">
+          <span class="worktile__go" aria-hidden="true">→</span>
+          <span class="worktile__count" data-compte="data/videos.json">4</span>
+          <h3>Vidéo</h3>
+          <p>Clips, courts-métrages et films de marque.</p>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- MÉTHODE -->
@@ -162,9 +201,9 @@
           <p class="lead">Derrière TRC Prod, une idée simple : créer des images qui vous ressemblent et donnent envie.</p>
           <p>Webdesigner, photographe et vidéaste basé à Grenoble, je travaille la lumière, le cadrage et le détail pour que chaque projet (site, photo ou vidéo) soit net, vivant et bien fini. Que ce soit pour une marque, un commerce ou un particulier, je cherche toujours l'image juste : celle qui raconte quelque chose et donne envie d'en voir plus.</p>
           <div class="stats">
-            <div><div class="stats__num">Web</div><div class="stats__label">Photo &amp; vidéo</div></div>
-            <div><div class="stats__num">Marques</div><div class="stats__label">Commerces &amp; particuliers</div></div>
-            <div><div class="stats__num">TRC</div><div class="stats__label">Prod</div></div>
+            <div><div class="stats__num" data-compte="data/sites.json">4</div><div class="stats__label">sites en ligne</div></div>
+            <div><div class="stats__num" data-compte="data/photos.json">10</div><div class="stats__label">photos au portfolio</div></div>
+            <div><div class="stats__num" data-compte="data/videos.json">4</div><div class="stats__label">films et clips</div></div>
           </div>
           <p style="margin-top:2.5rem;"><a href="about.html" class="btn">En savoir plus</a></p>
         </div>
@@ -246,6 +285,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=34"></script>
+  <script src="js/main.js?v=35"></script>
 </body>
 </html>

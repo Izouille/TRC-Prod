@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   initGalleries();
   initContactForm();
   initBackToTop();
+  initReseaux();
+  initScrollProgress();
+  initCompteurs();
+  initCurseurVoir();
+  initBarreMobile();
   initSmoothAnchors();
   initHashScroll();
   initRing3D();
@@ -408,13 +413,153 @@ function initBackToTop() {
   btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 }
 
+/* ---------- Réseaux en bulles ----------
+   Une seule liste, posée à trois endroits : la colonne flottante (ordinateur),
+   le menu mobile et le pied de page. Pour ajouter un réseau : une ligne ici. */
+const RESEAUX = [
+  { nom: "Instagram", href: "https://instagram.com/trc.prod",
+    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>' },
+  { nom: "LinkedIn", href: "https://www.linkedin.com/in/ethan-trincanato",
+    svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5 2.5 2.5 0 0 0 4.98 3.5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.290-.02-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21H9z"/></svg>' },
+  { nom: "Email", href: "mailto:trcprod38@gmail.com",
+    svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' },
+];
+function bullesHTML() {
+  return RESEAUX.map((r) => {
+    const ext = r.href.startsWith("http") ? ' target="_blank" rel="noopener"' : "";
+    return `<a class="bubble" href="${r.href}"${ext} aria-label="${r.nom}"><span class="bubble__icon">${r.svg}</span><span class="bubble__label">${r.nom}</span></a>`;
+  }).join("");
+}
+function initReseaux() {
+  if (document.body.classList.contains("no-dock")) return;
+  const dock = document.createElement("div");
+  dock.className = "dock";
+  dock.innerHTML = bullesHTML();
+  document.body.appendChild(dock);
+  const nav = document.querySelector(".nav");
+  if (nav) {
+    const row = document.createElement("div");
+    row.className = "nav__social";
+    row.innerHTML = bullesHTML();
+    nav.appendChild(row);
+  }
+  document.querySelectorAll(".footer__social").forEach((f) => {
+    f.classList.add("footer__social--bubbles");
+    f.innerHTML = bullesHTML();
+  });
+}
+
+/* ---------- Compteurs animés ----------
+   <b data-compte="data/photos.json"></b> : compte les éléments du fichier,
+   ou <b data-compte="12"></b> pour un nombre fixe. Le chiffre défile à l'écran. */
+function initCompteurs() {
+  const els = [...document.querySelectorAll("[data-compte]")];
+  if (!els.length) return;
+  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const animer = (el, fin) => {
+    if (calme || !("IntersectionObserver" in window)) { el.textContent = fin; return; }
+    el.textContent = "0";
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const t0 = performance.now(), duree = 1100;
+      const pas = (t) => {
+        const k = Math.min(1, (t - t0) / duree);
+        el.textContent = Math.round(fin * (1 - Math.pow(1 - k, 3))); // easeOutCubic
+        if (k < 1) requestAnimationFrame(pas);
+      };
+      requestAnimationFrame(pas);
+    }, { threshold: 0.6 });
+    io.observe(el);
+  };
+  els.forEach(async (el) => {
+    const src = el.dataset.compte;
+    if (/^\d+$/.test(src)) return animer(el, +src);
+    const liste = await loadJSON(src);
+    if (liste && liste.length) animer(el, liste.length);
+  });
+}
+
+/* ---------- Curseur « Voir » sur les projets ----------
+   Un rond qui suit la souris (avec un léger retard) au-dessus des projets.
+   Seulement avec une vraie souris et si les animations sont permises. */
+function initCurseurVoir() {
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const rond = document.createElement("div");
+  rond.className = "curseur-voir";
+  rond.setAttribute("aria-hidden", "true");
+  rond.textContent = "Voir";
+  document.body.appendChild(rond);
+  let x = 0, y = 0, cx = 0, cy = 0, actif = false, anim = 0;
+  const cible = ".webcase__media, .card, .worktile, .ring3d__panel";
+  const boucle = () => {
+    cx += (x - cx) * 0.2; cy += (y - cy) * 0.2;
+    rond.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) scale(${actif ? 1 : 0})`;
+    anim = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 || actif ? requestAnimationFrame(boucle) : 0;
+  };
+  document.addEventListener("pointermove", (e) => {
+    x = e.clientX; y = e.clientY;
+    const sur = e.target.closest && e.target.closest(cible);
+    if (sur) rond.textContent = sur.closest(".card") && sur.querySelector(".card__play") ? "Lire" : "Voir";
+    if (!!sur !== actif) { actif = !!sur; rond.classList.toggle("on", actif); }
+    if (!actif && !anim) { cx = x; cy = y; }
+    if (!anim) anim = requestAnimationFrame(boucle);
+  }, { passive: true });
+}
+
+/* ---------- Barre d'action mobile (bas d'écran) ----------
+   Sur téléphone : « Créer mon site » toujours à portée de pouce, plus un raccourci
+   vers le contact. Elle se cache près du pied de page pour ne rien masquer. */
+function initBarreMobile() {
+  if (document.body.classList.contains("sans-barre")) return;
+  const barre = document.createElement("div");
+  barre.className = "barre-mobile";
+  barre.innerHTML = `<a href="brief.html" class="btn btn--solid">Créer mon site →</a>
+    <a href="contact.html" class="bubble" aria-label="Me contacter"><span class="bubble__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span></a>`;
+  document.body.appendChild(barre);
+  const pied = document.querySelector(".footer");
+  const maj = () => {
+    const basPage = pied && pied.getBoundingClientRect().top < window.innerHeight;
+    barre.classList.toggle("show", window.scrollY > 500 && !basPage);
+  };
+  maj();
+  window.addEventListener("scroll", maj, { passive: true });
+}
+
+/* ---------- Barre de progression de lecture (haut de page) ---------- */
+function initScrollProgress() {
+  const bar = document.createElement("div");
+  bar.className = "progress-bar";
+  document.body.appendChild(bar);
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+  };
+  window.addEventListener("scroll", () => { if (!prevu) { prevu = true; requestAnimationFrame(maj); } }, { passive: true });
+  maj();
+}
+
 /* ---------- Header au scroll ---------- */
 function initHeader() {
   const header = document.querySelector(".header");
   if (!header) return;
-  const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 40);
+  // Fond au scroll, et le header s'efface quand on descend (revient dès qu'on remonte)
+  let avant = window.scrollY, prevu = false;
+  const onScroll = () => {
+    prevu = false;
+    const y = window.scrollY;
+    header.classList.toggle("scrolled", y > 40);
+    const menuOuvert = document.documentElement.classList.contains("menu-ouvert");
+    if (Math.abs(y - avant) > 6) {
+      header.classList.toggle("header--cache", y > avant && y > 320 && !menuOuvert);
+      avant = y;
+    }
+  };
   onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("scroll", () => { if (!prevu) { prevu = true; requestAnimationFrame(onScroll); } }, { passive: true });
 }
 
 /* ---------- Menu mobile ---------- */
@@ -422,8 +567,16 @@ function initMobileNav() {
   const toggle = document.querySelector(".nav__toggle");
   const nav = document.querySelector(".nav");
   if (!toggle || !nav) return;
-  toggle.addEventListener("click", () => nav.classList.toggle("open"));
-  nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
+  toggle.setAttribute("aria-expanded", "false");
+  const ouvrir = (oui) => {
+    nav.classList.toggle("open", oui);
+    toggle.classList.toggle("is-open", oui);
+    toggle.setAttribute("aria-expanded", String(oui));
+    document.documentElement.classList.toggle("menu-ouvert", oui); // bloque le défilement derrière
+  };
+  toggle.addEventListener("click", () => ouvrir(!nav.classList.contains("open")));
+  nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => ouvrir(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && nav.classList.contains("open")) ouvrir(false); });
 }
 
 /* ---------- Apparition au scroll ---------- */
