@@ -577,37 +577,15 @@ function initTilt() {
   });
 }
 
-/* ---------- Monogramme TRC en relief (en-tête des pages) ----------
-   <div class="emblem"></div> : le logo découpé en plusieurs couches empilées en
-   profondeur (vraie épaisseur en 3D), face en dégradé, reflet qui passe.
-   Il flotte doucement et s'oriente vers la souris. */
+/* ---------- Monogramme TRC gravé (en-tête des pages) ----------
+   <div class="emblem"></div> : le logo creusé dans le fond, sans relief sortant.
+   Trois couches découpées au logo : un liseré de lumière décalé en bas à droite
+   (le bord du creux qui accroche la lumière), le creux sombre, et le fond du creux
+   légèrement décalé, qui laisse une ombre intérieure en haut à gauche. */
 function initEmbleme() {
   document.querySelectorAll(".emblem").forEach((em) => {
-    const obj = document.createElement("div");
-    obj.className = "emblem__obj";
-    // Tranche : 28 couches serrées, éclairées de l'avant (clair) vers l'arrière (sombre)
-    const couches = 28;
-    let html = "";
-    for (let i = couches; i > 0; i--) html += `<span class="emblem__layer" style="--z:${(-i * 1.5).toFixed(1)}px;--k:${(i / couches).toFixed(3)}"></span>`;
-    // Chanfrein : liseré clair en haut à gauche, ombre en bas à droite, puis la face éclairée
-    obj.innerHTML = html +
-      '<span class="emblem__bevel emblem__bevel--ombre"></span><span class="emblem__bevel emblem__bevel--lumiere"></span>' +
-      '<span class="emblem__face"></span><span class="emblem__shine"></span>';
-    em.appendChild(obj);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    let x = 0, y = 0, cx = 0, cy = 0, anim = 0;
-    const boucle = () => {
-      cx += (x - cx) * 0.06; cy += (y - cy) * 0.06;
-      obj.style.setProperty("--ey", `${(-30 + cx * 34).toFixed(2)}deg`);
-      obj.style.setProperty("--ex", `${(14 - cy * 22).toFixed(2)}deg`);
-      anim = Math.abs(x - cx) + Math.abs(y - cy) > 0.001 ? requestAnimationFrame(boucle) : 0;
-    };
-    window.addEventListener("mousemove", (ev) => {
-      x = ev.clientX / window.innerWidth - 0.5;
-      y = ev.clientY / window.innerHeight - 0.5;
-      if (!anim) anim = requestAnimationFrame(boucle);
-    }, { passive: true });
+    em.innerHTML = '<span class="grave grave--lumiere"></span>' +
+      '<span class="grave grave--creux"><span class="grave grave--fond"></span></span>';
   });
 }
 
