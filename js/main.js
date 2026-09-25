@@ -138,6 +138,16 @@ async function construireAnneau(scene) {
   scene.addEventListener("pointerup", fin);
   scene.addEventListener("pointercancel", fin);
   scene.addEventListener("click", (ev) => { if (glisse) { ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
+  // Pavé tactile : un glissement horizontal à deux doigts fait tourner l'anneau.
+  // Le défilement vertical n'est jamais capturé, la page descend normalement.
+  scene.addEventListener("wheel", (ev) => {
+    const dx = ev.deltaX || (ev.shiftKey ? ev.deltaY : 0);
+    if (!dx || Math.abs(dx) < Math.abs(ev.deltaY) * (ev.shiftKey ? 0 : 1)) return;
+    ev.preventDefault();
+    const pas = ev.deltaMode === 1 ? dx * 16 : dx; // molette en lignes -> pixels
+    angle -= pas * 0.12;
+    vitesse = Math.max(-1.5, Math.min(1.5, -pas * 0.02)); // un peu d'élan à la fin du geste
+  }, { passive: false });
   if (!calme) window.addEventListener("mousemove", (ev) => { cible = (ev.clientY / window.innerHeight - 0.5) * -6; });
   if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(scene);
 
