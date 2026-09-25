@@ -223,6 +223,7 @@ h1 em, h2 em, h3 em {
   font-size: clamp(3.2rem, 8.6vw, 8.6rem); line-height: 0.9; letter-spacing: -0.05em;
 }
 .hero__side { pointer-events: auto; padding-bottom: 0.6rem; }
+.hero__hello { font-size: 1rem; margin-bottom: 1.2rem; }
 .hero__side p { font-size: 1.05rem; color: #cfc8e6; }
 .hero__actions { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; }
 
