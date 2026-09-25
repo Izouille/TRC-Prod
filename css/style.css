@@ -849,3 +849,63 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .worktile.tilt, .service.tilt { position: relative; }
 .worktile.tilt:hover, .service.tilt:hover { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-6px); }
 .about__img.tilt::before { inset: 0; }
+
+/* ---------- En-têtes des pages : teinte propre + monogramme TRC en relief ---------- */
+.page-head { position: relative; isolation: isolate; overflow-x: clip; --t1: rgba(106, 52, 232, 0.42); --t2: rgba(178, 79, 216, 0.26); }
+.page-head::before {
+  content: ""; position: absolute; inset: 0 0 -60% 0; z-index: -2; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  background:
+    radial-gradient(42% 60% at 80% 45%, var(--t1), transparent 70%),
+    radial-gradient(35% 55% at 100% 95%, var(--t2), transparent 70%),
+    radial-gradient(30% 50% at 0% 0%, rgba(44, 63, 214, 0.14), transparent 70%);
+}
+.page-head--web      { --t1: rgba(44, 63, 214, 0.45);  --t2: rgba(106, 52, 232, 0.35); }
+.page-head--photo    { --t1: rgba(178, 79, 216, 0.42); --t2: rgba(242, 120, 170, 0.28); }
+.page-head--video    { --t1: rgba(106, 52, 232, 0.45); --t2: rgba(46, 150, 220, 0.26); }
+.page-head--services { --t1: rgba(120, 60, 230, 0.40); --t2: rgba(44, 63, 214, 0.30); }
+.page-head--about    { --t1: rgba(190, 90, 200, 0.36); --t2: rgba(106, 52, 232, 0.32); }
+.page-head--contact  { --t1: rgba(80, 70, 230, 0.42);  --t2: rgba(242, 167, 220, 0.22); }
+
+.emblem {
+  position: absolute; z-index: -1; pointer-events: none;
+  right: clamp(1rem, 8vw, 10rem); top: clamp(7rem, 12vw, 9.5rem);
+  width: clamp(220px, 24vw, 360px); aspect-ratio: 858 / 900;
+  perspective: 1100px;
+  filter: drop-shadow(0 40px 50px rgba(5, 3, 12, 0.7));
+}
+.emblem__obj {
+  --ex: 10deg; --ey: -22deg;
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: rotateX(var(--ex)) rotateY(var(--ey));
+  animation: emblemeFlotte 8s ease-in-out infinite alternate;
+}
+.emblem__layer, .emblem__face, .emblem__shine {
+  position: absolute; inset: 0;
+  -webkit-mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
+          mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
+}
+/* Tranche : couches de plus en plus sombres vers l'arrière = épaisseur */
+.emblem__layer { transform: translateZ(var(--z)); background: color-mix(in srgb, #2a1560 calc((1 - var(--k)) * 100%), #0a0616); }
+.emblem__face {
+  transform: translateZ(0.5px);
+  background: linear-gradient(145deg, #f1ebff 0%, #c9b8ff 28%, #8a5cf0 58%, #3a1d7a 100%);
+}
+.emblem__shine {
+  transform: translateZ(1px); mix-blend-mode: screen;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.75) 48%, transparent 60%) 0 0 / 300% 100%;
+  animation: emblemeReflet 6s ease-in-out infinite;
+}
+/* Titres longs (services, à propos, contact) : le logo passe derrière, en retrait */
+.page-head--services .emblem, .page-head--about .emblem, .page-head--contact .emblem { opacity: 0.38; top: clamp(9rem, 15vw, 12rem); }
+@keyframes emblemeFlotte { from { translate: 0 -8px; } to { translate: 0 10px; } }
+@keyframes emblemeReflet { 0%, 20% { background-position: 110% 0; } 70%, 100% { background-position: -10% 0; } }
+@media (prefers-reduced-motion: reduce) { .emblem__obj, .emblem__shine { animation: none; } }
+@media (max-width: 760px) {
+  .emblem { width: 170px; right: -1.5rem; top: 5.5rem; opacity: 0.45; }
+}
+
+/* Moins de vide : la vitrine 3D remonte sous le titre */
+.page-head:has(+ .ring3d--band), .page-head:has(+ * + .ring3d--band) { padding-bottom: 0; }
+.ring3d--band { margin-top: -2.5rem; }

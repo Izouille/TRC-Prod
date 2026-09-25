@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initScrollProgress();
   initCompteurs();
   initTilt();
+  initEmbleme();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -52,13 +53,15 @@ async function construireAnneau(scene) {
   ]);
   // Sur une page de domaine, on reste sur place : la photo ou la vidéo s'ouvre dans la galerie
   const surPlace = d.ringLocal !== undefined;
+  // data-ring-exclure="Titre 1, Titre 2" : éléments à ne pas montrer dans cet anneau
+  const exclus = (d.ringExclure || "").split(",").map((t) => t.trim()).filter(Boolean);
 
   // Les familles sont mélangées : un site, une photo, une vidéo, et ainsi de suite
   const fam = [
     (sites || []).map((x) => ({ src: x.poster, genre: "Site", titre: x.title, href: x.url, ext: true, frames: x.frames })),
     (photos || []).map((x, i) => ({ src: x.image, genre: "Photo", titre: x.title, href: "photo.html", idx: i })),
     (videos || []).map((x, i) => ({ src: x.thumbnail, genre: "Vidéo", titre: x.title, href: "video.html", idx: i })),
-  ].filter((l) => l.length);
+  ].map((l) => l.filter((v) => !exclus.includes(v.titre))).filter((l) => l.length);
   if (!fam.length) return;
   const max = +(d.ringMax || 12);
   const vues = [];
@@ -571,6 +574,36 @@ function initTilt() {
       el.style.setProperty("--rx", "0deg");
       el.style.setProperty("--ry", "0deg");
     });
+  });
+}
+
+/* ---------- Monogramme TRC en relief (en-tête des pages) ----------
+   <div class="emblem"></div> : le logo découpé en plusieurs couches empilées en
+   profondeur (vraie épaisseur en 3D), face en dégradé, reflet qui passe.
+   Il flotte doucement et s'oriente vers la souris. */
+function initEmbleme() {
+  document.querySelectorAll(".emblem").forEach((em) => {
+    const obj = document.createElement("div");
+    obj.className = "emblem__obj";
+    const couches = 12;
+    let html = "";
+    for (let i = couches; i > 0; i--) html += `<span class="emblem__layer" style="--z:${-i * 2.4}px;--k:${i / couches}"></span>`;
+    obj.innerHTML = html + '<span class="emblem__face"></span><span class="emblem__shine"></span>';
+    em.appendChild(obj);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    let x = 0, y = 0, cx = 0, cy = 0, anim = 0;
+    const boucle = () => {
+      cx += (x - cx) * 0.06; cy += (y - cy) * 0.06;
+      obj.style.setProperty("--ey", `${(-22 + cx * 30).toFixed(2)}deg`);
+      obj.style.setProperty("--ex", `${(10 - cy * 20).toFixed(2)}deg`);
+      anim = Math.abs(x - cx) + Math.abs(y - cy) > 0.001 ? requestAnimationFrame(boucle) : 0;
+    };
+    window.addEventListener("mousemove", (ev) => {
+      x = ev.clientX / window.innerWidth - 0.5;
+      y = ev.clientY / window.innerHeight - 0.5;
+      if (!anim) anim = requestAnimationFrame(boucle);
+    }, { passive: true });
   });
 }
 
