@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initTilt();
   initEmbleme();
   initCurseur();
+  initFondLogo();
   initConstellation();
   initDecors();
   initCollages();
@@ -734,6 +735,17 @@ function initCurseur() {
       if (!anim) anim = requestAnimationFrame(tick);
     }
   }, { passive: true });
+}
+
+/* ---------- Monogramme géant gravé en fond de page ----------
+   Fixe, derrière tout le contenu, à peine visible : un creux sombre et un liseré
+   clair décalés, découpés dans assets/brand/monogramme.png. */
+function initFondLogo() {
+  const f = document.createElement("div");
+  f.className = "fond-logo";
+  f.setAttribute("aria-hidden", "true");
+  f.innerHTML = '<span class="fond-logo__lumiere"></span><span class="fond-logo__creux"></span>';
+  document.body.prepend(f);
 }
 
 /* ---------- Poussière d'étoiles en fond de site ----------

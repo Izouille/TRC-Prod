@@ -154,7 +154,7 @@ h1 em, h2 em, h3 em {
   padding-top: 0.8rem; padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--c-line);
 }
-.header__logo img { height: 34px; width: auto; }
+.header__logo img { height: 52px; width: auto; }
 
 .nav { display: flex; align-items: center; gap: 2.1rem; }
 .nav a {
@@ -543,8 +543,7 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
   position: relative; overflow: hidden; padding: clamp(4.5rem, 10vw, 7.5rem) 0 0;
   background:
     radial-gradient(50% 60% at 15% 0%, rgba(106, 52, 232, 0.18), transparent 70%),
-    radial-gradient(45% 55% at 90% 100%, rgba(178, 79, 216, 0.16), transparent 70%),
-    var(--c-bg);
+    radial-gradient(45% 55% at 90% 100%, rgba(178, 79, 216, 0.16), transparent 70%);
 }
 .footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--grad-line); opacity: 0.7; }
 .footer__cta h2 { font-size: clamp(2.4rem, 6.4vw, 5.4rem); letter-spacing: -0.05em; }
@@ -925,3 +924,19 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 }
 @media (prefers-reduced-motion: reduce) { .deco__orbes span, .deco__grille span { animation: none; } }
 @media (max-width: 760px) { .deco__orbes { opacity: 0.4; } .deco__grille { height: 35%; } }
+
+/* ---------- Monogramme géant gravé en fond (posé par initFondLogo) ---------- */
+.fond-logo {
+  position: fixed; z-index: -2; pointer-events: none;
+  left: 50%; top: 50%; translate: -50% -50%;
+  height: 92vh; aspect-ratio: 858 / 900; max-width: 96vw;
+}
+.fond-logo span {
+  position: absolute; inset: 0;
+  -webkit-mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
+          mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
+}
+/* Liseré de lumière en bas à droite, creux sombre par-dessus : l'effet gravé */
+.fond-logo__lumiere { translate: 2px 2px; background: rgba(201, 184, 255, 0.045); }
+.fond-logo__creux { background: rgba(4, 2, 10, 0.28); }
+@media (max-width: 760px) { .fond-logo { height: auto; width: 88vw; } }
