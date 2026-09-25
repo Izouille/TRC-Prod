@@ -33,22 +33,35 @@ function initHeroPause() {
 }
 
 /* ---------- Anneau 3D des sites (hero de l'accueil) ----------
-   Les captures des sites de data/sites.json posées en cercle, en CSS 3D pur
+   Sites, photos et vidéos (data/*.json) posés en cercle, en CSS 3D pur
    (aucune librairie). Il tourne seul, se fait glisser à la souris ou au doigt,
-   s'arrête quand le hero sort de l'écran. Un clic sans glisser ouvre le site. */
+   s'arrête quand le hero sort de l'écran. Un clic sans glisser ouvre l'élément. */
 async function initRing3D() {
   const scene = document.querySelector("[data-ring]");
   if (!scene) return;
-  const sites = await loadJSON(scene.dataset.ring);
+  const [sites, photos, videos] = await Promise.all([
+    loadJSON(scene.dataset.ring),
+    scene.dataset.ringPhotos ? loadJSON(scene.dataset.ringPhotos) : null,
+    scene.dataset.ringVideos ? loadJSON(scene.dataset.ringVideos) : null,
+  ]);
   if (!sites || !sites.length) return;
 
-  // Une vue par site, puis ses pages intérieures, jusqu'à 10 panneaux
-  const vues = sites.map((s) => ({ src: s.poster, site: s }));
-  for (let i = 0; i < 3; i++) sites.forEach((s) => {
-    if (s.frames && s.frames[i]) vues.push({ src: apercuFixe(s.frames[i]), site: s });
+  // Trois familles mélangées : un site, une photo, une vidéo, et ainsi de suite.
+  // Un site s'ouvre dans un nouvel onglet ; une photo ou une vidéo mène à sa page.
+  const fam = [
+    sites.map((x) => ({ src: x.poster, genre: "Site", titre: x.title, href: x.url, ext: true })),
+    (photos || []).map((x) => ({ src: x.image, genre: "Photo", titre: x.title, href: "photo.html" })),
+    (videos || []).map((x) => ({ src: x.thumbnail, genre: "Vidéo", titre: x.title, href: "video.html" })),
+  ].filter((l) => l.length);
+  const vues = [];
+  for (let i = 0; vues.length < 12 && fam.some((l) => i < l.length); i++) {
+    fam.forEach((l) => { if (l[i] && vues.length < 12) vues.push(l[i]); });
+  }
+  // Pas assez d'éléments : on complète avec les pages intérieures des sites
+  for (let i = 0; vues.length < 8 && i < 3; i++) sites.forEach((x) => {
+    if (x.frames && x.frames[i] && vues.length < 8) vues.push({ src: apercuFixe(x.frames[i]), genre: "Site", titre: x.title, href: x.url, ext: true });
   });
-  const panneaux = vues.slice(0, Math.max(8, Math.min(10, vues.length)));
-  while (panneaux.length < 8) panneaux.push(...vues.slice(0, 8 - panneaux.length));
+  const panneaux = vues;
 
   const ring = document.createElement("div");
   ring.className = "ring3d__ring";
@@ -60,13 +73,13 @@ async function initRing3D() {
   panneaux.forEach((v, i) => {
     const p = document.createElement("a");
     p.className = "ring3d__panel";
-    p.href = v.site.url;
-    p.target = "_blank";
-    p.rel = "noopener";
+    p.href = v.href;
+    if (v.ext) { p.target = "_blank"; p.rel = "noopener"; }
+    if (v.genre !== "Site") p.classList.add("ring3d__panel--image");
     p.draggable = false;
-    p.setAttribute("aria-label", "Ouvrir le site " + v.site.title);
+    p.setAttribute("aria-label", `${v.genre} : ${v.titre}`);
     p.style.transform = `rotateY(${(i * 360) / n}deg) translateZ(${R}px)`;
-    p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span>${e(v.site.title)}</span>`;
+    p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span><i>${e(v.genre)}</i>${e(v.titre)}</span>`;
     ring.appendChild(p);
   });
   scene.appendChild(ring);
@@ -436,6 +449,11 @@ function initReseaux() {
   dock.className = "dock";
   dock.innerHTML = bullesHTML();
   document.body.appendChild(dock);
+  // Le pied de page a ses propres bulles : la colonne s'efface quand il arrive
+  const pied = document.querySelector(".footer");
+  if (pied && "IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => dock.classList.toggle("dock--cache", e.isIntersecting)).observe(pied);
+  }
   const nav = document.querySelector(".nav");
   if (nav) {
     const row = document.createElement("div");
@@ -457,8 +475,8 @@ function initCompteurs() {
   if (!els.length) return;
   const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const animer = (el, fin) => {
-    if (calme || !("IntersectionObserver" in window)) { el.textContent = fin; return; }
-    el.textContent = "0";
+    el.textContent = fin; // le vrai chiffre reste affiché tant que l'animation n'a pas démarré
+    if (calme || !("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       io.disconnect();
