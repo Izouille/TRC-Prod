@@ -1,0 +1,11 @@
+{
+  "name": "TRC Prod · Ethan Trincanato",
+  "short_name": "TRC Prod",
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0d0919",
+  "background_color": "#0d0919",
+  "display": "standalone"
+}
