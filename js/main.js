@@ -738,14 +738,27 @@ function initCurseur() {
 }
 
 /* ---------- Monogramme géant gravé en fond de page ----------
-   Fixe, derrière tout le contenu, à peine visible : un creux sombre et un liseré
-   clair décalés, découpés dans assets/brand/monogramme.png. */
+   Bien plus grand que l'écran, à peine visible. Il glisse avec le défilement :
+   en haut de page on voit le haut du TRC, en bas de page le bas du C.
+   Couches : creux sombre + liseré clair décalé, découpés dans monogramme.png. */
 function initFondLogo() {
   const f = document.createElement("div");
   f.className = "fond-logo";
   f.setAttribute("aria-hidden", "true");
   f.innerHTML = '<span class="fond-logo__lumiere"></span><span class="fond-logo__creux"></span>';
   document.body.prepend(f);
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    const course = Math.max(0, f.offsetHeight - window.innerHeight);
+    f.style.transform = `translate(-50%, ${(-p * course).toFixed(1)}px)`;
+  };
+  window.addEventListener("scroll", () => { if (!prevu) { prevu = true; requestAnimationFrame(maj); } }, { passive: true });
+  window.addEventListener("resize", maj);
+  window.addEventListener("load", maj);
+  maj();
 }
 
 /* ---------- Poussière d'étoiles en fond de site ----------

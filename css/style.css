@@ -925,18 +925,18 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 @media (prefers-reduced-motion: reduce) { .deco__orbes span, .deco__grille span { animation: none; } }
 @media (max-width: 760px) { .deco__orbes { opacity: 0.4; } .deco__grille { height: 35%; } }
 
-/* ---------- Monogramme géant gravé en fond (posé par initFondLogo) ---------- */
+/* ---------- Monogramme géant gravé en fond (posé par initFondLogo) ----------
+   Plus haut que l'écran : le JS le fait glisser pour dévoiler le bas au défilement. */
 .fond-logo {
-  position: fixed; z-index: -2; pointer-events: none;
-  left: 50%; top: 50%; translate: -50% -50%;
-  height: 92vh; aspect-ratio: 858 / 900; max-width: 96vw;
+  position: fixed; z-index: -2; pointer-events: none; will-change: transform;
+  left: 50%; top: 0; transform: translate(-50%, 0);
+  width: max(112vw, 175vh * 858 / 900); aspect-ratio: 858 / 900;
 }
 .fond-logo span {
   position: absolute; inset: 0;
-  -webkit-mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
-          mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
+  -webkit-mask: url("../assets/brand/monogramme.png") center / 100% 100% no-repeat;
+          mask: url("../assets/brand/monogramme.png") center / 100% 100% no-repeat;
 }
-/* Liseré de lumière en bas à droite, creux sombre par-dessus : l'effet gravé */
-.fond-logo__lumiere { translate: 2px 2px; background: rgba(201, 184, 255, 0.045); }
-.fond-logo__creux { background: rgba(4, 2, 10, 0.28); }
-@media (max-width: 760px) { .fond-logo { height: auto; width: 88vw; } }
+/* Liseré de lumière décalé, creux sombre par-dessus : gravé, à peine perceptible */
+.fond-logo__lumiere { translate: 3px 3px; background: rgba(201, 184, 255, 0.022); }
+.fond-logo__creux { background: rgba(4, 2, 10, 0.17); }
