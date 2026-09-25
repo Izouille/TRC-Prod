@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initScrollProgress();
   initCompteurs();
   initTilt();
-  initEmbleme();
+  initHeadDeco();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -577,52 +577,46 @@ function initTilt() {
   });
 }
 
-/* ---------- Monogramme TRC gravé, éclairé par une lumière rasante ----------
-   <div class="emblem"></div> : le logo creusé dans le fond. La gravure est profonde
-   en haut à gauche et s'efface vers le bas à droite (deux jeux de couches, fondus
-   l'un dans l'autre). Une lumière rasante suit la souris : l'ombre dans le creux et
-   le liseré clair se déplacent avec elle, et le fond s'éclaire là où elle passe.
-   Sans souris, la lumière tourne lentement autour du logo. */
-function initEmbleme() {
-  const jeu = (n) => `<div class="grave-set grave-set--${n}"><span class="grave grave--lumiere"></span>` +
-    '<span class="grave grave--creux"><span class="grave grave--fond"></span></span></div>';
-  document.querySelectorAll(".emblem").forEach((em) => {
-    em.innerHTML = '<span class="grave-halo"></span>' + jeu("profond") + jeu("leger");
-    const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (calme) return; // lumière fixe venue du haut à gauche (valeurs par défaut du CSS)
+/* ---------- Habillage de l'en-tête des pages de domaine ----------
+   <div class="head-deco" data-deco-src="data/photos.json" data-deco-champ="image"
+        data-deco-lien="site|galerie"></div>
+   Deux variantes (choix en cours, ?deco=b dans l'URL pour voir la seconde) :
+   A (défaut) : trois réalisations en éventail qui flottent et s'écartent au survol.
+   B : un sommaire cliquable (catégories et nombre, ou liste des sites). */
+function initHeadDeco() {
+  const variante = new URLSearchParams(location.search).get("deco") === "b" ? "b" : "a";
+  const e = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  document.querySelectorAll(".head-deco").forEach(async (box) => {
+    const liste = await loadJSON(box.dataset.decoSrc);
+    if (!liste || !liste.length) return;
+    const champ = box.dataset.decoChamp;
+    box.classList.add("head-deco--" + variante, "head-deco--" + (box.dataset.decoForme || "paysage"));
 
-    const souris = window.matchMedia("(pointer: fine)").matches;
-    let cible = { x: -0.7, y: -0.7, px: 20, py: 15 }, cur = { ...cible }, visible = true, t0 = performance.now();
-    if (souris) {
-      window.addEventListener("mousemove", (ev) => {
-        const r = em.getBoundingClientRect();
-        const dx = ev.clientX - (r.left + r.width / 2), dy = ev.clientY - (r.top + r.height / 2);
-        const n = Math.hypot(dx, dy) || 1;
-        cible = {
-          x: dx / n, y: dy / n, // direction de la lumière, vue depuis le logo
-          px: Math.max(-20, Math.min(120, ((ev.clientX - r.left) / r.width) * 100)),
-          py: Math.max(-20, Math.min(120, ((ev.clientY - r.top) / r.height) * 100)),
-        };
-      }, { passive: true });
+    if (variante === "a") {
+      box.setAttribute("aria-hidden", "true");
+      box.innerHTML = liste.filter((x) => x[champ]).slice(0, 3)
+        .map((x, i) => `<figure class="fan__card fan__card--${i + 1}"><img src="${e(x[champ])}" alt="" loading="eager"><figcaption>${e(x.title)}</figcaption></figure>`)
+        .join("");
+      return;
     }
-    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(em);
-    const tick = (t) => {
-      if (visible) {
-        if (!souris) { // ronde lente de la lumière (un tour en 14 s)
-          const a = ((t - t0) / 14000) * Math.PI * 2 - 2.4;
-          cible = { x: Math.cos(a), y: Math.sin(a), px: 50 + Math.cos(a) * 55, py: 50 + Math.sin(a) * 55 };
-        }
-        for (const k in cur) cur[k] += (cible[k] - cur[k]) * 0.08;
-        const n = Math.hypot(cur.x, cur.y) || 1;
-        // L'ombre part à l'opposé de la lumière
-        em.style.setProperty("--lx", (-cur.x / n).toFixed(3));
-        em.style.setProperty("--ly", (-cur.y / n).toFixed(3));
-        em.style.setProperty("--px", cur.px.toFixed(1) + "%");
-        em.style.setProperty("--py", cur.py.toFixed(1) + "%");
-      }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+
+    // Variante B : sommaire. Sites : la liste ; photos / vidéos : les catégories.
+    let lignes;
+    if (box.dataset.decoLien === "site") {
+      lignes = liste.map((x) => `<a class="aside__row" href="${e(x.url)}" target="_blank" rel="noopener"><span>${e(x.title)}</span><small>${e(x.tag)}</small><i aria-hidden="true">↗</i></a>`);
+    } else {
+      const compte = {};
+      liste.forEach((x) => { if (x.category) compte[x.category] = (compte[x.category] || 0) + 1; });
+      lignes = Object.entries(compte).sort((a, b) => b[1] - a[1])
+        .map(([cat, n]) => `<button class="aside__row" type="button" data-cat="${e(cat)}"><span>${e(cat)}</span><small>${n}</small><i aria-hidden="true">↓</i></button>`);
+    }
+    box.innerHTML = `<p class="aside__titre">${liste.length} ${e(box.dataset.decoMot || "réalisations")}</p>${lignes.join("")}`;
+    box.querySelectorAll("[data-cat]").forEach((btn) => btn.addEventListener("click", () => {
+      const filtre = [...document.querySelectorAll(".filter")].find((f) => f.textContent.trim() === btn.dataset.cat);
+      if (filtre) filtre.click();
+      const galerie = document.querySelector("[data-gallery]");
+      if (galerie) galerie.scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
   });
 }
 
