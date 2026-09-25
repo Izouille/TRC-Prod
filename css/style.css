@@ -884,3 +884,21 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 /* Moins de vide : la vitrine 3D remonte sous le titre */
 .page-head:has(+ .ring3d--band), .page-head:has(+ * + .ring3d--band) { padding-bottom: 0; }
 .ring3d--band { margin-top: -2.5rem; }
+
+/* ---------- Curseur perso (posé par initCurseur, souris uniquement) ---------- */
+html.curseur-perso, html.curseur-perso * { cursor: none !important; }
+html.curseur-perso.curseur-texte, html.curseur-perso.curseur-texte * { cursor: text !important; }
+.curseur__point, .curseur__anneau {
+  position: fixed; left: 0; top: 0; z-index: 10000; pointer-events: none; border-radius: 50%;
+}
+.curseur__point { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--c-accent); box-shadow: 0 0 0 1.5px rgba(13, 9, 25, 0.85), 0 0 8px rgba(201, 184, 255, 0.8); }
+.curseur__anneau::before {
+  content: ""; position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(201, 184, 255, 0.55); box-shadow: 0 0 0 1px rgba(13, 9, 25, 0.25);
+  transition: transform 0.35s var(--ease), background 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+.curseur__anneau.is-lien::before { transform: scale(1.5); background: rgba(201, 184, 255, 0.10); border-color: rgba(242, 167, 220, 0.7); }
+.curseur__anneau.is-clic::before { transform: scale(0.7); }
+.curseur__trace { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; }
+html.curseur-cache .curseur__point, html.curseur-cache .curseur__anneau,
+html.curseur-texte .curseur__point, html.curseur-texte .curseur__anneau { opacity: 0; }

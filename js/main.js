@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initCompteurs();
   initTilt();
   initEmbleme();
+  initCurseur();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -683,6 +684,68 @@ function poussiere(boite, img, calme) {
         p.x += p.vx; p.y += p.vy;
       }
       dessiner(t);
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ---------- Curseur : point + anneau qui suit, traînée de poussière ----------
+   Seulement avec une vraie souris et si les animations sont permises ; sinon le
+   curseur dessiné du CSS reste. Le point suit exactement, l'anneau avec du retard,
+   grossit au-dessus de ce qui est cliquable et se resserre au clic. */
+function initCurseur() {
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const point = document.createElement("div"), anneau = document.createElement("div");
+  point.className = "curseur__point"; anneau.className = "curseur__anneau";
+  const cv = document.createElement("canvas");
+  cv.className = "curseur__trace";
+  [cv, anneau, point].forEach((el) => { el.setAttribute("aria-hidden", "true"); document.body.appendChild(el); });
+  document.documentElement.classList.add("curseur-perso");
+  const ctx = cv.getContext("2d");
+  const taille = () => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  taille();
+  window.addEventListener("resize", taille);
+
+  let x = -100, y = -100, ax = x, ay = y, poussieres = [], dernier = 0;
+  const cliquable = "a, button, [role=button], .card, .filter, label, select, summary, .ring3d";
+  document.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const dx = e.clientX - x, dy = e.clientY - y;
+    x = e.clientX; y = e.clientY;
+    point.style.transform = `translate(${x}px, ${y}px)`;
+    document.documentElement.classList.remove("curseur-cache");
+    const cible = e.target.closest ? e.target : null;
+    const texte = cible && cible.closest("input, textarea, [contenteditable]");
+    document.documentElement.classList.toggle("curseur-texte", !!texte);
+    anneau.classList.toggle("is-lien", !!(cible && cible.closest(cliquable)));
+    // quelques grains de poussière quand on bouge assez vite
+    const now = performance.now();
+    if (Math.hypot(dx, dy) > 6 && now - dernier > 24 && poussieres.length < 60) {
+      dernier = now;
+      poussieres.push({ x, y, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6 + 0.25, v: 1, r: 0.8 + Math.random() * 1.2, rose: Math.random() < 0.4 });
+    }
+  }, { passive: true });
+  document.addEventListener("pointerdown", () => anneau.classList.add("is-clic"));
+  document.addEventListener("pointerup", () => anneau.classList.remove("is-clic"));
+  document.documentElement.addEventListener("mouseleave", () => document.documentElement.classList.add("curseur-cache"));
+  window.addEventListener("blur", () => document.documentElement.classList.add("curseur-cache"));
+
+  const tick = () => {
+    ax += (x - ax) * 0.18; ay += (y - ay) * 0.18;
+    anneau.style.transform = `translate(${ax}px, ${ay}px)`;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    poussieres = poussieres.filter((p) => (p.v -= 0.025) > 0);
+    for (const p of poussieres) {
+      p.x += p.vx; p.y += p.vy;
+      ctx.globalAlpha = p.v * 0.8;
+      ctx.fillStyle = p.rose ? "#f2a7dc" : "#c9b8ff";
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
     }
     requestAnimationFrame(tick);
   };
