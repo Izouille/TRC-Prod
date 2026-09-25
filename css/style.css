@@ -1,24 +1,25 @@
 /* =========================================================
    TRC PROD — Portfolio Ethan Trincanato
-   DA « nuit » : midnight purple, typo large, scène 3D des sites
+   DA « mix » : charte TRC (anthracite, or champagne, gris-lavande, serif)
+   + énergie de la refonte (titres larges, halos midnight purple, anneau 3D)
    ========================================================= */
 
 /* ---------- Variables ---------- */
 :root {
-  --c-bg:        #0d0919;   /* nuit violette / fond principal */
-  --c-bg-2:      #150e28;   /* surface secondaire */
-  --c-bg-3:      #1e153a;   /* cartes / hover */
-  --c-mid:       #35186b;   /* midnight purple (lumières, halos) */
-  --c-accent:    #c9b8ff;   /* lilas clair (accent) */
-  --c-accent-soft: #ddd2ff;
-  --c-violet:    #9d86f0;   /* violet moyen (numéros, détails) */
-  --c-text:      #f1ecff;   /* texte clair */
-  --c-text-dim:  #a39cbd;   /* texte secondaire */
-  --c-line:      rgba(201, 184, 255, 0.14);
+  --c-bg:        #131219;   /* anthracite de la charte, à peine violet */
+  --c-bg-2:      #1b1a22;   /* surface secondaire */
+  --c-bg-3:      #24222d;   /* cartes / hover */
+  --c-mid:       #2e1a55;   /* midnight purple (halos seulement) */
+  --c-accent:    #e3cf94;   /* or champagne de la charte (accent) */
+  --c-accent-soft: #efe1b8;
+  --c-violet:    #8a8da6;   /* gris-lavande de la charte (numéros, détails) */
+  --c-text:      #f3f1ea;   /* texte clair */
+  --c-text-dim:  #a4a3b1;   /* texte secondaire */
+  --c-line:      rgba(227, 207, 148, 0.14);
 
   --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
-  --font-serif:   "Instrument Serif", Georgia, serif;
-  --font-body:    "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif:   "Cormorant Garamond", Georgia, serif; /* au plus proche d'Against */
+  --font-body:    "Helvetica Neue", Helvetica, Arial, sans-serif; /* Helvetica de la charte */
 
   --maxw: 1320px;
   --radius: 4px;
@@ -59,8 +60,8 @@ body::after {
   z-index: -3;
   pointer-events: none;
   background-image:
-    radial-gradient(55% 45% at 100% 0%, rgba(53, 24, 107, 0.32), transparent 70%),
-    radial-gradient(50% 40% at 0% 100%, rgba(53, 24, 107, 0.22), transparent 70%);
+    radial-gradient(55% 45% at 100% 0%, rgba(46, 26, 85, 0.32), transparent 70%),
+    radial-gradient(50% 40% at 0% 100%, rgba(46, 26, 85, 0.22), transparent 70%);
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -69,10 +70,10 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- Curseur personnalisé (flèche dessinée, sans JS = sans bug) ---------- */
 body {
-  cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%230d0919'%20stroke='%23c9b8ff'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto;
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23131219'%20stroke='%23e3cf94'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto;
 }
 a, button, .card, .filter, label, select, summary, .to-top {
-  cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23c9b8ff'%20stroke='%230d0919'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23e3cf94'%20stroke='%23131219'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer;
 }
 input, textarea { cursor: text; }
 ul { list-style: none; }
@@ -91,8 +92,8 @@ h2 { font-size: clamp(2rem, 4.6vw, 3.6rem); }
 h3 { font-size: clamp(1.3rem, 2.2vw, 1.7rem); letter-spacing: -0.03em; }
 h1 em, h2 em, h3 em {
   font-family: var(--font-serif);
-  font-style: italic; font-weight: 400; font-stretch: 100%;
-  letter-spacing: -0.01em;
+  font-style: italic; font-weight: 500; font-stretch: 100%; font-size: 1.1em;
+  letter-spacing: -0.01em; line-height: 0.8;
   color: var(--c-accent);
 }
 
@@ -115,7 +116,7 @@ h1 em, h2 em, h3 em {
 /* Section « éclairée » : halo midnight purple venu du bas */
 .section--smoke {
   position: relative;
-  background: radial-gradient(70% 60% at 50% 110%, rgba(74, 34, 160, 0.38), transparent 70%);
+  background: radial-gradient(70% 60% at 50% 110%, rgba(58, 31, 120, 0.34), transparent 70%);
 }
 
 /* ---------- Header / Nav ---------- */
@@ -126,7 +127,7 @@ h1 em, h2 em, h3 em {
   transition: background 0.4s var(--ease), padding 0.4s var(--ease);
 }
 .header.scrolled {
-  background: rgba(13, 9, 25, 0.86);
+  background: rgba(19, 18, 25, 0.86);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   padding-top: 0.8rem; padding-bottom: 0.8rem;
@@ -163,11 +164,11 @@ h1 em, h2 em, h3 em {
 .btn {
   display: inline-flex; align-items: center; gap: 0.6rem;
   font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
-  padding: 0.95rem 1.5rem; border: 1px solid rgba(201, 184, 255, 0.4); border-radius: var(--radius);
+  padding: 0.95rem 1.5rem; border: 1px solid rgba(227, 207, 148, 0.4); border-radius: var(--radius);
   color: var(--c-text); background: transparent; cursor: pointer; transition: all 0.35s var(--ease);
 }
-.btn:hover { border-color: var(--c-accent); background: rgba(201, 184, 255, 0.08); }
-.btn--solid { background: var(--c-accent); border-color: var(--c-accent); color: #140d26; }
+.btn:hover { border-color: var(--c-accent); background: rgba(227, 207, 148, 0.08); }
+.btn--solid { background: var(--c-accent); border-color: var(--c-accent); color: #131219; }
 .btn--solid:hover { background: var(--c-accent-soft); border-color: var(--c-accent-soft); }
 
 /* ---------- Hero (accueil) : titre + anneau 3D des sites ---------- */
@@ -175,8 +176,8 @@ h1 em, h2 em, h3 em {
   position: relative; min-height: 100vh; min-height: 100svh;
   overflow: hidden; isolation: isolate;
   background:
-    radial-gradient(60% 60% at 50% 108%, #4a22a0 0%, rgba(53, 24, 107, 0.55) 35%, transparent 72%),
-    radial-gradient(40% 40% at 92% 8%, rgba(53, 24, 107, 0.35), transparent 70%);
+    radial-gradient(60% 60% at 50% 108%, #3a1f78 0%, rgba(46, 26, 85, 0.5) 35%, transparent 72%),
+    radial-gradient(40% 40% at 92% 6%, rgba(227, 207, 148, 0.07), transparent 70%);
 }
 .hero__copy {
   position: relative; z-index: 4;
@@ -188,7 +189,7 @@ h1 em, h2 em, h3 em {
   font-size: clamp(3.2rem, 8.6vw, 8.6rem); line-height: 0.9; letter-spacing: -0.05em;
 }
 .hero__side { pointer-events: auto; padding-bottom: 0.6rem; }
-.hero__side p { font-size: 1.05rem; color: #cfc8e6; }
+.hero__side p { font-size: 1.05rem; color: #cfcdd6; }
 .hero__actions { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; }
 
 /* Scène 3D : les sites réalisés sur un anneau qui tourne (construit en JS) */
@@ -203,13 +204,13 @@ h1 em, h2 em, h3 em {
   position: absolute; width: 440px; height: 300px; left: -220px; top: -150px;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: 6px; overflow: hidden; background: var(--c-bg-3);
-  box-shadow: 0 0 0 1px rgba(201, 184, 255, 0.18), 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 1px rgba(227, 207, 148, 0.18), 0 30px 80px -20px rgba(0, 0, 0, 0.8);
   -webkit-box-reflect: below 14px linear-gradient(transparent 55%, rgba(255, 255, 255, 0.16));
 }
 .ring3d__panel img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 .ring3d__panel span {
   position: absolute; left: 12px; bottom: 12px; font-size: 0.78rem; font-weight: 600;
-  background: rgba(13, 9, 25, 0.82); padding: 0.35rem 0.65rem; border-radius: 3px;
+  background: rgba(19, 18, 25, 0.82); padding: 0.35rem 0.65rem; border-radius: 3px;
 }
 /* Fondu du sol vers le fond de page */
 .ring3d::after {
@@ -250,7 +251,7 @@ h1 em, h2 em, h3 em {
 .card__overlay {
   position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
   padding: 1.6rem; opacity: 0; transition: opacity 0.4s var(--ease);
-  background: linear-gradient(0deg, rgba(13,9,25,0.88) 0%, transparent 60%);
+  background: linear-gradient(0deg, rgba(19,18,25,0.88) 0%, transparent 60%);
 }
 .card:hover .card__overlay { opacity: 1; }
 .card__title { font-family: var(--font-display); font-stretch: 125%; font-weight: 700; letter-spacing: -0.03em; font-size: 1.3rem; color: #fff; }
@@ -280,7 +281,7 @@ h1 em, h2 em, h3 em {
 .about__img { position: relative; }
 .about__img img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px; }
 .about__img::before {
-  content: ""; position: absolute; inset: -14px -14px 14px 14px; border: 1px solid rgba(201, 184, 255, 0.35); border-radius: 6px;
+  content: ""; position: absolute; inset: -14px -14px 14px 14px; border: 1px solid rgba(227, 207, 148, 0.35); border-radius: 6px;
   z-index: -1;
 }
 .about p + p { margin-top: 1.2rem; }
@@ -295,7 +296,7 @@ h1 em, h2 em, h3 em {
   border: 1px solid var(--c-line); border-radius: 6px; padding: 2.2rem 2rem; transition: 0.4s var(--ease);
   background: rgba(21, 14, 40, 0.7);
 }
-.service:hover { background: var(--c-bg-3); border-color: rgba(201, 184, 255, 0.3); transform: translateY(-6px); }
+.service:hover { background: var(--c-bg-3); border-color: rgba(227, 207, 148, 0.3); transform: translateY(-6px); }
 .service__num { font-size: 0.85rem; color: var(--c-violet); margin-bottom: 2.2rem; }
 .service h3 { margin-bottom: 1rem; }
 .service p { color: var(--c-text-dim); font-size: 0.95rem; }
@@ -398,9 +399,9 @@ h1 em, h2 em, h3 em {
     "hero hero    work"
     "hero hero    about"
     "contact contact about";
-  gap: 7px; padding: 7px; background: #0a0714; border-radius: 6px;
+  gap: 7px; padding: 7px; background: #0e0d12; border-radius: 6px;
   aspect-ratio: 4 / 3;
-  border: 1px solid rgba(201, 184, 255, 0.14);
+  border: 1px solid rgba(227, 207, 148, 0.14);
   box-shadow: 0 28px 60px -28px rgba(0, 0, 0, 0.75);
   transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
@@ -433,7 +434,7 @@ h1 em, h2 em, h3 em {
 }
 .mondrian__hint {
   font-size: 0.82rem; font-weight: 600; border-radius: 3px;
-  color: #140d26; background: var(--c-accent); padding: 0.55rem 0.9rem;
+  color: #131219; background: var(--c-accent); padding: 0.55rem 0.9rem;
   opacity: 0; transform: translateY(8px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
 }
 .webcase__media:hover .mondrian__hint { opacity: 1; transform: none; }
@@ -516,7 +517,7 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .page-head h1 { margin-bottom: 1.4rem; }
 
 /* ---------- Lightbox ---------- */
-.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(9,6,18,0.96); display: none; align-items: center; justify-content: center; padding: 2rem; }
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(12,11,16,0.96); display: none; align-items: center; justify-content: center; padding: 2rem; }
 .lightbox.open { display: flex; }
 .lightbox__media { max-width: 92vw; max-height: 88vh; }
 .lightbox__media img { max-height: 88vh; width: auto; margin: 0 auto; }
@@ -539,14 +540,14 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
   cursor: pointer; transition: 0.3s var(--ease);
 }
 .filter:hover { border-color: var(--c-accent); color: var(--c-text); }
-.filter.active { background: var(--c-accent); border-color: var(--c-accent); color: #140d26; }
+.filter.active { background: var(--c-accent); border-color: var(--c-accent); color: #131219; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   /* iPhone/Safari : un header fixed + backdrop-filter disparaît au scroll.
      Sur mobile on utilise un fond plein opaque, sans flou. */
   .header.scrolled {
-    background: rgba(13, 9, 25, 0.96);
+    background: rgba(19, 18, 25, 0.96);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }

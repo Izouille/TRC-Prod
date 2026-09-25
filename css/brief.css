@@ -9,20 +9,20 @@
 
 /* ---------- Tokens (miroir de css/style.css) ---------- */
 :root{
-  --bg:#0d0919;            /* anthracite / fond principal */
-  --panel:#150e28;         /* surface */
-  --panel-2:#1e153a;       /* cartes / hover */
-  --gold:#c9b8ff;          /* or champagne (accent) */
-  --gold-soft:#ddd2ff;
-  --gold-faint:rgba(201,184,255,.12);
-  --lavender:#9d86f0;      /* gris-lavande */
-  --text:#f1ecff;
-  --muted:#a39cbd;
-  --line:rgba(201,184,255,.14);
+  --bg:#131219;            /* anthracite / fond principal */
+  --panel:#1b1a22;         /* surface */
+  --panel-2:#24222d;       /* cartes / hover */
+  --gold:#e3cf94;          /* or champagne (accent) */
+  --gold-soft:#efe1b8;
+  --gold-faint:rgba(227,207,148,.12);
+  --lavender:#8a8da6;      /* gris-lavande */
+  --text:#f3f1ea;
+  --muted:#a4a3b1;
+  --line:rgba(227,207,148,.16);
   --err:#e0867d;
   --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --font-serif:"Instrument Serif",Georgia,serif;
-  --font-body:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-serif:"Cormorant Garamond",Georgia,serif;
+  --font-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.22,1,.36,1);
   --radius:4px;
 }
@@ -36,15 +36,15 @@ body{
   background-color:var(--bg);
   /* Brume douce + fines lignes diagonales (identique au site) */
   background-image:
-    radial-gradient(55% 45% at 100% 0%,rgba(53,24,107,.32),transparent 70%),
-    radial-gradient(60% 50% at 50% 110%,rgba(74,34,160,.3),transparent 70%);
+    radial-gradient(55% 45% at 100% 0%,rgba(227,207,148,.05),transparent 70%),
+    radial-gradient(60% 50% at 50% 110%,rgba(58,31,120,.3),transparent 70%);
   background-attachment:fixed;
   color:var(--text);
   font-family:var(--font-body);
   font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
   min-height:100vh;
   /* Curseur « flèche dessinée » du site */
-  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%230d0919'%20stroke='%23c9b8ff'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto;
+  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23131219'%20stroke='%23e3cf94'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto;
 }
 /* Grain fumée (couche fixe, derrière le contenu) */
 body::before{
@@ -52,7 +52,7 @@ body::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 a,button,.choice,label,summary,.linkrow__add,.colorchip__x,.skip{
-  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23c9b8ff'%20stroke='%230d0919'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,pointer;
+  cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5,2.5L5,18.5L9.3,14.5L12.4,21L14.8,19.9L11.8,13.6L17.5,13.6Z'%20fill='%23e3cf94'%20stroke='%23131219'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,pointer;
 }
 input,textarea{cursor:text}
 img{display:block;max-width:100%;height:auto}
@@ -78,11 +78,11 @@ a{color:inherit;text-decoration:none}
 }
 
 h1,h2,h3{font-family:var(--font-display);font-stretch:125%;font-weight:700;line-height:1.02;letter-spacing:-.04em}
-em{font-family:var(--font-serif);font-style:italic;font-weight:400;font-stretch:100%;letter-spacing:-.01em;color:var(--gold)}
+em{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08em;font-stretch:100%;letter-spacing:-.01em;color:var(--gold)}
 
 /* ---------- Barre de progression ---------- */
 .progress{position:sticky;top:0;z-index:20;padding:14px 0 16px;
-  background:linear-gradient(var(--bg) 68%,rgba(13,9,25,.55));
+  background:linear-gradient(var(--bg) 68%,rgba(19,18,25,.55));
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .progress[hidden]{display:none}
 .bar{height:2px;background:var(--line);overflow:hidden;border-radius:2px}
@@ -143,7 +143,7 @@ input.invalid,textarea.invalid{border-color:var(--err)}
   border:1px solid var(--line);background:var(--panel-2);border-radius:var(--radius);
   padding:15px 16px;user-select:none;
   transition:border-color .3s var(--ease),background .3s var(--ease),transform .1s var(--ease)}
-.choice:hover{border-color:rgba(201,184,255,.5)}
+.choice:hover{border-color:rgba(227,207,148,.5)}
 .choice:active{transform:scale(.99)}
 .choice input{position:absolute;opacity:0;pointer-events:none}
 .choice .box{width:20px;height:20px;margin-top:1px;flex:0 0 auto;border:1px solid var(--lavender);
