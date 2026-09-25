@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   initScrollProgress();
   initCompteurs();
   initCollages();
-  initCurseurVoir();
   initBarreMobile();
   initSmoothAnchors();
   initHashScroll();
@@ -510,34 +509,6 @@ function initCollages() {
     box.innerHTML = liste.filter((x) => x[champ]).slice(0, 3)
       .map((x) => `<img src="${String(x[champ]).replace(/"/g, "&quot;")}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`).join("");
   });
-}
-
-/* ---------- Curseur « Voir » sur les projets ----------
-   Un rond qui suit la souris (avec un léger retard) au-dessus des projets.
-   Seulement avec une vraie souris et si les animations sont permises. */
-function initCurseurVoir() {
-  if (!window.matchMedia("(pointer: fine)").matches) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const rond = document.createElement("div");
-  rond.className = "curseur-voir";
-  rond.setAttribute("aria-hidden", "true");
-  rond.textContent = "Voir";
-  document.body.appendChild(rond);
-  let x = 0, y = 0, cx = 0, cy = 0, actif = false, anim = 0;
-  const cible = ".webcase__media, .card, .worktile, .ring3d__panel";
-  const boucle = () => {
-    cx += (x - cx) * 0.2; cy += (y - cy) * 0.2;
-    rond.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) scale(${actif ? 1 : 0})`;
-    anim = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 || actif ? requestAnimationFrame(boucle) : 0;
-  };
-  document.addEventListener("pointermove", (e) => {
-    x = e.clientX; y = e.clientY;
-    const sur = e.target.closest && e.target.closest(cible);
-    if (sur) rond.textContent = sur.closest(".card") && sur.querySelector(".card__play") ? "Lire" : "Voir";
-    if (!!sur !== actif) { actif = !!sur; rond.classList.toggle("on", actif); }
-    if (!actif && !anim) { cx = x; cy = y; }
-    if (!anim) anim = requestAnimationFrame(boucle);
-  }, { passive: true });
 }
 
 /* ---------- Barre d'action mobile (bas d'écran) ----------

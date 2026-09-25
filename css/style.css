@@ -781,16 +781,6 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 }
 .worktile:hover .worktile__go { background: var(--c-accent); color: #140d26; border-color: transparent; transform: rotate(-45deg); }
 
-/* ---------- Curseur « Voir » ---------- */
-.curseur-voir {
-  position: fixed; left: 0; top: 0; z-index: 150; pointer-events: none;
-  width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 0.85rem; font-weight: 600; color: #140d26;
-  background: linear-gradient(135deg, #c9b8ff, #e4b8f4 55%, #f6bfd6);
-  transform: translate(-100px, -100px) scale(0); transition: opacity 0.2s;
-  box-shadow: 0 10px 30px -10px rgba(178, 79, 216, 0.7);
-}
-
 /* ---------- Barre d'action mobile ---------- */
 .barre-mobile { display: none; }
 @media (max-width: 900px) {
