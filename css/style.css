@@ -873,28 +873,38 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
   right: clamp(1rem, 8vw, 10rem); top: clamp(7rem, 12vw, 9.5rem);
   width: clamp(220px, 24vw, 360px); aspect-ratio: 858 / 900;
   perspective: 1100px;
-  filter: drop-shadow(0 40px 50px rgba(5, 3, 12, 0.7));
+  filter: drop-shadow(0 40px 50px rgba(5, 3, 12, 0.7)) drop-shadow(0 0 60px rgba(106, 52, 232, 0.25));
 }
 .emblem__obj {
-  --ex: 10deg; --ey: -22deg;
+  --ex: 14deg; --ey: -30deg;
   position: absolute; inset: 0; transform-style: preserve-3d;
   transform: rotateX(var(--ex)) rotateY(var(--ey));
   animation: emblemeFlotte 8s ease-in-out infinite alternate;
 }
-.emblem__layer, .emblem__face, .emblem__shine {
+.emblem__layer, .emblem__bevel, .emblem__face, .emblem__shine {
   position: absolute; inset: 0;
   -webkit-mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
           mask: url("../assets/brand/monogramme.png") center / contain no-repeat;
 }
-/* Tranche : couches de plus en plus sombres vers l'arrière = épaisseur */
-.emblem__layer { transform: translateZ(var(--z)); background: color-mix(in srgb, #2a1560 calc((1 - var(--k)) * 100%), #0a0616); }
+/* Tranche : du violet éclairé près de la face vers le noir au fond = épaisseur visible */
+.emblem__layer {
+  transform: translateZ(var(--z));
+  background: color-mix(in srgb, #4b2b9e calc((1 - var(--k)) * 100%), #0a0616);
+}
+/* Chanfrein : deux copies décalées juste derrière la face */
+.emblem__bevel { transform: translateZ(0.2px); }
+.emblem__bevel--lumiere { background: #f4efff; translate: -1.6px -1.6px; }
+.emblem__bevel--ombre   { background: #07040f; translate: 2.4px 2.4px; }
+/* Face : métal lilas éclairé du haut à gauche, un peu plus sombre dans les creux */
 .emblem__face {
-  transform: translateZ(0.5px);
-  background: linear-gradient(145deg, #f1ebff 0%, #c9b8ff 28%, #8a5cf0 58%, #3a1d7a 100%);
+  transform: translateZ(0.6px);
+  background:
+    radial-gradient(90% 70% at 22% 12%, rgba(255, 255, 255, 0.55), transparent 55%),
+    linear-gradient(150deg, #e9e0ff 0%, #b49bff 30%, #7a4be6 62%, #34186e 100%);
 }
 .emblem__shine {
-  transform: translateZ(1px); mix-blend-mode: screen;
-  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.75) 48%, transparent 60%) 0 0 / 300% 100%;
+  transform: translateZ(1px);
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.45) 48%, transparent 58%) 0 0 / 300% 100%;
   animation: emblemeReflet 6s ease-in-out infinite;
 }
 /* Titres longs (services, à propos, contact) : le logo passe derrière, en retrait */

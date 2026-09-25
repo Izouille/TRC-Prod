@@ -585,18 +585,22 @@ function initEmbleme() {
   document.querySelectorAll(".emblem").forEach((em) => {
     const obj = document.createElement("div");
     obj.className = "emblem__obj";
-    const couches = 12;
+    // Tranche : 28 couches serrées, éclairées de l'avant (clair) vers l'arrière (sombre)
+    const couches = 28;
     let html = "";
-    for (let i = couches; i > 0; i--) html += `<span class="emblem__layer" style="--z:${-i * 2.4}px;--k:${i / couches}"></span>`;
-    obj.innerHTML = html + '<span class="emblem__face"></span><span class="emblem__shine"></span>';
+    for (let i = couches; i > 0; i--) html += `<span class="emblem__layer" style="--z:${(-i * 1.5).toFixed(1)}px;--k:${(i / couches).toFixed(3)}"></span>`;
+    // Chanfrein : liseré clair en haut à gauche, ombre en bas à droite, puis la face éclairée
+    obj.innerHTML = html +
+      '<span class="emblem__bevel emblem__bevel--ombre"></span><span class="emblem__bevel emblem__bevel--lumiere"></span>' +
+      '<span class="emblem__face"></span><span class="emblem__shine"></span>';
     em.appendChild(obj);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
     let x = 0, y = 0, cx = 0, cy = 0, anim = 0;
     const boucle = () => {
       cx += (x - cx) * 0.06; cy += (y - cy) * 0.06;
-      obj.style.setProperty("--ey", `${(-22 + cx * 30).toFixed(2)}deg`);
-      obj.style.setProperty("--ex", `${(10 - cy * 20).toFixed(2)}deg`);
+      obj.style.setProperty("--ey", `${(-30 + cx * 34).toFixed(2)}deg`);
+      obj.style.setProperty("--ex", `${(14 - cy * 22).toFixed(2)}deg`);
       anim = Math.abs(x - cx) + Math.abs(y - cy) > 0.001 ? requestAnimationFrame(boucle) : 0;
     };
     window.addEventListener("mousemove", (ev) => {
