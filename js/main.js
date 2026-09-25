@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initTilt();
   initEmbleme();
   initCurseur();
+  initConstellation();
+  initDecors();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -732,6 +734,102 @@ function initCurseur() {
       if (!anim) anim = requestAnimationFrame(tick);
     }
   }, { passive: true });
+}
+
+/* ---------- Poussière d'étoiles en fond de site ----------
+   Un canvas fixe derrière tout le contenu : quelques grains lilas et roses qui
+   dérivent lentement et se relient d'un trait fin quand ils se rapprochent.
+   Léger : ~45 grains, arrêt quand l'onglet est caché, figé si animations coupées. */
+function initConstellation() {
+  const cv = document.createElement("canvas");
+  cv.className = "constellation";
+  cv.setAttribute("aria-hidden", "true");
+  document.body.prepend(cv);
+  const ctx = cv.getContext("2d");
+  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, grains = [];
+  const taille = () => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(Math.min(55, (W * H) / 26000));
+    while (grains.length < n) grains.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.12, vy: -0.05 - Math.random() * 0.12,
+      r: 0.6 + Math.random() * 1.3, ph: Math.random() * 6.3, rose: Math.random() < 0.35,
+    });
+    grains.length = n;
+  };
+  taille();
+  window.addEventListener("resize", taille);
+  let decalage = 0; // léger parallaxe au défilement
+  window.addEventListener("scroll", () => { decalage = window.scrollY * 0.04; }, { passive: true });
+
+  const dessiner = (t) => {
+    ctx.clearRect(0, 0, W, H);
+    const lien = 120;
+    for (let i = 0; i < grains.length; i++) {
+      const a = grains[i], ay = ((a.y - decalage) % H + H) % H;
+      for (let k = i + 1; k < grains.length; k++) {
+        const b = grains[k], by = ((b.y - decalage) % H + H) % H;
+        const d = Math.hypot(a.x - b.x, ay - by);
+        if (d < lien) {
+          ctx.globalAlpha = (1 - d / lien) * 0.14;
+          ctx.strokeStyle = "#c9b8ff"; ctx.lineWidth = 0.6;
+          ctx.beginPath(); ctx.moveTo(a.x, ay); ctx.lineTo(b.x, by); ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 0.35 + 0.3 * Math.sin(t / 1400 + a.ph);
+      ctx.fillStyle = a.rose ? "#f2a7dc" : "#c9b8ff";
+      ctx.beginPath(); ctx.arc(a.x, ay, a.r, 0, 6.2832); ctx.fill();
+    }
+  };
+  if (calme) { dessiner(0); return; }
+  const tick = (t) => {
+    if (!document.hidden) {
+      for (const g of grains) {
+        g.x += g.vx; g.y += g.vy;
+        if (g.x < -10) g.x = W + 10; if (g.x > W + 10) g.x = -10;
+        if (g.y < -10) g.y += H + 20;
+      }
+      dessiner(t);
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ---------- Décors de section ----------
+   data-deco="orbes" | "grille" | "mot:PHOTO" (plusieurs séparés par une virgule).
+   Les éléments sont injectés en tête de section, derrière le contenu.
+   Le mot géant glisse horizontalement au défilement. */
+function initDecors() {
+  const mots = [];
+  document.querySelectorAll("[data-deco]").forEach((sec) => {
+    sec.classList.add("deco");
+    sec.dataset.deco.split(",").map((s) => s.trim()).forEach((d) => {
+      const el = document.createElement("div");
+      el.setAttribute("aria-hidden", "true");
+      if (d === "orbes") { el.className = "deco__orbes"; el.innerHTML = "<span></span><span></span><span></span>"; }
+      else if (d === "grille") { el.className = "deco__grille"; el.innerHTML = "<span></span>"; }
+      else if (d.startsWith("mot:")) { el.className = "deco__mot"; el.textContent = d.slice(4); mots.push(el); }
+      else return;
+      sec.prepend(el);
+    });
+  });
+  if (!mots.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let prevu = false;
+  const maj = () => {
+    prevu = false;
+    mots.forEach((m) => {
+      const r = m.parentElement.getBoundingClientRect();
+      const p = (window.innerHeight - r.top) / (window.innerHeight + r.height); // 0 → 1 pendant la traversée
+      m.style.transform = `translate(${(0.5 - p) * 30}%, -50%)`;
+    });
+  };
+  window.addEventListener("scroll", () => { if (!prevu) { prevu = true; requestAnimationFrame(maj); } }, { passive: true });
+  maj();
 }
 
 /* ---------- Barre d'action mobile (bas d'écran) ----------

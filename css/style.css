@@ -887,3 +887,41 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 
 /* ---------- Traînée de poussière (canvas posé par initCurseur) ---------- */
 .curseur__trace { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; }
+
+/* ---------- Poussière d'étoiles (canvas fixe, derrière tout) ---------- */
+.constellation { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none; }
+
+/* ---------- Décors de section (posés par initDecors) ---------- */
+.deco { position: relative; isolation: isolate; overflow: clip; }
+.deco > .container { position: relative; z-index: 1; }
+.deco__orbes, .deco__grille, .deco__mot { position: absolute; z-index: 0; pointer-events: none; }
+
+/* Orbes de couleur floues qui dérivent */
+.deco__orbes { inset: 0; filter: blur(60px); opacity: 0.55; }
+.deco__orbes span { position: absolute; border-radius: 50%; will-change: transform; }
+.deco__orbes span:nth-child(1) { width: 34vw; height: 34vw; left: -8%; top: 10%; background: radial-gradient(closest-side, rgba(106, 52, 232, 0.45), transparent); animation: aurora3 26s ease-in-out infinite alternate; }
+.deco__orbes span:nth-child(2) { width: 28vw; height: 28vw; right: -6%; top: 35%; background: radial-gradient(closest-side, rgba(178, 79, 216, 0.38), transparent); animation: aurora2 30s ease-in-out infinite alternate; }
+.deco__orbes span:nth-child(3) { width: 26vw; height: 26vw; left: 40%; bottom: -12%; background: radial-gradient(closest-side, rgba(44, 63, 214, 0.35), transparent); animation: aurora1 34s ease-in-out infinite alternate; }
+
+/* Sol quadrillé en perspective, qui défile doucement vers soi */
+.deco__grille { left: -20%; right: -20%; bottom: 0; height: 55%; perspective: 420px; perspective-origin: 50% 0%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
+          mask-image: linear-gradient(to bottom, transparent, #000 45%); }
+.deco__grille span {
+  position: absolute; inset: 0 0 -60px; transform: rotateX(62deg); transform-origin: 50% 0;
+  background:
+    linear-gradient(rgba(157, 134, 240, 0.22) 1px, transparent 1px) 0 0 / 100% 60px,
+    linear-gradient(90deg, rgba(157, 134, 240, 0.18) 1px, transparent 1px) 50% 0 / 60px 100%;
+  animation: grilleDefile 6s linear infinite;
+}
+@keyframes grilleDefile { to { background-position: 0 60px, 50% 0; } }
+
+/* Mot géant en contour, glisse au défilement */
+.deco__mot {
+  left: 50%; top: 50%; transform: translate(0, -50%); white-space: nowrap; margin-left: -50vw; width: 100vw; text-align: center;
+  font-family: var(--font-display); font-stretch: 125%; font-weight: 800; letter-spacing: -0.05em; line-height: 1;
+  font-size: clamp(7rem, 24vw, 22rem); color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 184, 255, 0.10);
+}
+@media (prefers-reduced-motion: reduce) { .deco__orbes span, .deco__grille span { animation: none; } }
+@media (max-width: 760px) { .deco__orbes { opacity: 0.4; } .deco__grille { height: 35%; } }
