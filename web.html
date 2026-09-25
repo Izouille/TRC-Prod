@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photographie — TRC Prod | Ethan Trincanato</title>
-  <meta name="description" content="Portfolio photo d'Ethan Trincanato à Grenoble : packshot, publicité, mariage, événementiel, automobile et immobilier.">
+  <title>Sites web · TRC Prod | Ethan Trincanato</title>
+  <meta name="description" content="Sites internet conçus par Ethan Trincanato à Grenoble : sites vitrines pour artisans, commerces et indépendants, du design à la mise en ligne.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" href="assets/brand/logo-black.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="TRC Prod">
-  <meta property="og:title" content="Photographie — TRC Prod | Ethan Trincanato">
-  <meta property="og:description" content="Portfolio photo : packshot, publicité, mariage, événementiel, automobile et immobilier.">
-  <meta property="og:url" content="https://trc-prod.vercel.app/photo.html">
+  <meta property="og:title" content="Sites web · TRC Prod | Ethan Trincanato">
+  <meta property="og:description" content="Sites vitrines conçus de A à Z : design, textes, photos, mise en ligne et référencement.">
+  <meta property="og:url" content="https://trc-prod.vercel.app/web.html">
   <meta property="og:image" content="https://trc-prod.vercel.app/assets/img/og-cover.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/jpeg">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://trc-prod.vercel.app/photo.html">
+  <link rel="canonical" href="https://trc-prod.vercel.app/web.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
@@ -30,8 +30,8 @@
     <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="nav">
       <a href="index.html">Accueil</a>
-      <a href="web.html">Sites web</a>
-      <a href="photo.html" class="active">Photo</a>
+      <a href="web.html" class="active">Sites web</a>
+      <a href="photo.html">Photo</a>
       <a href="video.html">Vidéo</a>
       <a href="services.html">Services</a>
       <a href="about.html">À propos</a>
@@ -41,23 +41,19 @@
 
   <section class="page-head">
     <div class="container">
-      <span class="eyebrow">Portfolio</span>
-      <h1>Photographie</h1>
-      <p class="lead" style="margin:0 auto;">Portrait, mode, produit et univers du luxe.</p>
+      <span class="eyebrow">Réalisations</span>
+      <h1>Sites web</h1>
+      <p class="lead" style="margin:0 auto;">Des sites vitrines conçus de A à Z : design, textes, photos, mise en ligne et référencement. Survolez une carte pour voir le site tourner en direct.</p>
+      <p style="margin-top:2.5rem;"><a href="brief.html" class="btn btn--solid">Créer mon site →</a></p>
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight section--smoke">
     <div class="container">
-      <div class="gallery gallery--masonry" data-gallery="photos" data-src="data/photos.json" data-filters="true"></div>
-    </div>
-  </section>
-
-  <section class="section cta">
-    <div class="container reveal">
-      <h2>Un projet photo en tête ?</h2>
-      <p class="lead" style="margin:1rem auto 2.5rem;">Discutons-en.</p>
-      <a href="contact.html" class="btn btn--solid">Me contacter</a>
+      <div class="webgrid webgrid--page" data-sites="data/sites.json">
+        <!-- Les cartes sont construites depuis data/sites.json.
+             Pour ajouter un site ou changer l'ordre : ouvre admin-sites.html. -->
+      </div>
     </div>
   </section>
 
