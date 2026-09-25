@@ -818,3 +818,34 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .nav .bubble::after { display: none; }
 /* La colonne de bulles ne se pose que s'il y a de la marge à gauche du contenu */
 @media (max-width: 1200px) { .dock { display: none; } }
+
+/* ---------- Vitrines 3D des pages de domaine (sous le titre) ---------- */
+.ring3d--band { position: relative; height: clamp(360px, 44vw, 540px); margin: -1rem 0 0; overflow: hidden; }
+.ring3d--band:not(.ring3d--portrait):not(.ring3d--video) .ring3d__panel { width: 380px; height: 260px; left: -190px; top: -130px; }
+.ring3d--band .ring3d__ring { top: 44%; }
+.ring3d--portrait .ring3d__panel { width: 260px; height: 350px; left: -130px; top: -175px; }
+.ring3d--video .ring3d__panel { width: 440px; height: 248px; left: -220px; top: -124px; }
+.ring3d__hint { position: relative; z-index: 3; text-align: center; font-size: 0.78rem; color: var(--c-text-dim); letter-spacing: 0.06em; margin: 0.2rem 0 1rem; }
+@media (max-width: 760px) {
+  .ring3d--band { height: 330px; }
+  .ring3d--band .ring3d__ring { top: 42%; }
+  .ring3d--portrait .ring3d__panel { width: 170px; height: 230px; left: -85px; top: -115px; }
+  .ring3d--video .ring3d__panel { width: 250px; height: 141px; left: -125px; top: -70px; }
+}
+
+/* ---------- Inclinaison 3D au survol (classe posée par initTilt) ---------- */
+.tilt {
+  --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.25s ease-out, border-color 0.4s var(--ease), box-shadow 0.5s var(--ease), background 0.4s var(--ease);
+  will-change: transform;
+}
+.tilt::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(201, 184, 255, 0.14), transparent 45%);
+  opacity: 0; transition: opacity 0.4s var(--ease);
+}
+.tilt:hover::before { opacity: 1; }
+.worktile.tilt, .service.tilt { position: relative; }
+.worktile.tilt:hover, .service.tilt:hover { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-6px); }
+.about__img.tilt::before { inset: 0; }

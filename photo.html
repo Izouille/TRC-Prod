@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=47">
+  <link rel="stylesheet" href="css/style.css?v=48">
 </head>
 <body>
   <header class="header">
@@ -47,6 +47,11 @@
       <p class="lead" style="margin:0 auto;">Portrait, mode, produit et univers du luxe.</p>
     </div>
   </section>
+
+  <!-- VITRINE 3D (construite depuis le JSON) -->
+  <div class="ring3d ring3d--band ring3d--portrait" data-ring data-ring-photos="data/photos.json" data-ring-local data-ring-sans-genre aria-label="Photos, en rotation"></div>
+  <p class="ring3d__hint">Glissez pour faire tourner, cliquez pour agrandir</p>
+
 
   <section class="section section--tight">
     <div class="container">
@@ -102,6 +107,6 @@
     <div class="footer__word" aria-hidden="true">TRC Prod</div>
   </footer>
 
-  <script src="js/main.js?v=39"></script>
+  <script src="js/main.js?v=40"></script>
 </body>
 </html>

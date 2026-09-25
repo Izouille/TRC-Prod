@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initReseaux();
   initScrollProgress();
   initCompteurs();
+  initTilt();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -32,45 +33,50 @@ function initHeroPause() {
   new IntersectionObserver(([e]) => hero.classList.toggle("hero--pause", !e.isIntersecting)).observe(hero);
 }
 
-/* ---------- Anneau 3D des sites (hero de l'accueil) ----------
-   Sites, photos et vidéos (data/*.json) posés en cercle, en CSS 3D pur
-   (aucune librairie). Il tourne seul, se fait glisser à la souris ou au doigt,
-   s'arrête quand le hero sort de l'écran. Un clic sans glisser ouvre l'élément. */
-async function initRing3D() {
-  const scene = document.querySelector("[data-ring]");
-  if (!scene) return;
+/* ---------- Anneaux 3D (accueil + vitrines des pages Photo, Vidéo, Sites web) ----------
+   Des réalisations posées en cercle, en CSS 3D pur (aucune librairie).
+   Chaque [data-ring] choisit ses familles : data-ring-sites, data-ring-photos,
+   data-ring-videos (chemins des JSON). L'anneau tourne seul, se glisse à la souris
+   ou au doigt, s'arrête hors écran. Un clic sans glisser ouvre l'élément.
+   La taille des panneaux vient du CSS (ex. .ring3d--portrait pour les photos). */
+function initRing3D() {
+  document.querySelectorAll("[data-ring]").forEach(construireAnneau);
+}
+
+async function construireAnneau(scene) {
+  const d = scene.dataset;
   const [sites, photos, videos] = await Promise.all([
-    loadJSON(scene.dataset.ring),
-    scene.dataset.ringPhotos ? loadJSON(scene.dataset.ringPhotos) : null,
-    scene.dataset.ringVideos ? loadJSON(scene.dataset.ringVideos) : null,
+    d.ringSites ? loadJSON(d.ringSites) : null,
+    d.ringPhotos ? loadJSON(d.ringPhotos) : null,
+    d.ringVideos ? loadJSON(d.ringVideos) : null,
   ]);
-  if (!sites || !sites.length) return;
+  // Sur une page de domaine, on reste sur place : la photo ou la vidéo s'ouvre dans la galerie
+  const surPlace = d.ringLocal !== undefined;
 
-  // Trois familles mélangées : un site, une photo, une vidéo, et ainsi de suite.
-  // Un site s'ouvre dans un nouvel onglet ; une photo ou une vidéo mène à sa page.
+  // Les familles sont mélangées : un site, une photo, une vidéo, et ainsi de suite
   const fam = [
-    sites.map((x) => ({ src: x.poster, genre: "Site", titre: x.title, href: x.url, ext: true })),
-    (photos || []).map((x) => ({ src: x.image, genre: "Photo", titre: x.title, href: "photo.html" })),
-    (videos || []).map((x) => ({ src: x.thumbnail, genre: "Vidéo", titre: x.title, href: "video.html" })),
+    (sites || []).map((x) => ({ src: x.poster, genre: "Site", titre: x.title, href: x.url, ext: true, frames: x.frames })),
+    (photos || []).map((x, i) => ({ src: x.image, genre: "Photo", titre: x.title, href: "photo.html", idx: i })),
+    (videos || []).map((x, i) => ({ src: x.thumbnail, genre: "Vidéo", titre: x.title, href: "video.html", idx: i })),
   ].filter((l) => l.length);
+  if (!fam.length) return;
+  const max = +(d.ringMax || 12);
   const vues = [];
-  for (let i = 0; vues.length < 12 && fam.some((l) => i < l.length); i++) {
-    fam.forEach((l) => { if (l[i] && vues.length < 12) vues.push(l[i]); });
+  for (let i = 0; vues.length < max && fam.some((l) => i < l.length); i++) {
+    fam.forEach((l) => { if (l[i] && vues.length < max) vues.push(l[i]); });
   }
-  // Pas assez d'éléments : on complète avec les pages intérieures des sites
-  for (let i = 0; vues.length < 8 && i < 3; i++) sites.forEach((x) => {
-    if (x.frames && x.frames[i] && vues.length < 8) vues.push({ src: apercuFixe(x.frames[i]), genre: "Site", titre: x.title, href: x.url, ext: true });
-  });
-  const panneaux = vues;
+  // Trop peu d'éléments pour un beau cercle : pages intérieures des sites, puis répétition
+  (sites || []).forEach((x) => (x.frames || []).forEach((f) => {
+    if (vues.length < (d.ringPages !== undefined ? max : 8)) vues.push({ src: apercuFixe(f), genre: "Site", titre: x.title, href: x.url, ext: true });
+  }));
+  const base = vues.slice();
+  while (vues.length < 8) vues.push(...base.slice(0, 8 - vues.length));
 
+  const e = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const ring = document.createElement("div");
   ring.className = "ring3d__ring";
-  const n = panneaux.length;
-  const petit = window.matchMedia("(max-width: 760px)").matches;
-  const demiLargeur = petit ? 125 : 220;
-  const R = Math.round(demiLargeur / Math.tan(Math.PI / n)) + (petit ? 20 : 60);
-  const e = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  panneaux.forEach((v, i) => {
+  const n = vues.length;
+  const panneaux = vues.map((v, i) => {
     const p = document.createElement("a");
     p.className = "ring3d__panel";
     p.href = v.href;
@@ -78,15 +84,35 @@ async function initRing3D() {
     if (v.genre !== "Site") p.classList.add("ring3d__panel--image");
     p.draggable = false;
     p.setAttribute("aria-label", `${v.genre} : ${v.titre}`);
-    p.style.transform = `rotateY(${(i * 360) / n}deg) translateZ(${R}px)`;
-    p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span><i>${e(v.genre)}</i>${e(v.titre)}</span>`;
+    const etiquette = d.ringSansGenre !== undefined ? e(v.titre) : `<i>${e(v.genre)}</i>${e(v.titre)}`;
+    p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span>${etiquette}</span>`;
+    // Photo ou vidéo sur sa propre page : on ouvre la visionneuse de la galerie
+    if (surPlace && v.idx !== undefined) {
+      p.addEventListener("click", (ev) => {
+        const cartes = document.querySelectorAll("[data-gallery] .card");
+        if (!cartes[v.idx]) return;
+        ev.preventDefault();
+        cartes[v.idx].click();
+      });
+    }
     ring.appendChild(p);
+    return p;
   });
   scene.appendChild(ring);
 
+  // Rayon calculé d'après la largeur réelle d'un panneau (fixée par le CSS)
+  const place = () => {
+    const w = panneaux[0].offsetWidth || 440;
+    const R = Math.round(w / 2 / Math.tan(Math.PI / n)) + w * 0.14;
+    panneaux.forEach((p, i) => { p.style.transform = `rotateY(${(i * 360) / n}deg) translateZ(${R}px)`; });
+    return R;
+  };
+  let R = place();
+  window.addEventListener("resize", () => { R = place(); });
+
   const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const croisiere = calme ? 0 : -0.07; // degrés par image
-  let angle = 0, vitesse = croisiere, penche = 0, cible = 0, drag = null, glisse = false;
+  let angle = 0, vitesse = croisiere, penche = 0, cible = 0, drag = null, glisse = false, visible = true;
 
   scene.addEventListener("pointerdown", (ev) => {
     drag = { x: ev.clientX, angle, id: ev.pointerId, actif: false };
@@ -111,12 +137,12 @@ async function initRing3D() {
   };
   scene.addEventListener("pointerup", fin);
   scene.addEventListener("pointercancel", fin);
-  scene.addEventListener("click", (ev) => { if (glisse) { ev.preventDefault(); ev.stopPropagation(); } }, true);
+  scene.addEventListener("click", (ev) => { if (glisse) { ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
   if (!calme) window.addEventListener("mousemove", (ev) => { cible = (ev.clientY / window.innerHeight - 0.5) * -6; });
+  if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(scene);
 
-  const hero = scene.closest(".hero");
   const tick = () => {
-    if (!hero || !hero.classList.contains("hero--pause")) {
+    if (visible) {
       if (!drag) { angle += vitesse; vitesse += (croisiere - vitesse) * 0.02; }
       penche += (cible - penche) * 0.05;
       ring.style.transform = `translateZ(${-R}px) rotateX(${-6 + penche}deg) rotateY(${angle}deg)`;
@@ -508,6 +534,33 @@ function initCollages() {
     const champ = box.dataset.champ;
     box.innerHTML = liste.filter((x) => x[champ]).slice(0, 3)
       .map((x) => `<img src="${String(x[champ]).replace(/"/g, "&quot;")}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`).join("");
+  });
+}
+
+/* ---------- Inclinaison 3D au survol ----------
+   Les cartes (.worktile, .service, portrait) pivotent légèrement vers la souris,
+   avec un reflet qui suit. Seulement avec une vraie souris. */
+function initTilt() {
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.querySelectorAll(".worktile, .service, .about__img").forEach((el) => {
+    el.classList.add("tilt");
+    let prevu = false, dernier = null;
+    const maj = () => {
+      prevu = false;
+      const r = el.getBoundingClientRect();
+      const x = (dernier.clientX - r.left) / r.width - 0.5;
+      const y = (dernier.clientY - r.top) / r.height - 0.5;
+      el.style.setProperty("--rx", `${(-y * 7).toFixed(2)}deg`);
+      el.style.setProperty("--ry", `${(x * 9).toFixed(2)}deg`);
+      el.style.setProperty("--mx", `${((x + 0.5) * 100).toFixed(1)}%`);
+      el.style.setProperty("--my", `${((y + 0.5) * 100).toFixed(1)}%`);
+    };
+    el.addEventListener("pointermove", (ev) => { dernier = ev; if (!prevu) { prevu = true; requestAnimationFrame(maj); } });
+    el.addEventListener("pointerleave", () => {
+      el.style.setProperty("--rx", "0deg");
+      el.style.setProperty("--ry", "0deg");
+    });
   });
 }
 
