@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initScrollProgress();
   initCompteurs();
   initTilt();
-  initHeadDeco();
+  initEmbleme();
   initCollages();
   initBarreMobile();
   initSmoothAnchors();
@@ -577,47 +577,116 @@ function initTilt() {
   });
 }
 
-/* ---------- Habillage de l'en-tête des pages de domaine ----------
-   <div class="head-deco" data-deco-src="data/photos.json" data-deco-champ="image"
-        data-deco-lien="site|galerie"></div>
-   Deux variantes (choix en cours, ?deco=b dans l'URL pour voir la seconde) :
-   A (défaut) : trois réalisations en éventail qui flottent et s'écartent au survol.
-   B : un sommaire cliquable (catégories et nombre, ou liste des sites). */
-function initHeadDeco() {
-  const variante = new URLSearchParams(location.search).get("deco") === "b" ? "b" : "a";
-  const e = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  document.querySelectorAll(".head-deco").forEach(async (box) => {
-    const liste = await loadJSON(box.dataset.decoSrc);
-    if (!liste || !liste.length) return;
-    const champ = box.dataset.decoChamp;
-    box.classList.add("head-deco--" + variante, "head-deco--" + (box.dataset.decoForme || "paysage"));
+/* ---------- Monogramme TRC en poussière de points (en-tête des pages) ----------
+   <div class="emblem"></div> : le logo redessiné en quelques centaines de points
+   (échantillonnés dans assets/brand/monogramme.png), dans un <canvas>.
+   À l'arrivée, les points se rassemblent ; la souris (ou le doigt) les écarte et
+   ils reviennent ; un clic fait éclater le logo, qui se reforme. */
+function initEmbleme() {
+  const boites = [...document.querySelectorAll(".emblem")];
+  if (!boites.length) return;
+  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const img = new Image();
+  img.src = "assets/brand/monogramme.png";
+  img.onload = () => boites.forEach((b) => poussiere(b, img, calme));
+}
 
-    if (variante === "a") {
-      box.setAttribute("aria-hidden", "true");
-      box.innerHTML = liste.filter((x) => x[champ]).slice(0, 3)
-        .map((x, i) => `<figure class="fan__card fan__card--${i + 1}"><img src="${e(x[champ])}" alt="" loading="eager"><figcaption>${e(x.title)}</figcaption></figure>`)
-        .join("");
-      return;
-    }
+function poussiere(boite, img, calme) {
+  const cv = document.createElement("canvas");
+  boite.appendChild(cv);
+  const ctx = cv.getContext("2d");
+  let W = 0, H = 0, pts = [], visible = true, souris = null;
 
-    // Variante B : sommaire. Sites : la liste ; photos / vidéos : les catégories.
-    let lignes;
-    if (box.dataset.decoLien === "site") {
-      lignes = liste.map((x) => `<a class="aside__row" href="${e(x.url)}" target="_blank" rel="noopener"><span>${e(x.title)}</span><small>${e(x.tag)}</small><i aria-hidden="true">↗</i></a>`);
-    } else {
-      const compte = {};
-      liste.forEach((x) => { if (x.category) compte[x.category] = (compte[x.category] || 0) + 1; });
-      lignes = Object.entries(compte).sort((a, b) => b[1] - a[1])
-        .map(([cat, n]) => `<button class="aside__row" type="button" data-cat="${e(cat)}"><span>${e(cat)}</span><small>${n}</small><i aria-hidden="true">↓</i></button>`);
+  // Points du logo : une grille lue dans la transparence de l'image
+  const echantillonner = () => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = boite.clientWidth; H = boite.clientHeight;
+    if (!W || !H) return;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const o = off.getContext("2d");
+    const k = Math.min(W / img.width, H / img.height);
+    const iw = img.width * k, ih = img.height * k;
+    o.drawImage(img, (W - iw) / 2, (H - ih) / 2, iw, ih);
+    const data = o.getImageData(0, 0, W, H).data;
+    const pas = Math.max(4, Math.round(W / 70));
+    const anciens = pts;
+    pts = [];
+    for (let y = 0; y < H; y += pas) for (let x = 0; x < W; x += pas) {
+      if (data[(y * W + x) * 4 + 3] < 128) continue;
+      const t = (x / W + y / H) / 2; // teinte : lilas en haut à gauche, rose en bas à droite
+      const a = anciens[pts.length];
+      pts.push({
+        hx: x, hy: y,
+        x: a ? a.x : Math.random() * W, y: a ? a.y : (Math.random() < 0.5 ? -20 : H + 20) + Math.random() * 40,
+        vx: 0, vy: 0,
+        r: 0.9 + Math.random() * 0.9,
+        c: `rgb(${Math.round(201 + 41 * t)},${Math.round(184 - 17 * t)},${Math.round(255 - 35 * t)})`,
+        ph: Math.random() * Math.PI * 2,
+      });
     }
-    box.innerHTML = `<p class="aside__titre">${liste.length} ${e(box.dataset.decoMot || "réalisations")}</p>${lignes.join("")}`;
-    box.querySelectorAll("[data-cat]").forEach((btn) => btn.addEventListener("click", () => {
-      const filtre = [...document.querySelectorAll(".filter")].find((f) => f.textContent.trim() === btn.dataset.cat);
-      if (filtre) filtre.click();
-      const galerie = document.querySelector("[data-gallery]");
-      if (galerie) galerie.scrollIntoView({ behavior: "smooth", block: "start" });
-    }));
+    if (calme) pts.forEach((p) => { p.x = p.hx; p.y = p.hy; });
+  };
+  echantillonner();
+
+  const dessiner = (t) => {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      // quelques points scintillent doucement
+      ctx.globalAlpha = 0.55 + 0.35 * Math.sin(t / 900 + p.ph);
+      ctx.fillStyle = p.c;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  };
+  if (calme) { dessiner(0); window.addEventListener("resize", () => { echantillonner(); dessiner(0); }); return; }
+
+  const eclater = (cx, cy, force) => pts.forEach((p) => {
+    const dx = p.x - cx, dy = p.y - cy, d = Math.hypot(dx, dy) || 1;
+    const f = force * (0.6 + Math.random() * 0.8);
+    p.vx += (dx / d) * f; p.vy += (dy / d) * f;
   });
+
+  // La souris agit même si le curseur est sur le titre : on écoute toute la page
+  const suivre = (x, y) => {
+    const r = cv.getBoundingClientRect();
+    souris = { x: x - r.left, y: y - r.top };
+  };
+  window.addEventListener("pointermove", (e) => suivre(e.clientX, e.clientY), { passive: true });
+  window.addEventListener("pointerdown", (e) => {
+    const r = cv.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if (x > -40 && y > -40 && x < W + 40 && y < H + 40) eclater(x, y, 9); // clic sur le logo : il éclate
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => { souris = null; });
+  window.addEventListener("resize", echantillonner);
+  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(boite);
+
+  const rayon = () => Math.max(55, W * 0.2);
+  const tick = (t) => {
+    if (visible) {
+      const R = rayon();
+      for (const p of pts) {
+        if (souris) {
+          const dx = p.x - souris.x, dy = p.y - souris.y, d2 = dx * dx + dy * dy;
+          if (d2 < R * R) {
+            const d = Math.sqrt(d2) || 1, f = (1 - d / R) * 1.6;
+            p.vx += (dx / d) * f; p.vy += (dy / d) * f;
+          }
+        }
+        p.vx += (p.hx - p.x) * 0.018; p.vy += (p.hy - p.y) * 0.018; // ressort vers sa place
+        p.vx *= 0.86; p.vy *= 0.86;
+        p.x += p.vx; p.y += p.vy;
+      }
+      dessiner(t);
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 /* ---------- Barre d'action mobile (bas d'écran) ----------

@@ -868,59 +868,18 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .page-head--about    { --t1: rgba(190, 90, 200, 0.36); --t2: rgba(106, 52, 232, 0.32); }
 .page-head--contact  { --t1: rgba(80, 70, 230, 0.42);  --t2: rgba(242, 167, 220, 0.22); }
 
-/* ---------- Habillage de l'en-tête (pages Sites web, Photo, Vidéo) ---------- */
-.head-deco {
-  position: absolute; z-index: 1;
-  right: clamp(1rem, 7vw, 9rem); top: clamp(7.5rem, 12vw, 9.5rem);
-  width: clamp(280px, 30vw, 440px); height: clamp(260px, 24vw, 340px);
+/* ---------- Monogramme en poussière de points (canvas posé par initEmbleme) ---------- */
+.emblem {
+  position: absolute; z-index: 0; pointer-events: none;
+  right: clamp(1rem, 8vw, 10rem); top: clamp(7rem, 12vw, 9.5rem);
+  width: clamp(220px, 24vw, 340px); aspect-ratio: 858 / 900;
 }
-/* A : éventail de trois tirages */
-.head-deco--a { perspective: 1200px; }
-.fan__card {
-  position: absolute; left: 50%; top: 50%; margin: 0;
-  width: 62%; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden;
-  border: 1px solid rgba(201, 184, 255, 0.22); background: var(--c-bg-3);
-  box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.85), 0 0 40px -10px rgba(106, 52, 232, 0.35);
-  transition: transform 0.7s var(--ease);
-  animation: fanFlotte 7s ease-in-out infinite alternate;
+.emblem canvas { display: block; filter: drop-shadow(0 0 10px rgba(178, 79, 216, 0.35)); }
+/* Titres longs (services, à propos, contact) : un peu plus bas et plus léger */
+.page-head--services .emblem, .page-head--about .emblem, .page-head--contact .emblem { opacity: 0.6; top: clamp(9rem, 15vw, 12rem); }
+@media (max-width: 760px) {
+  .emblem { width: 160px; right: -1rem; top: 5.5rem; opacity: 0.55; }
 }
-.head-deco--portrait .fan__card { width: 46%; aspect-ratio: 3 / 4; }
-.fan__card img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.head-deco--portrait .fan__card img { object-position: center; }
-.fan__card figcaption {
-  position: absolute; left: 8px; bottom: 8px; font-size: 0.75rem; font-weight: 600;
-  background: rgba(13, 9, 25, 0.8); padding: 0.25rem 0.55rem; border-radius: 3px;
-}
-.fan__card--1 { transform: translate(-95%, -45%) rotate(-9deg); animation-delay: -2s; }
-.fan__card--2 { transform: translate(-50%, -58%) rotate(1deg); z-index: 2; }
-.fan__card--3 { transform: translate(-5%, -40%) rotate(9deg); animation-delay: -4s; }
-.page-head:hover .fan__card--1 { transform: translate(-112%, -44%) rotate(-13deg); }
-.page-head:hover .fan__card--3 { transform: translate(12%, -38%) rotate(13deg); }
-.page-head:hover .fan__card--2 { transform: translate(-50%, -64%) rotate(0deg) scale(1.04); }
-@keyframes fanFlotte { from { translate: 0 -5px; } to { translate: 0 7px; } }
-@media (prefers-reduced-motion: reduce) { .fan__card { animation: none; } }
-
-/* B : sommaire cliquable */
-.head-deco--b {
-  height: auto; padding: 1.3rem 1.4rem; border-radius: 10px;
-  border: 1px solid var(--c-line); background: rgba(21, 14, 40, 0.6);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-}
-.aside__titre { font-size: 0.85rem; color: var(--c-violet); margin-bottom: 0.6rem; }
-.aside__row {
-  display: grid; grid-template-columns: 1fr auto 1.4rem; align-items: baseline; gap: 0.8rem;
-  width: 100%; padding: 0.8rem 0; border: 0; border-top: 1px solid var(--c-line);
-  background: none; color: var(--c-text); font: inherit; text-align: left; cursor: pointer;
-  transition: color 0.3s var(--ease), padding 0.3s var(--ease);
-}
-.aside__row span { font-family: var(--font-display); font-stretch: 125%; font-weight: 700; letter-spacing: -0.03em; font-size: 1.15rem; }
-.aside__row small { color: var(--c-text-dim); font-size: 0.85rem; }
-.aside__row i { font-style: normal; color: var(--c-violet); text-align: right; transition: transform 0.3s var(--ease); }
-.aside__row:hover { color: var(--c-accent); padding-left: 0.4rem; }
-.aside__row:hover i { transform: translateX(3px); color: var(--c-accent); }
-
-/* Petits écrans : l'habillage laisse la place au titre */
-@media (max-width: 1000px) { .head-deco { display: none; } }
 
 /* Moins de vide : la vitrine 3D remonte sous le titre */
 .page-head:has(+ .ring3d--band), .page-head:has(+ * + .ring3d--band) { padding-bottom: 0; }
