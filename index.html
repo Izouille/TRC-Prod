@@ -44,8 +44,8 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=39">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=40">
 </head>
 <body>
 
@@ -54,51 +54,56 @@
     <a href="index.html" class="header__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></a>
     <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="nav">
-      <a href="index.html" class="active">Accueil</a>
       <a href="web.html">Sites web</a>
       <a href="photo.html">Photo</a>
       <a href="video.html">Vidéo</a>
       <a href="services.html">Services</a>
       <a href="about.html">À propos</a>
       <a href="contact.html">Contact</a>
+      <a href="brief.html" class="nav__cta">Créer mon site</a>
     </nav>
   </header>
 
-  <!-- HERO -->
-  <section class="hero hero--name">
-    <div class="hero__smoke" aria-hidden="true"></div>
-    <div class="container">
-      <div class="hero__inner">
-        <h1 class="hero__name">
-          <span class="hero__first">Ethan</span>
-          <span class="hero__last">Trincanato</span>
-        </h1>
-        <p class="hero__role">Webdesign, photo &amp; vidéo</p>
+  <!-- HERO : titre + anneau 3D des sites (construit depuis data/sites.json) -->
+  <section class="hero">
+    <div class="container hero__copy">
+      <h1 class="hero__title">Votre site,<br>en <em>mieux.</em></h1>
+      <div class="hero__side">
+        <p>Ethan Trincanato, webdesigner à Grenoble. Je fais aussi les photos et la vidéo : votre site arrive complet, prêt à être montré.</p>
         <div class="hero__actions">
-          <a href="#web" class="btn btn--solid">Créer mon site</a>
-          <a href="photo.html" class="btn">Voir le portfolio</a>
-          <a href="contact.html" class="btn">Me contacter</a>
+          <a href="brief.html" class="btn btn--solid">Démarrer mon brief →</a>
+          <a href="web.html" class="btn">Voir les sites</a>
         </div>
       </div>
     </div>
-    <a href="#web" class="hero__scroll">Défiler</a>
+    <div class="ring3d" data-ring="data/sites.json" aria-label="Sites réalisés, en rotation"></div>
+    <p class="hero__hint">Glissez pour faire tourner, cliquez pour ouvrir</p>
+  </section>
+
+  <!-- MÉTHODE -->
+  <section class="section">
+    <div class="container method">
+      <div class="reveal">
+        <span class="eyebrow">Comment ça se passe</span>
+        <h2>Un site, du <em>brief</em><br>à la mise en ligne.</h2>
+      </div>
+      <ol class="method__steps reveal">
+        <li><span class="method__num">01</span><h3>Le brief</h3><p>Quelques questions en ligne, 3 à 5 minutes, sans inscription.</p></li>
+        <li><span class="method__num">02</span><h3>La maquette</h3><p>Vous voyez votre site avant sa mise en ligne et on ajuste ensemble.</p></li>
+        <li><span class="method__num">03</span><h3>Les images</h3><p>Je peux faire moi-même les photos et la vidéo de votre activité.</p></li>
+        <li><span class="method__num">04</span><h3>En ligne</h3><p>Nom de domaine, référencement Google, et je reste là pour les modifications.</p></li>
+      </ol>
+    </div>
   </section>
 
   <!-- WEB / SITES INTERNET -->
-  <section class="section section--smoke" id="web">
+  <section class="section section--tight section--smoke" id="web">
     <div class="container">
-      <div class="section-head section-head--center reveal">
-        <span class="eyebrow">Sites internet</span>
-        <h2>Votre site, pensé comme une image.</h2>
-        <p class="lead" style="margin:0 auto;">Je conçois votre site de A à Z : design, textes, photos, mise en ligne et référencement. Avec un œil de photographe pour que chaque page donne envie.</p>
+      <div class="section-head reveal">
+        <span class="eyebrow">Réalisations</span>
+        <h2>Ils sont <em>en ligne.</em></h2>
+        <p class="lead">Chaque site est pensé comme une image : cadrage, lumière, rythme. Survolez une carte pour le voir tourner en direct.</p>
       </div>
-
-      <!-- CTA brief : juste le bouton, au-dessus des réalisations -->
-      <div style="text-align:center;margin:clamp(2rem,5vw,3rem) auto 0;" class="reveal">
-        <a href="brief.html" class="btn btn--solid">Démarrer mon brief →</a>
-      </div>
-
-      <p class="lead reveal" style="text-align:center;margin:clamp(2.5rem,6vw,4rem) auto 2.5rem;opacity:.85;">Mes réalisations&nbsp;:</p>
 
       <div class="webrail reveal">
         <button class="webrail__nav webrail__nav--prev" type="button" aria-label="Faire défiler vers les sites précédents">&#8592;</button>
@@ -119,7 +124,7 @@
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Photographie</span>
-        <h2>Des instants, sublimés.</h2>
+        <h2>Des instants, <em>sublimés.</em></h2>
         <p class="lead">Une sélection de mes travaux photographiques - portrait, mode, produit et univers du luxe.</p>
       </div>
       <div class="gallery gallery--masonry" data-gallery="photos" data-src="data/photos.json" data-limit="6"></div>
@@ -134,7 +139,7 @@
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Vidéo</span>
-        <h2>La vidéo, sous tous les formats.</h2>
+        <h2>La vidéo, sous tous les <em>formats.</em></h2>
         <p class="lead">Films de marque, publicités, contenus pour les réseaux et événements.</p>
       </div>
       <div class="gallery gallery--2" data-gallery="videos" data-src="data/videos.json" data-limit="2"></div>
@@ -172,7 +177,7 @@
     <div class="container">
       <div class="section-head section-head--center reveal">
         <span class="eyebrow">Services</span>
-        <h2>Ce que je crée pour vous.</h2>
+        <h2>Ce que je crée <em>pour vous.</em></h2>
       </div>
       <div class="services">
         <div class="service reveal">
@@ -214,10 +219,12 @@
   <!-- CTA -->
   <section class="section section--smoke cta">
     <div class="container reveal">
-      <span class="eyebrow">Un projet ?</span>
-      <h2>Donnons vie à votre <em>vision</em>.</h2>
-      <p class="lead" style="margin:0 auto 2.5rem;">Parlez-moi de votre projet - je vous réponds rapidement pour en discuter.</p>
-      <a href="contact.html" class="btn btn--solid">Démarrer un projet</a>
+      <h2>On commence <em>quand vous voulez.</em></h2>
+      <p class="lead" style="margin:1.2rem auto 2.5rem;">Un site, des photos, une vidéo : parlez-moi de votre projet, je vous réponds rapidement.</p>
+      <div class="hero__actions" style="justify-content:center;">
+        <a href="brief.html" class="btn btn--solid">Démarrer mon brief →</a>
+        <a href="contact.html" class="btn">Me contacter</a>
+      </div>
     </div>
   </section>
 
@@ -239,6 +246,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=33"></script>
+  <script src="js/main.js?v=34"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initBackToTop();
   initSmoothAnchors();
   initHashScroll();
+  initRing3D();
   await initWebProjects(); // les cartes doivent exister avant les deux appels suivants
   initWebPreview();
   initWebRail();
@@ -24,6 +25,87 @@ function initHeroPause() {
   const hero = document.querySelector(".hero");
   if (!hero || !("IntersectionObserver" in window)) return;
   new IntersectionObserver(([e]) => hero.classList.toggle("hero--pause", !e.isIntersecting)).observe(hero);
+}
+
+/* ---------- Anneau 3D des sites (hero de l'accueil) ----------
+   Les captures des sites de data/sites.json posées en cercle, en CSS 3D pur
+   (aucune librairie). Il tourne seul, se fait glisser à la souris ou au doigt,
+   s'arrête quand le hero sort de l'écran. Un clic sans glisser ouvre le site. */
+async function initRing3D() {
+  const scene = document.querySelector("[data-ring]");
+  if (!scene) return;
+  const sites = await loadJSON(scene.dataset.ring);
+  if (!sites || !sites.length) return;
+
+  // Une vue par site, puis ses pages intérieures, jusqu'à 10 panneaux
+  const vues = sites.map((s) => ({ src: s.poster, site: s }));
+  for (let i = 0; i < 3; i++) sites.forEach((s) => {
+    if (s.frames && s.frames[i]) vues.push({ src: apercuFixe(s.frames[i]), site: s });
+  });
+  const panneaux = vues.slice(0, Math.max(8, Math.min(10, vues.length)));
+  while (panneaux.length < 8) panneaux.push(...vues.slice(0, 8 - panneaux.length));
+
+  const ring = document.createElement("div");
+  ring.className = "ring3d__ring";
+  const n = panneaux.length;
+  const petit = window.matchMedia("(max-width: 760px)").matches;
+  const demiLargeur = petit ? 125 : 220;
+  const R = Math.round(demiLargeur / Math.tan(Math.PI / n)) + (petit ? 20 : 60);
+  const e = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  panneaux.forEach((v, i) => {
+    const p = document.createElement("a");
+    p.className = "ring3d__panel";
+    p.href = v.site.url;
+    p.target = "_blank";
+    p.rel = "noopener";
+    p.draggable = false;
+    p.setAttribute("aria-label", "Ouvrir le site " + v.site.title);
+    p.style.transform = `rotateY(${(i * 360) / n}deg) translateZ(${R}px)`;
+    p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span>${e(v.site.title)}</span>`;
+    ring.appendChild(p);
+  });
+  scene.appendChild(ring);
+
+  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const croisiere = calme ? 0 : -0.07; // degrés par image
+  let angle = 0, vitesse = croisiere, penche = 0, cible = 0, drag = null, glisse = false;
+
+  scene.addEventListener("pointerdown", (ev) => {
+    drag = { x: ev.clientX, angle, id: ev.pointerId, actif: false };
+  });
+  scene.addEventListener("pointermove", (ev) => {
+    if (!drag || ev.pointerId !== drag.id) return;
+    const dx = ev.clientX - drag.x;
+    if (!drag.actif) {
+      if (Math.abs(dx) < 6) return; // un simple clic reste un clic
+      drag.actif = true;
+      scene.setPointerCapture(drag.id);
+      scene.classList.add("is-drag");
+    }
+    const a = drag.angle + dx * 0.15;
+    vitesse = a - angle;
+    angle = a;
+  });
+  const fin = () => {
+    if (drag && drag.actif) { glisse = true; setTimeout(() => { glisse = false; }, 0); }
+    drag = null;
+    scene.classList.remove("is-drag");
+  };
+  scene.addEventListener("pointerup", fin);
+  scene.addEventListener("pointercancel", fin);
+  scene.addEventListener("click", (ev) => { if (glisse) { ev.preventDefault(); ev.stopPropagation(); } }, true);
+  if (!calme) window.addEventListener("mousemove", (ev) => { cible = (ev.clientY / window.innerHeight - 0.5) * -6; });
+
+  const hero = scene.closest(".hero");
+  const tick = () => {
+    if (!hero || !hero.classList.contains("hero--pause")) {
+      if (!drag) { angle += vitesse; vitesse += (croisiere - vitesse) * 0.02; }
+      penche += (cible - penche) * 0.05;
+      ring.style.transform = `translateZ(${-R}px) rotateX(${-6 + penche}deg) rotateY(${angle}deg)`;
+    }
+    requestAnimationFrame(tick);
+  };
+  tick();
 }
 
 /* ---------- Sites réalisés (cartes construites depuis data/sites.json) ----------
