@@ -45,7 +45,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=44">
+  <link rel="stylesheet" href="css/style.css?v=45">
 </head>
 <body>
 
@@ -54,6 +54,7 @@
     <a href="index.html" class="header__logo"><img src="assets/brand/logo-white.png" alt="TRC Prod"></a>
     <button class="nav__toggle" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="nav">
+      <a href="index.html" class="active">Accueil</a>
       <a href="web.html">Sites web</a>
       <a href="photo.html">Photo</a>
       <a href="video.html">Vidéo</a>
@@ -95,43 +96,33 @@
       </div>
       <div class="workhub reveal">
         <a href="web.html" class="worktile">
-          <img src="assets/img/web-az-concept.jpg" alt="" loading="lazy">
-          <span class="worktile__go" aria-hidden="true">→</span>
-          <span class="worktile__count" data-compte="data/sites.json">4</span>
-          <h3>Sites web</h3>
-          <p>Sites vitrines conçus de A à Z, en ligne et référencés.</p>
+          <div class="worktile__media" data-collage="data/sites.json" data-champ="poster"></div>
+          <div class="worktile__body">
+            <p class="worktile__meta"><span data-compte="data/sites.json">4</span> sites en ligne</p>
+            <h3>Sites web</h3>
+            <p>Sites vitrines conçus de A à Z, en ligne et référencés.</p>
+            <span class="worktile__go" aria-hidden="true">→</span>
+          </div>
         </a>
         <a href="photo.html" class="worktile">
-          <img src="assets/img/ferrari-2.jpg" alt="" loading="lazy">
-          <span class="worktile__go" aria-hidden="true">→</span>
-          <span class="worktile__count" data-compte="data/photos.json">10</span>
-          <h3>Photo</h3>
-          <p>Automobile, portrait, mode et produit.</p>
+          <div class="worktile__media" data-collage="data/photos.json" data-champ="image"></div>
+          <div class="worktile__body">
+            <p class="worktile__meta"><span data-compte="data/photos.json">10</span> photos</p>
+            <h3>Photo</h3>
+            <p>Automobile, portrait, mode et produit.</p>
+            <span class="worktile__go" aria-hidden="true">→</span>
+          </div>
         </a>
         <a href="video.html" class="worktile">
-          <img src="https://img.youtube.com/vi/EOymOgk8Qnw/maxresdefault.jpg" alt="" loading="lazy">
-          <span class="worktile__go" aria-hidden="true">→</span>
-          <span class="worktile__count" data-compte="data/videos.json">4</span>
-          <h3>Vidéo</h3>
-          <p>Clips, courts-métrages et films de marque.</p>
+          <div class="worktile__media" data-collage="data/videos.json" data-champ="thumbnail"></div>
+          <div class="worktile__body">
+            <p class="worktile__meta"><span data-compte="data/videos.json">4</span> films et clips</p>
+            <h3>Vidéo</h3>
+            <p>Clips, courts-métrages et films de marque.</p>
+            <span class="worktile__go" aria-hidden="true">→</span>
+          </div>
         </a>
       </div>
-    </div>
-  </section>
-
-  <!-- MÉTHODE -->
-  <section class="section">
-    <div class="container method">
-      <div class="reveal">
-        <span class="eyebrow">Comment ça se passe</span>
-        <h2>Un site, du <em>brief</em><br>à la mise en ligne.</h2>
-      </div>
-      <ol class="method__steps reveal">
-        <li><span class="method__num">01</span><h3>Le brief</h3><p>Quelques questions en ligne, 3 à 5 minutes, sans inscription.</p></li>
-        <li><span class="method__num">02</span><h3>La maquette</h3><p>Vous voyez votre site avant sa mise en ligne et on ajuste ensemble.</p></li>
-        <li><span class="method__num">03</span><h3>Les images</h3><p>Je peux faire moi-même les photos et la vidéo de votre activité.</p></li>
-        <li><span class="method__num">04</span><h3>En ligne</h3><p>Nom de domaine, référencement Google, et je reste là pour les modifications.</p></li>
-      </ol>
     </div>
   </section>
 
@@ -251,6 +242,6 @@
     <div class="footer__word" aria-hidden="true">TRC Prod</div>
   </footer>
 
-  <script src="js/main.js?v=37"></script>
+  <script src="js/main.js?v=38"></script>
 </body>
 </html>

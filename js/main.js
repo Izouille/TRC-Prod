@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initReseaux();
   initScrollProgress();
   initCompteurs();
+  initCollages();
   initCurseurVoir();
   initBarreMobile();
   initSmoothAnchors();
@@ -495,6 +496,19 @@ function initCompteurs() {
     if (/^\d+$/.test(src)) return animer(el, +src);
     const liste = await loadJSON(src);
     if (liste && liste.length) animer(el, liste.length);
+  });
+}
+
+/* ---------- Collages des tuiles « Tout mon travail » ----------
+   <div data-collage="data/photos.json" data-champ="image"> : les trois premiers
+   éléments du fichier (l'ordre choisi dans l'admin), en petite mosaïque. */
+function initCollages() {
+  document.querySelectorAll("[data-collage]").forEach(async (box) => {
+    const liste = await loadJSON(box.dataset.collage);
+    if (!liste || !liste.length) return;
+    const champ = box.dataset.champ;
+    box.innerHTML = liste.filter((x) => x[champ]).slice(0, 3)
+      .map((x) => `<img src="${String(x[champ]).replace(/"/g, "&quot;")}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`).join("");
   });
 }
 
