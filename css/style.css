@@ -234,13 +234,14 @@ h1 em, h2 em, h3 em {
   cursor: grab; touch-action: pan-y; user-select: none;
 }
 .ring3d.is-drag { cursor: grabbing; }
-.ring3d__ring { position: absolute; left: 50%; top: 46%; transform-style: preserve-3d; will-change: transform; }
+.ring3d__ring { position: absolute; left: 50%; top: 42%; transform-style: preserve-3d; will-change: transform; }
 .ring3d__panel {
   position: absolute; width: 440px; height: 300px; left: -220px; top: -150px;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: 6px; overflow: hidden; background: var(--c-bg-3);
   box-shadow: 0 0 0 1px rgba(201, 184, 255, 0.18), 0 30px 80px -20px rgba(0, 0, 0, 0.8);
-  -webkit-box-reflect: below 14px linear-gradient(transparent 55%, rgba(255, 255, 255, 0.16));
+  /* Léger reflet au sol, comme sur une surface vernie (Chrome, Opera, Edge, Safari) */
+  -webkit-box-reflect: below 8px linear-gradient(transparent 52%, rgba(255, 255, 255, 0.07) 70%, rgba(255, 255, 255, 0.26));
 }
 .ring3d__panel img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 .ring3d__panel--image img { object-position: center; }
@@ -251,7 +252,7 @@ h1 em, h2 em, h3 em {
 }
 /* Fondu du sol vers le fond de page */
 .ring3d::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 34%; pointer-events: none;
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; pointer-events: none;
   background: linear-gradient(transparent, var(--c-bg) 85%);
 }
 .hero__hint {
@@ -824,10 +825,12 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 .ring3d--band .ring3d__ring { top: 44%; }
 .ring3d--portrait .ring3d__panel { width: 260px; height: 350px; left: -130px; top: -175px; }
 .ring3d--video .ring3d__panel { width: 440px; height: 248px; left: -220px; top: -124px; }
+.ring3d--band::after { height: 16%; }
 .ring3d__hint { position: relative; z-index: 3; text-align: center; font-size: 0.78rem; color: var(--c-text-dim); letter-spacing: 0.06em; margin: 0.2rem 0 1rem; }
 @media (max-width: 760px) {
-  .ring3d--band { height: 330px; }
-  .ring3d--band .ring3d__ring { top: 42%; }
+  .ring3d--band { height: 360px; }
+  .ring3d--band .ring3d__ring { top: 40%; }
+  .ring3d--band:not(.ring3d--portrait):not(.ring3d--video) .ring3d__panel { width: 260px; height: 178px; left: -130px; top: -89px; }
   .ring3d--portrait .ring3d__panel { width: 170px; height: 230px; left: -85px; top: -115px; }
   .ring3d--video .ring3d__panel { width: 250px; height: 141px; left: -125px; top: -70px; }
 }
@@ -877,7 +880,7 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 /* Titres longs (services, à propos, contact) : un peu plus bas et plus léger */
 .page-head--services .emblem, .page-head--about .emblem, .page-head--contact .emblem { opacity: 0.6; top: clamp(9rem, 15vw, 12rem); }
 @media (max-width: 760px) {
-  .emblem { width: 160px; right: -1rem; top: 5.5rem; opacity: 0.55; }
+  .emblem { width: 150px; right: -1.6rem; top: 5.5rem; opacity: 0.32; }
 }
 
 /* Moins de vide : la vitrine 3D remonte sous le titre */
@@ -940,3 +943,19 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 /* Liseré de lumière décalé, creux sombre par-dessus : gravé, à peine perceptible */
 .fond-logo__lumiere { translate: 3px 3px; background: rgba(201, 184, 255, 0.022); }
 .fond-logo__creux { background: rgba(4, 2, 10, 0.17); }
+
+/* ---------- Téléphone : confort tactile ---------- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+@media (hover: none) { .si-souris { display: none; } }
+@media (max-width: 900px) {
+  /* 16px minimum : sinon l'iPhone zoome dans la page dès qu'on touche un champ */
+  .field input, .field textarea, .field select { font-size: 16px; }
+  /* La barre d'action fixe ne doit pas masquer le bas du pied de page */
+  .footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 560px) {
+  .page-head { padding-top: 6.8rem; }
+  .lead { font-size: 1.02rem; }
+  .filters { gap: 0.45rem; margin-bottom: 2rem; }
+  .filter { padding: 0.5rem 0.95rem; }
+}
