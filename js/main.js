@@ -157,7 +157,11 @@ async function construireAnneau(scene) {
     angle -= pas * 0.12;
     vitesse = Math.max(-1.5, Math.min(1.5, -pas * 0.02)); // un peu d'élan à la fin du geste
   }, { passive: false });
-  if (!calme) window.addEventListener("mousemove", (ev) => { cible = (ev.clientY / window.innerHeight - 0.5) * -6; });
+  // Suit un peu la souris en hauteur ; vers le bas on penche à peine, sinon les panneaux se font rogner
+  if (!calme) window.addEventListener("mousemove", (ev) => {
+    const y = ev.clientY / window.innerHeight - 0.5;
+    cible = y < 0 ? y * -6 : y * -1.2;
+  });
   if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(scene);
 
   const tick = () => {

@@ -970,3 +970,19 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highl
   .filters { gap: 0.45rem; margin-bottom: 2rem; }
   .filter { padding: 0.5rem 0.95rem; }
 }
+
+/* ---------- Accueil : l'anneau se cale toujours sous le nom ----------
+   Le hero s'empile en colonne (texte puis anneau) au lieu de poser l'anneau
+   en bas en pourcentage : sur un écran peu haut, il ne remonte plus sur le titre
+   et garde la place du reflet. Les panneaux rapetissent avec la hauteur d'écran. */
+.hero {
+  display: flex; flex-direction: column;
+  --pw: clamp(220px, min(30vw, 38vh), 440px); --ph: calc(var(--pw) * 0.68);
+}
+.hero .ring3d {
+  position: relative; left: auto; right: auto; bottom: auto; height: auto;
+  flex: 1 0 auto; min-height: calc(var(--ph) * 1.6 + 2.5rem);
+}
+.hero .ring3d__ring { top: max(calc(var(--ph) / 2 + 2.5rem), 40%); }
+.hero .ring3d__panel { width: var(--pw); height: var(--ph); left: calc(var(--pw) / -2); top: calc(var(--ph) / -2); }
+.hero .ring3d::after { height: 12%; }
