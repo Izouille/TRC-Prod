@@ -890,7 +890,7 @@ a.contact-row:hover .contact-row__arrow { color: var(--c-accent); transform: tra
 /* Titres longs (services, à propos, contact) : un peu plus bas et plus léger */
 .page-head--services .emblem, .page-head--about .emblem, .page-head--contact .emblem { opacity: 0.6; top: clamp(9rem, 15vw, 12rem); }
 @media (max-width: 760px) {
-  .emblem { width: 150px; right: -1.6rem; top: 5.5rem; opacity: 0.32; }
+  .emblem { width: 128px; right: 1rem; top: 5.6rem; opacity: 0.4; }
 }
 
 /* Moins de vide : la vitrine 3D remonte sous le titre */
