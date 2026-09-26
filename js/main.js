@@ -90,6 +90,8 @@ async function construireAnneau(scene) {
     if (v.ext) { p.target = "_blank"; p.rel = "noopener"; }
     if (v.genre !== "Site") p.classList.add("ring3d__panel--image");
     p.draggable = false;
+    // URL absolue : un chemin relatif dans une variable CSS serait lu depuis css/
+    if (v.src) p.style.setProperty("--src", `url(${JSON.stringify(new URL(v.src, location.href).href)})`);
     p.setAttribute("aria-label", `${v.genre} : ${v.titre}`);
     const etiquette = d.ringSansGenre !== undefined ? e(v.titre) : `<i>${e(v.genre)}</i>${e(v.titre)}`;
     p.innerHTML = `<img src="${e(v.src)}" alt="" loading="${i < 3 || i > n - 3 ? "eager" : "lazy"}" onerror="this.remove()"><span>${etiquette}</span>`;

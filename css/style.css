@@ -238,12 +238,23 @@ h1 em, h2 em, h3 em {
 .ring3d__panel {
   position: absolute; width: 440px; height: 300px; left: -220px; top: -150px;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  border-radius: 6px; overflow: hidden; background: var(--c-bg-3);
+  border-radius: 6px; background: var(--c-bg-3);
   box-shadow: 0 0 0 1px rgba(201, 184, 255, 0.18), 0 30px 80px -20px rgba(0, 0, 0, 0.8);
-  /* Léger reflet au sol, comme sur une surface vernie (Chrome, Opera, Edge, Safari) */
-  -webkit-box-reflect: below 8px linear-gradient(transparent 52%, rgba(255, 255, 255, 0.07) 70%, rgba(255, 255, 255, 0.26));
 }
-.ring3d__panel img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
+.ring3d__panel img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; border-radius: inherit; }
+/* Léger reflet au sol : la même image retournée sous le panneau, qui s'efface vite
+   (--src posée par le JS). Marche dans tous les navigateurs, sans -webkit-box-reflect. */
+.ring3d__panel::after {
+  content: ""; position: absolute; left: 0; right: 0; top: calc(100% + 6px); height: 100%;
+  border-radius: inherit; pointer-events: none; transform: scaleY(-1); transform-origin: 50% 50%;
+  opacity: 0.5;
+  /* Pas de mask-image : dans une scène 3D, Chrome/Opera ne l'affichent pas toujours.
+     Le fondu vient d'un dégradé vers la couleur du fond, posé par-dessus l'image. */
+  background:
+    linear-gradient(to top, rgba(13, 9, 25, 0.1), rgba(13, 9, 25, 0.6) 18%, rgba(13, 9, 25, 0.92) 36%, var(--c-bg) 52%),
+    var(--src) center top / cover no-repeat;
+}
+.ring3d__panel--image::after { background-position: 0 0, center; }
 .ring3d__panel--image img { object-position: center; }
 .ring3d__panel span i { font-style: normal; color: var(--c-accent); margin-right: 0.45rem; font-weight: 500; }
 .ring3d__panel span {
