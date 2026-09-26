@@ -977,7 +977,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highl
    et garde la place du reflet. Les panneaux rapetissent avec la hauteur d'écran. */
 .hero {
   display: flex; flex-direction: column;
-  --pw: clamp(220px, min(30vw, 38vh), 440px); --ph: calc(var(--pw) * 0.68);
+  --pw: clamp(250px, min(35vw, 44vh), 500px); --ph: calc(var(--pw) * 0.68);
 }
 .hero .ring3d {
   position: relative; left: auto; right: auto; bottom: auto; height: auto;
